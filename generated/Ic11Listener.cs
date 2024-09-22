@@ -161,6 +161,26 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExpression([NotNull] Ic11Parser.ExpressionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.primaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

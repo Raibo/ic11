@@ -192,6 +192,30 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpression([NotNull] Ic11Parser.ExpressionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.primaryExpression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

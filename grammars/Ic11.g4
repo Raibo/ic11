@@ -22,28 +22,43 @@ statement
     | variableDeclaration
     ;
 
-whileStatement: 'while' '(' ')' block;
+whileStatement: WHILE '(' ')' block;
 
-ifStatement: 'if' '(' expression ')' block ( 'else' block )?;
+ifStatement: IF '(' expression ')' block ( ELSE block )?;
 
 assignment: IDENTIFIER '.' IDENTIFIER '=' expression ';';
 
-yieldStatement: 'yield' ';';
+yieldStatement: YIELD ';';
 
-returnStatement: 'return' ';';
+returnStatement: RETURN ';';
 
-variableDeclaration: 'var' IDENTIFIER '=' expression ';';
+variableDeclaration: VAR IDENTIFIER '=' expression ';';
 
 negation: '!' expression;
 
 expression
+    : primaryExpression (binaryOperator primaryExpression)*
+    ;
+
+primaryExpression
     : IDENTIFIER
     | IDENTIFIER '.' IDENTIFIER
     | IDENTIFIER '.' IDENTIFIER '(' ')'
     | negation
-    | expression ('+' | '-' | '*' | '/' | '<' | '>' | '<=' | '>=' | '&&') expression
     | '(' expression ')'
     | literal
+    ;
+
+binaryOperator
+    : PLUS
+    | MINUS
+    | MUL
+    | DIV
+    | LT
+    | GT
+    | LE
+    | GE
+    | AND
     ;
 
 literal
@@ -52,6 +67,22 @@ literal
     ;
 
 // Lexer rules
+WHILE: 'while';
+IF: 'if';
+ELSE: 'else';
+YIELD: 'yield';
+RETURN: 'return';
+VAR: 'var';
+PLUS: '+';
+MINUS: '-';
+MUL: '*';
+DIV: '/';
+LT: '<';
+GT: '>';
+LE: '<=';
+GE: '>=';
+AND: '&&';
+
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;
 INTEGER: [0-9]+;
 BOOLEAN: 'true' | 'false';
