@@ -1,5 +1,5 @@
-Pin FabElectro = d0
-Pin DialElectro = d3
+Pin FabElectro = d0;
+Pin DialElectro = d3;
 
 void Main()
 {   

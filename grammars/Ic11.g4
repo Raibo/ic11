@@ -34,11 +34,14 @@ returnStatement: 'return' ';';
 
 variableDeclaration: 'var' IDENTIFIER '=' expression ';';
 
+negation: '!' expression;
+
 expression
     : IDENTIFIER
     | IDENTIFIER '.' IDENTIFIER
     | IDENTIFIER '.' IDENTIFIER '(' ')'
-    | expression ('+' | '-' | '*' | '/') expression
+    | negation
+    | expression ('+' | '-' | '*' | '/' | '<' | '>' | '<=' | '>=' | '&&') expression
     | '(' expression ')'
     | literal
     ;
