@@ -7,4 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Ic11Lexer.cs" />
+    <Compile Remove="Ic11Parser.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="grammars\.antlr\Ic11Lexer.cs" />
+    <Compile Include="grammars\.antlr\Ic11Parser.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+  </ItemGroup>
+
 </Project>
