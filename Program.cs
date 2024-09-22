@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 
 class Program
@@ -28,14 +29,22 @@ class Program
 
     class Ic11Listener : Ic11BaseListener
     {
-        public override void EnterEveryRule(ParserRuleContext ctx)
+        
+       //public override void EnterLiteral([NotNull] Ic11Parser.LiteralContext context)
+       //{
+       //    Console.WriteLine($"Literal: {context.GetText()}");
+       //}
+
+        public override void EnterVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context)
         {
-            Console.WriteLine($"Entering: {ctx.GetText()}");
+            Console.WriteLine($"Declaration: {context.GetText()}");
+            Console.WriteLine($"variable declared: {context.IDENTIFIER().GetText()}");
         }
 
-        public override void ExitEveryRule(ParserRuleContext ctx)
+        public override void ExitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context)
         {
-            Console.WriteLine($"Exiting: {ctx.GetText()}");
+            Console.WriteLine($"LEft Declaration: {context.GetText()}");
         }
+
     }
 }

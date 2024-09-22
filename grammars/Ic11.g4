@@ -11,7 +11,7 @@ declaration: 'Pin' IDENTIFIER '=' IDENTIFIER ';';
 
 function: 'void' IDENTIFIER '(' ')' block;
 
-block: ('{' statement* '}') | statement;
+block: '{' statement* '}';
 
 statement: delimitedStatement | undelimitedStatement;
 
@@ -24,9 +24,9 @@ delimitedStatement: (
 
 undelimitedStatement: whileStatement | ifStatement;
 
-whileStatement: WHILE '(' ')' block;
+whileStatement: WHILE '(' ')' (block | statement);
 
-ifStatement: IF '(' expression ')' block ( ELSE block)?;
+ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
 assignment: IDENTIFIER ('.' IDENTIFIER)* '=' expression;
 
@@ -72,9 +72,10 @@ AND: '&&';
 OR: '||';
 NEGATION: '!';
 
+BOOLEAN: 'true' | 'false';
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;
 INTEGER: [0-9]+;
-BOOLEAN: 'true' | 'false';
+
 REAL: [0-9]* '.' [0-9]+;
 
 WS: [ \t\r\n]+ -> skip;
