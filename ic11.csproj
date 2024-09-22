@@ -7,10 +7,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Ic11Lexer.cs" />
-    <Compile Remove="Ic11Parser.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="grammars\.antlr\Ic11Lexer.cs" />
@@ -19,6 +15,12 @@
 
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="examples/test.ic11">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
