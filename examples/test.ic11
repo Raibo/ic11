@@ -3,6 +3,7 @@ Pin DialElectro = d3;
 
 void Main()
 {   
+    var test = 1 + 2 * 4 / 5 - -5;
     while()
     {
         yield;

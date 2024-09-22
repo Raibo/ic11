@@ -81,6 +81,26 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement([NotNull] Ic11Parser.StatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.whileStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -111,26 +131,6 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitAssignment([NotNull] Ic11Parser.AssignmentContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.variableDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -140,16 +140,6 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.negation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterNegation([NotNull] Ic11Parser.NegationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.negation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitNegation([NotNull] Ic11Parser.NegationContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -171,15 +161,15 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// Enter a parse tree produced by <see cref="Ic11Parser.unaryOperator"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context);
+	void EnterUnaryOperator([NotNull] Ic11Parser.UnaryOperatorContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// Exit a parse tree produced by <see cref="Ic11Parser.unaryOperator"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context);
+	void ExitUnaryOperator([NotNull] Ic11Parser.UnaryOperatorContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.literal"/>.
 	/// </summary>

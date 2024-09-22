@@ -96,6 +96,30 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStatement([NotNull] Ic11Parser.StatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.whileStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -132,30 +156,6 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAssignment([NotNull] Ic11Parser.AssignmentContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterYieldStatement([NotNull] Ic11Parser.YieldStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.variableDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -167,18 +167,6 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.negation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNegation([NotNull] Ic11Parser.NegationContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.negation"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNegation([NotNull] Ic11Parser.NegationContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -204,17 +192,17 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// Enter a parse tree produced by <see cref="Ic11Parser.unaryOperator"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context) { }
+	public virtual void EnterUnaryOperator([NotNull] Ic11Parser.UnaryOperatorContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.binaryOperator"/>.
+	/// Exit a parse tree produced by <see cref="Ic11Parser.unaryOperator"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBinaryOperator([NotNull] Ic11Parser.BinaryOperatorContext context) { }
+	public virtual void ExitUnaryOperator([NotNull] Ic11Parser.UnaryOperatorContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.literal"/>.
 	/// <para>The default implementation does nothing.</para>
