@@ -95,6 +95,16 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>

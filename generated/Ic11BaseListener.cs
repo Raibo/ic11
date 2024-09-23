@@ -108,6 +108,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterYieldStatement([NotNull] Ic11Parser.YieldStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

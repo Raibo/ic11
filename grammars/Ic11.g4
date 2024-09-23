@@ -7,7 +7,7 @@ options {
 // Parser rules
 program: (declaration | function)* EOF;
 
-declaration: 'Pin' IDENTIFIER '=' IDENTIFIER ';';
+declaration: 'pin' IDENTIFIER PINID ';';
 
 function: 'void' IDENTIFIER '(' ')' block;
 
@@ -17,14 +17,16 @@ statement: delimitedStatement | undelimitedStatement;
 
 delimitedStatement: (
 		assignment
-		| YIELD
+		| yieldStatement
 		| RETURN
 		| variableDeclaration
 	) ';';
 
+yieldStatement: YIELD;
+
 undelimitedStatement: whileStatement | ifStatement;
 
-whileStatement: WHILE '(' ')' (block | statement);
+whileStatement: WHILE '(' expression ')' (block | statement);
 
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
@@ -54,6 +56,7 @@ unaryOperator: NEGATION | MINUS;
 literal: INTEGER | BOOLEAN | REAL;
 
 // Lexer rules
+PINID: 'db' | 'd0' | 'd1' | 'd2' | 'd3' | 'd4' | 'd5';
 WHILE: 'while';
 IF: 'if';
 ELSE: 'else';

@@ -91,6 +91,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -1,0 +1,33 @@
+pin FabElectro d0;
+pin DialElectro d3;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        if (FabElectro.IsSet && DialElectro.IsSet)
+        {
+            if (!FabElectro.Activate)
+            {
+                FabElectro.ClearMemory = true;
+                return;
+            }
+            
+            var craftsDone = FabElectro.ExportCount;
+            var craftsTarget = DialElectro.Setting;
+            
+            var craftsLeft = craftsTarget - craftsDone;
+            
+            DialElectro.Setting = craftsLeft;
+            FabElectro.ClearMemory = true;
+            
+            if (craftsLeft <= 0)
+            {
+                DialElectro.Setting = 1;
+                FabElectro.Activate = false;
+            }
+        }
+    }
+}
