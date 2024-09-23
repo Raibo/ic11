@@ -151,25 +151,137 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.expression"/>.
+	/// Enter a parse tree produced by the <c>Parenthesis</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterExpression([NotNull] Ic11Parser.ExpressionContext context);
+	void EnterParenthesis([NotNull] Ic11Parser.ParenthesisContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.expression"/>.
+	/// Exit a parse tree produced by the <c>Parenthesis</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitExpression([NotNull] Ic11Parser.ExpressionContext context);
+	void ExitParenthesis([NotNull] Ic11Parser.ParenthesisContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.primaryExpression"/>.
+	/// Enter a parse tree produced by the <c>Identifier</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context);
+	void EnterIdentifier([NotNull] Ic11Parser.IdentifierContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.primaryExpression"/>.
+	/// Exit a parse tree produced by the <c>Identifier</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitPrimaryExpression([NotNull] Ic11Parser.PrimaryExpressionContext context);
+	void ExitIdentifier([NotNull] Ic11Parser.IdentifierContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Or</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOr([NotNull] Ic11Parser.OrContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Or</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOr([NotNull] Ic11Parser.OrContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>MemberAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemberAccess([NotNull] Ic11Parser.MemberAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>MemberAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemberAccess([NotNull] Ic11Parser.MemberAccessContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>MulDiv</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMulDiv([NotNull] Ic11Parser.MulDivContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>MulDiv</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMulDiv([NotNull] Ic11Parser.MulDivContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>AddSub</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddSub([NotNull] Ic11Parser.AddSubContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>AddSub</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddSub([NotNull] Ic11Parser.AddSubContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>And</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAnd([NotNull] Ic11Parser.AndContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>And</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAnd([NotNull] Ic11Parser.AndContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Relational</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRelational([NotNull] Ic11Parser.RelationalContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Relational</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRelational([NotNull] Ic11Parser.RelationalContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TheLiteral</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTheLiteral([NotNull] Ic11Parser.TheLiteralContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TheLiteral</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTheLiteral([NotNull] Ic11Parser.TheLiteralContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FunctionCall</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionCall([NotNull] Ic11Parser.FunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FunctionCall</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Unary</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnary([NotNull] Ic11Parser.UnaryContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Unary</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnary([NotNull] Ic11Parser.UnaryContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.unaryOperator"/>.
 	/// </summary>

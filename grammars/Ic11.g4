@@ -35,20 +35,17 @@ assignment: IDENTIFIER ('.' IDENTIFIER)* '=' expression;
 variableDeclaration: VAR IDENTIFIER '=' expression;
 
 expression:
-    unaryOperator expression
-    | expression op=(MUL | DIV) expression
-    | expression op=(PLUS | MINUS) expression 
-    | expression op=(LT | GT | LE | GE) expression 
-    | expression op=AND expression
-    | expression op=OR expression
-    | '(' expression ')'
-    | literal
-    | IDENTIFIER
-    | IDENTIFIER '.' IDENTIFIER
-    | IDENTIFIER '.' IDENTIFIER '(' ')'
-    ;
-
-primaryExpression:
+    unaryOperator expression # Unary
+    | expression op=(MUL | DIV) expression # MulDiv
+    | expression op=(PLUS | MINUS) expression # AddSub
+    | expression op=(LT | GT | LE | GE) expression # Relational
+    | expression op=AND expression # And
+    | expression op=OR expression # Or
+    | '(' expression ')' # Parenthesis
+    | literal # TheLiteral
+    | IDENTIFIER # Identifier
+    | IDENTIFIER '.' IDENTIFIER # MemberAccess
+    | IDENTIFIER '.' IDENTIFIER '(' ')' # FunctionCall
     ;
 
 unaryOperator: NEGATION | MINUS;
