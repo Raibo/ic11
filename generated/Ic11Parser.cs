@@ -124,12 +124,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitProgram(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitProgram(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -201,12 +195,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitDeclaration(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDeclaration(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -256,12 +244,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitFunction(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFunction(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -316,12 +298,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitBlock(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBlock(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -385,12 +361,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitStatement(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -460,12 +430,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitDelimitedStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDelimitedStatement(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -538,12 +502,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitYieldStatement(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitYieldStatement(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -589,12 +547,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitUndelimitedStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitUndelimitedStatement(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -660,12 +612,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitWhileStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitWhileStatement(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -752,12 +698,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitIfStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitIfStatement(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -868,12 +808,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitAssignment(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAssignment(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -940,12 +874,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitVariableDeclaration(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVariableDeclaration(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1003,12 +931,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitParenthesis(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParenthesis(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class IdentifierContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(Ic11Parser.IDENTIFIER, 0); }
@@ -1023,15 +945,11 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitIdentifier(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitIdentifier(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class OrContext : ExpressionContext {
+		public ExpressionContext operand1;
 		public IToken op;
+		public ExpressionContext operand2;
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -1050,12 +968,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitOr(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitOr(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class MemberAccessContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] IDENTIFIER() { return GetTokens(Ic11Parser.IDENTIFIER); }
@@ -1073,15 +985,11 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitMemberAccess(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMemberAccess(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class MulDivContext : ExpressionContext {
+		public ExpressionContext operand1;
 		public IToken op;
+		public ExpressionContext operand2;
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -1101,15 +1009,11 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitMulDiv(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMulDiv(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class AddSubContext : ExpressionContext {
+		public ExpressionContext operand1;
 		public IToken op;
+		public ExpressionContext operand2;
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -1129,15 +1033,11 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitAddSub(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAddSub(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class AndContext : ExpressionContext {
+		public ExpressionContext operand1;
 		public IToken op;
+		public ExpressionContext operand2;
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -1156,15 +1056,11 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitAnd(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAnd(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class RelationalContext : ExpressionContext {
+		public ExpressionContext operand1;
 		public IToken op;
+		public ExpressionContext operand2;
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -1186,12 +1082,6 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitRelational(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRelational(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class TheLiteralContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public LiteralContext literal() {
@@ -1207,12 +1097,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitTheLiteral(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitTheLiteral(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class FunctionCallContext : ExpressionContext {
@@ -1231,14 +1115,10 @@ public partial class Ic11Parser : Parser {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitFunctionCall(this);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFunctionCall(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class UnaryContext : ExpressionContext {
+		public UnaryOperatorContext op;
+		public ExpressionContext operand;
 		[System.Diagnostics.DebuggerNonUserCode] public UnaryOperatorContext unaryOperator() {
 			return GetRuleContext<UnaryOperatorContext>(0);
 		}
@@ -1255,12 +1135,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitUnary(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitUnary(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1291,9 +1165,9 @@ public partial class Ic11Parser : Parser {
 				_prevctx = _localctx;
 
 				State = 117;
-				unaryOperator();
+				((UnaryContext)_localctx).op = unaryOperator();
 				State = 118;
-				expression(11);
+				((UnaryContext)_localctx).operand = expression(11);
 				}
 				break;
 			case 2:
@@ -1374,6 +1248,7 @@ public partial class Ic11Parser : Parser {
 					case 1:
 						{
 						_localctx = new MulDivContext(new ExpressionContext(_parentctx, _parentState));
+						((MulDivContext)_localctx).operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 136;
 						if (!(Precpred(Context, 10))) throw new FailedPredicateException(this, "Precpred(Context, 10)");
@@ -1388,12 +1263,13 @@ public partial class Ic11Parser : Parser {
 						    Consume();
 						}
 						State = 138;
-						expression(11);
+						((MulDivContext)_localctx).operand2 = expression(11);
 						}
 						break;
 					case 2:
 						{
 						_localctx = new AddSubContext(new ExpressionContext(_parentctx, _parentState));
+						((AddSubContext)_localctx).operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 139;
 						if (!(Precpred(Context, 9))) throw new FailedPredicateException(this, "Precpred(Context, 9)");
@@ -1408,12 +1284,13 @@ public partial class Ic11Parser : Parser {
 						    Consume();
 						}
 						State = 141;
-						expression(10);
+						((AddSubContext)_localctx).operand2 = expression(10);
 						}
 						break;
 					case 3:
 						{
 						_localctx = new RelationalContext(new ExpressionContext(_parentctx, _parentState));
+						((RelationalContext)_localctx).operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 142;
 						if (!(Precpred(Context, 8))) throw new FailedPredicateException(this, "Precpred(Context, 8)");
@@ -1428,31 +1305,33 @@ public partial class Ic11Parser : Parser {
 						    Consume();
 						}
 						State = 144;
-						expression(9);
+						((RelationalContext)_localctx).operand2 = expression(9);
 						}
 						break;
 					case 4:
 						{
 						_localctx = new AndContext(new ExpressionContext(_parentctx, _parentState));
+						((AndContext)_localctx).operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 145;
 						if (!(Precpred(Context, 7))) throw new FailedPredicateException(this, "Precpred(Context, 7)");
 						State = 146;
 						((AndContext)_localctx).op = Match(AND);
 						State = 147;
-						expression(8);
+						((AndContext)_localctx).operand2 = expression(8);
 						}
 						break;
 					case 5:
 						{
 						_localctx = new OrContext(new ExpressionContext(_parentctx, _parentState));
+						((OrContext)_localctx).operand1 = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 148;
 						if (!(Precpred(Context, 6))) throw new FailedPredicateException(this, "Precpred(Context, 6)");
 						State = 149;
 						((OrContext)_localctx).op = Match(OR);
 						State = 150;
-						expression(7);
+						((OrContext)_localctx).operand2 = expression(7);
 						}
 						break;
 					}
@@ -1492,12 +1371,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitUnaryOperator(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitUnaryOperator(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -1549,12 +1422,6 @@ public partial class Ic11Parser : Parser {
 		public override void ExitRule(IParseTreeListener listener) {
 			IIc11Listener typedListener = listener as IIc11Listener;
 			if (typedListener != null) typedListener.ExitLiteral(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IIc11Visitor<TResult> typedVisitor = visitor as IIc11Visitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitLiteral(this);
-			else return visitor.VisitChildren(this);
 		}
 	}
 

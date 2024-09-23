@@ -35,12 +35,12 @@ assignment: IDENTIFIER ('.' IDENTIFIER)* '=' expression;
 variableDeclaration: VAR IDENTIFIER '=' expression;
 
 expression:
-    unaryOperator expression # Unary
-    | expression op=(MUL | DIV) expression # MulDiv
-    | expression op=(PLUS | MINUS) expression # AddSub
-    | expression op=(LT | GT | LE | GE) expression # Relational
-    | expression op=AND expression # And
-    | expression op=OR expression # Or
+    op=unaryOperator operand=expression # Unary
+    | operand1=expression op=(MUL | DIV) operand2=expression # MulDiv
+    | operand1=expression op=(PLUS | MINUS) operand2=expression # AddSub
+    | operand1=expression op=(LT | GT | LE | GE) operand2=expression # Relational
+    | operand1=expression op=AND operand2=expression # And
+    | operand1=expression op=OR operand2=expression # Or
     | '(' expression ')' # Parenthesis
     | literal # TheLiteral
     | IDENTIFIER # Identifier
