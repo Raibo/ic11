@@ -1,7 +1,9 @@
 ﻿using Antlr4.Runtime;
 using ic11.TreeProcessing;
+using ic11.TreeProcessing.Context;
 using ic11.TreeProcessing.Results;
 using System.Text;
+using static Ic11Parser;
 
 class Program
 {
@@ -17,45 +19,22 @@ class Program
 
         var tree = parser.program(); // Assuming 'program' is the entry point of your grammar
 
-        // print
-        //Console.WriteLine(tree.ToStringTree(parser));
-
-        // Traverse the parse tree
-        //ParseTreeWalker walker = new ParseTreeWalker();
-        //Ic11Listener listener = new Ic11Listener();
-
-        // First pass
-        //walker.Walk(listener, tree);
-
-        //foreach (var (alias, pin) in listener.TreeContext.PinAliases)
-        //    Console.WriteLine($"{alias} = {pin}");
-
-        //var registers = new List<string> { "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", };
-
-        //Console.WriteLine(listener.Writer.ToString());
-
-        var context = new ProgramContext();
+        var context = new CompileContext();
         var visitor = new TestVisitor(context);
-
+        
         IValue result = visitor.Visit(tree);
-        //Console.WriteLine("Operations:");
-        //foreach (var operation in context.Operations)
-        //{
-        //    Console.WriteLine(operation);
-        //}
-
-        //Console.WriteLine("Variables:");
-        //foreach (var variable in context.Variables)
-        //{
-        //    Console.WriteLine($"{variable}");
-        //}
 
         var sb = new StringBuilder();
 
-        foreach (var instruction in visitor.ProgramContext.Instructions)
+        foreach (var instruction in context.Instructions)
         {
             Console.WriteLine(instruction.Render());
             sb.AppendLine(instruction.Render());
+        }
+
+        foreach (var variable in context.GlobalVariables)
+        {
+            Console.WriteLine($"{variable.Name}\t{variable.FirstInstructionIndex}\t{variable.LastInstructionIndex}");
         }
     }
 }

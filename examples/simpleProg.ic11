@@ -27,6 +27,8 @@ void Main()
             
             DialElectro.Setting = craftsLeft;
             FabElectro.ClearMemory = true;
+
+            craftsLeft = 3;
             
             if (craftsLeft <= 0)
             {

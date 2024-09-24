@@ -39,9 +39,9 @@ variableDeclaration: VAR IDENTIFIER '=' expression;
 
 expression:
     op=(NEGATION | SUB) operand=expression # UnaryOp
-    | left=expression op=(MUL | DIV) right=expression # BinaryOp
+    | left=expression op=(MUL | DIV | MOD) right=expression # BinaryOp
     | left=expression op=(ADD | SUB) right=expression # BinaryOp
-    | left=expression op=(LT | GT | LE | GE) right=expression # BinaryOp
+    | left=expression op=(LT | GT | LE | GE | EQ | NE) right=expression # BinaryOp
     | left=expression op=AND right=expression # BinaryOp
     | left=expression op=OR right=expression # BinaryOp
     | '(' expression ')' # Parenthesis
@@ -64,12 +64,15 @@ ADD: '+';
 SUB: '-';
 MUL: '*';
 DIV: '/';
+MOD: '%';
 LT: '<';
 GT: '>';
 LE: '<=';
 GE: '>=';
 AND: '&&';
 OR: '||';
+EQ: '==';
+NE: '!=';
 NEGATION: '!';
 
 BOOLEAN: 'true' | 'false';
