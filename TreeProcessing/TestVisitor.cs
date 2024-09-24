@@ -14,9 +14,6 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         ProgramContext = programContext;
     }
 
-    private string Indent() =>
-        new string(' ', 4 * ProgramContext.TestDepth);
-
     public override IValue Visit(IParseTree tree) => base.Visit(tree);
 
     public override IValue VisitDeclaration([NotNull] Ic11Parser.DeclarationContext context)
@@ -57,7 +54,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
     public override IValue VisitWhileStatement([NotNull] Ic11Parser.WhileStatementContext context)
     {
-        var whileCount = ++ProgramContext.TestWhileCount;
+        var whileCount = ++ProgramContext.WhileCount;
 
         var labelEnterInstruction = new Label($"While{whileCount}Enter");
         var labelExitInstruction = new Label($"While{whileCount}Exit");
@@ -83,7 +80,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
     public override IValue VisitIfStatement([NotNull] Ic11Parser.IfStatementContext context)
     {
-        var ifCount = ++ProgramContext.TestIfCount;
+        var ifCount = ++ProgramContext.IfCount;
 
         var blocks = context.block();
 

@@ -24,8 +24,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ExtendedTree\" />
-  </ItemGroup>
-
 </Project>
