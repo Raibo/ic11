@@ -34,8 +34,8 @@ public partial class Ic11Lexer : Lexer {
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		PINID=10, WHILE=11, IF=12, ELSE=13, YIELD=14, RETURN=15, VAR=16, PLUS=17, 
-		MINUS=18, MUL=19, DIV=20, LT=21, GT=22, LE=23, GE=24, AND=25, OR=26, NEGATION=27, 
+		PINID=10, WHILE=11, IF=12, ELSE=13, YIELD=14, RETURN=15, VAR=16, ADD=17, 
+		SUB=18, MUL=19, DIV=20, LT=21, GT=22, LE=23, GE=24, AND=25, OR=26, NEGATION=27, 
 		BOOLEAN=28, IDENTIFIER=29, INTEGER=30, REAL=31, WS=32, COMMENT=33;
 	public static string[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -47,7 +47,7 @@ public partial class Ic11Lexer : Lexer {
 
 	public static readonly string[] ruleNames = {
 		"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
-		"PINID", "WHILE", "IF", "ELSE", "YIELD", "RETURN", "VAR", "PLUS", "MINUS", 
+		"PINID", "WHILE", "IF", "ELSE", "YIELD", "RETURN", "VAR", "ADD", "SUB", 
 		"MUL", "DIV", "LT", "GT", "LE", "GE", "AND", "OR", "NEGATION", "BOOLEAN", 
 		"IDENTIFIER", "INTEGER", "REAL", "WS", "COMMENT"
 	};
@@ -69,9 +69,9 @@ public partial class Ic11Lexer : Lexer {
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, null, null, null, null, null, null, null, null, null, "PINID", "WHILE", 
-		"IF", "ELSE", "YIELD", "RETURN", "VAR", "PLUS", "MINUS", "MUL", "DIV", 
-		"LT", "GT", "LE", "GE", "AND", "OR", "NEGATION", "BOOLEAN", "IDENTIFIER", 
-		"INTEGER", "REAL", "WS", "COMMENT"
+		"IF", "ELSE", "YIELD", "RETURN", "VAR", "ADD", "SUB", "MUL", "DIV", "LT", 
+		"GT", "LE", "GE", "AND", "OR", "NEGATION", "BOOLEAN", "IDENTIFIER", "INTEGER", 
+		"REAL", "WS", "COMMENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 

@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using ic11.TreeProcessing;
+using ic11.TreeProcessing.Results;
 
 class Program
 {
@@ -23,17 +24,35 @@ class Program
         //Console.WriteLine(tree.ToStringTree(parser));
 
         // Traverse the parse tree
-        ParseTreeWalker walker = new ParseTreeWalker();
-        Ic11Listener listener = new Ic11Listener();
+        //ParseTreeWalker walker = new ParseTreeWalker();
+        //Ic11Listener listener = new Ic11Listener();
 
         // First pass
-        walker.Walk(listener, tree);
+        //walker.Walk(listener, tree);
 
         //foreach (var (alias, pin) in listener.TreeContext.PinAliases)
         //    Console.WriteLine($"{alias} = {pin}");
 
-        var registers = new List<string> { "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", };
+        //var registers = new List<string> { "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", };
 
         //Console.WriteLine(listener.Writer.ToString());
+
+        ProgramContext context = new();
+        CompileVisitor visitor = new(context);
+
+        IValue result = visitor.Visit(tree);
+
+        Console.WriteLine("Operations:");
+        foreach (var operation in context.Operations)
+        {
+            Console.WriteLine(operation);
+        }
+
+        Console.WriteLine("Variables:");
+        foreach (var (variable, type) in context.Variables)
+        {
+            Console.WriteLine($"{variable} = {type}");
+        }
+        
     }
 }

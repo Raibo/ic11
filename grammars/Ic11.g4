@@ -35,22 +35,18 @@ assignment: IDENTIFIER ('.' IDENTIFIER)* '=' expression;
 variableDeclaration: VAR IDENTIFIER '=' expression;
 
 expression:
-    op=unaryOperator operand=expression # Unary
-    | operand1=expression op=(MUL | DIV) operand2=expression # MulDiv
-    | operand1=expression op=(PLUS | MINUS) operand2=expression # AddSub
-    | operand1=expression op=(LT | GT | LE | GE) operand2=expression # Relational
-    | operand1=expression op=AND operand2=expression # And
-    | operand1=expression op=OR operand2=expression # Or
+    op=(NEGATION | SUB) operand=expression # UnaryOp
+    | left=expression op=(MUL | DIV) right=expression # BinaryOp
+    | left=expression op=(ADD | SUB) right=expression # BinaryOp
+    | left=expression op=(LT | GT | LE | GE) right=expression # BinaryOp
+    | left=expression op=AND right=expression # BinaryOp
+    | left=expression op=OR right=expression # BinaryOp
     | '(' expression ')' # Parenthesis
-    | literal # TheLiteral
+    | type=(INTEGER | BOOLEAN | REAL) # Literal
     | IDENTIFIER # Identifier
     | IDENTIFIER '.' IDENTIFIER # MemberAccess
     | IDENTIFIER '.' IDENTIFIER '(' ')' # FunctionCall
     ;
-
-unaryOperator: NEGATION | MINUS;
-
-literal: INTEGER | BOOLEAN | REAL;
 
 // Lexer rules
 PINID: 'db' | 'd0' | 'd1' | 'd2' | 'd3' | 'd4' | 'd5';
@@ -60,8 +56,8 @@ ELSE: 'else';
 YIELD: 'yield';
 RETURN: 'return';
 VAR: 'var';
-PLUS: '+';
-MINUS: '-';
+ADD: '+';
+SUB: '-';
 MUL: '*';
 DIV: '/';
 LT: '<';

@@ -111,19 +111,19 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParenthesis([NotNull] Ic11Parser.ParenthesisContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>UnaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnaryOp([NotNull] Ic11Parser.UnaryOpContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>Identifier</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIdentifier([NotNull] Ic11Parser.IdentifierContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Or</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitOr([NotNull] Ic11Parser.OrContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>MemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
@@ -132,40 +132,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMemberAccess([NotNull] Ic11Parser.MemberAccessContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>MulDiv</c>
+	/// Visit a parse tree produced by the <c>Literal</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMulDiv([NotNull] Ic11Parser.MulDivContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>AddSub</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAddSub([NotNull] Ic11Parser.AddSubContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>And</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAnd([NotNull] Ic11Parser.AndContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Relational</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRelational([NotNull] Ic11Parser.RelationalContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>TheLiteral</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTheLiteral([NotNull] Ic11Parser.TheLiteralContext context);
+	Result VisitLiteral([NotNull] Ic11Parser.LiteralContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
@@ -174,22 +146,10 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Unary</c>
+	/// Visit a parse tree produced by the <c>BinaryOp</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitUnary([NotNull] Ic11Parser.UnaryContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.unaryOperator"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitUnaryOperator([NotNull] Ic11Parser.UnaryOperatorContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.literal"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLiteral([NotNull] Ic11Parser.LiteralContext context);
+	Result VisitBinaryOp([NotNull] Ic11Parser.BinaryOpContext context);
 }
