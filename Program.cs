@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using ic11.TreeProcessing;
 using ic11.TreeProcessing.Results;
+using System.Text;
 
 class Program
 {
@@ -49,9 +50,12 @@ class Program
         //    Console.WriteLine($"{variable}");
         //}
 
+        var sb = new StringBuilder();
+
         foreach (var instruction in visitor.ProgramContext.Instructions)
         {
             Console.WriteLine(instruction.Render());
+            sb.AppendLine(instruction.Render());
         }
     }
 }

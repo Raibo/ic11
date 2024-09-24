@@ -18,11 +18,14 @@ statement: delimitedStatement | undelimitedStatement;
 delimitedStatement: (
 		assignment
 		| yieldStatement
-		| RETURN
+		| returnStatement
+		| continueStatement
 		| variableDeclaration
 	) ';';
 
 yieldStatement: YIELD;
+returnStatement: RETURN;
+continueStatement: CONTINUE;
 
 undelimitedStatement: whileStatement | ifStatement;
 
@@ -55,6 +58,7 @@ IF: 'if';
 ELSE: 'else';
 YIELD: 'yield';
 RETURN: 'return';
+CONTINUE: 'continue';
 VAR: 'var';
 ADD: '+';
 SUB: '-';

@@ -74,6 +74,18 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.continueStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

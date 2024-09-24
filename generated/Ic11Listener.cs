@@ -101,6 +101,26 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.continueStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.continueStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

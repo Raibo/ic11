@@ -11,7 +11,6 @@ public class ProgramContext
 
     public List<Operation> Operations = new();
 
-    public Stack<int> WhileLabels = new();
     public int WhileCount = 0;
 
     // test stuff
@@ -19,6 +18,7 @@ public class ProgramContext
     public int TestIfCount = 0;
     public int TestWhileCount = 0;
     public List<UserValue> UserValues = new();
+    public Stack<string> CycleContinueLabels = new();
 
     public List<IInstruction> Instructions = new();
 

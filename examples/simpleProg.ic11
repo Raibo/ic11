@@ -12,7 +12,12 @@ void Main()
             if (!FabElectro.Activate)
             {
                 FabElectro.ClearMemory = true;
-                return;
+                continue;
+            }
+            else
+            {
+                var a = FabElectro.On;
+                var b = FabElectro.BizzareProp;
             }
             
             var craftsDone = FabElectro.ExportCount;

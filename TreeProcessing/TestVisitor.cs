@@ -32,7 +32,6 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         var instruction = new DeviceWrite(context.IDENTIFIER()[0].GetText(), context.IDENTIFIER()[1].GetText(), value);
         ProgramContext.Instructions.Add(instruction);
 
-
         return null;
     }
 
@@ -63,6 +62,8 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         var labelEnterInstruction = new Label($"While{whileCount}Enter");
         var labelExitInstruction = new Label($"While{whileCount}Exit");
 
+        ProgramContext.CycleContinueLabels.Push(labelEnterInstruction.Name);
+
         ProgramContext.Instructions.Add(labelEnterInstruction);
         var conditionValue = Visit(context.expression());
 
@@ -75,6 +76,8 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         ProgramContext.Instructions.Add(cycleJumpInstruction);
         ProgramContext.Instructions.Add(labelExitInstruction);
 
+        ProgramContext.CycleContinueLabels.Pop();
+
         return null;
     }
 
@@ -82,21 +85,34 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     {
         var ifCount = ++ProgramContext.TestIfCount;
 
+        var blocks = context.block();
+
         var conditionValue = Visit(context.expression());
-        var labelInstruction = new Label($"If{ifCount}Skip");
+        var ifSkipLabelInstruction = new Label($"If{ifCount}Skip");
 
-        var skipInstruction = new JumpLez(labelInstruction.Name, conditionValue);
-        ProgramContext.Instructions.Add(skipInstruction);
+        var ifSkipInstruction = new JumpLez(ifSkipLabelInstruction.Name, conditionValue);
+        ProgramContext.Instructions.Add(ifSkipInstruction);
 
+        Visit(blocks[0]);
 
-        ProgramContext.TestDepth++;
+        Label skipElseLabelInstruction = null;
 
-        Visit(context.block()[0]);
+        // Avoid entering ELSE block from IF block
+        if (blocks.Length == 2)
+        {
+            skipElseLabelInstruction = new Label($"else{ifCount}Skip");
+            var elseSkipInstruction = new Jump(skipElseLabelInstruction.Name);
+            ProgramContext.Instructions.Add(elseSkipInstruction);
+        }
 
-        ProgramContext.TestDepth--;
-        ProgramContext.Instructions.Add(labelInstruction);
+        ProgramContext.Instructions.Add(ifSkipLabelInstruction);
 
-        // ELSE not yet implemented, will work with VisitChildren(context.block()[1]);
+        // ELSE
+        if (blocks.Length == 2)
+        {
+            Visit(blocks[1]);
+            ProgramContext.Instructions.Add(skipElseLabelInstruction);
+        }
 
         return null;
     }
@@ -160,12 +176,20 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
         return new Constant(parsedValue);
     }
+
     public override IValue VisitIdentifier([NotNull] Ic11Parser.IdentifierContext context)
     {
         var name = context.IDENTIFIER().GetText();
 
         var userDefined = ProgramContext.UserValues.First(x => x.Name == name);
         return userDefined.Value;
+    }
+
+    public override IValue VisitContinueStatement([NotNull] ContinueStatementContext context)
+    {
+        var continueLabel = ProgramContext.CycleContinueLabels.Peek();
+        ProgramContext.Instructions.Add(new Jump(continueLabel));
+        return null;
     }
 
     public override IValue VisitBlock([NotNull] Ic11Parser.BlockContext context) => base.VisitBlock(context);
@@ -179,4 +203,5 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitTerminal(ITerminalNode node) => base.VisitTerminal(node);
     public override IValue VisitUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context) => base.VisitUndelimitedStatement(context);
     protected override IValue AggregateResult(IValue aggregate, IValue nextResult) => base.AggregateResult(aggregate, nextResult);
+    public override IValue VisitReturnStatement([NotNull] ReturnStatementContext context) => base.VisitReturnStatement(context);
 }
