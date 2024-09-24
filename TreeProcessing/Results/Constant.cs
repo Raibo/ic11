@@ -1,14 +1,14 @@
-namespace ic11.TreeProcessing.Results
+namespace ic11.TreeProcessing.Results;
+
+public class Constant : IValue
 {
-    public class Constant : IValue
+    public Constant(double value)
     {
-        public Constant(double value)
-        {
-            Value = value;
-        }
-
-        public double Value;
-
-        public override string ToString() => "CONST " + Value;
+        Value = value;
     }
+
+    public double Value;
+
+    public override string ToString() => "CONST " + Value;
+    public string Render() => $"{Value}";
 }

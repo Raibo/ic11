@@ -19,9 +19,9 @@ public class CompileVisitor : Ic11BaseVisitor<IValue> // TODO more complex refer
         if (operand == null || operand is None){
             Console.WriteLine("Operand of an Unary operation cannot return None: " + context.operand.GetText() + " [" + context.operand.GetType() + "]");
             operand = new Unknown(context.operand.GetText() + " [" + context.operand.GetType() + "]");
-        }            
+        }
 
-        var tempVar = new Variable(ProgramContext.ClaimTempVar());
+        var tempVar = ProgramContext.ClaimTempVar();
         Operation? operation = null;
         switch (context.op.Type)
         {
@@ -56,53 +56,24 @@ public class CompileVisitor : Ic11BaseVisitor<IValue> // TODO more complex refer
             operand2 = new Unknown(context.right.GetText() + " [" + context.right.GetType() + "]");
         }
 
-        var tempVar = new Variable(ProgramContext.ClaimTempVar());
-        Operation? operation = null;
-        switch (context.op.Type)
+        var tempVar = ProgramContext.ClaimTempVar();
+        Operation operation = context.op.Type switch
         {
-            case Ic11Parser.ADD:
-                operation = new Add(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.SUB:
-                operation = new Sub(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.MUL:
-                operation = new Mul(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.DIV:
-                operation = new Div(tempVar, operand1, operand2);
-                break;
-            //case Ic11Parser.MOD:
-            //    operation = new Mod(tempVar, operand1, operand2);
-            //    break;
-            case Ic11Parser.AND:
-                operation = new And(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.OR:
-                operation = new Or(tempVar, operand1, operand2);
-                break;
-            //case Ic11Parser.EQ:
-            //    operation = new Eq(tempVar, operand1, operand2);
-            //    break;
-            //case Ic11Parser.NEQ:
-            //    operation = new Neq(tempVar, operand1, operand2);
-            //    break;
-            case Ic11Parser.GT:
-                operation = new Gt(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.GE:
-                operation = new Ge(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.LT:
-                operation = new Lt(tempVar, operand1, operand2);
-                break;
-            case Ic11Parser.LE:
-                operation = new Le(tempVar, operand1, operand2);
-                break;
-            default:
-                throw new NotImplementedException();
-        }
-
+            Ic11Parser.ADD => new Add(tempVar, operand1, operand2),
+            Ic11Parser.SUB => new Sub(tempVar, operand1, operand2),
+            Ic11Parser.MUL => new Mul(tempVar, operand1, operand2),
+            Ic11Parser.DIV => new Div(tempVar, operand1, operand2),
+            //Ic11Parser.MOD => new Mod(tempVar, operand1, operand2),
+            Ic11Parser.AND => new And(tempVar, operand1, operand2),
+            Ic11Parser.OR => new Or(tempVar, operand1, operand2),
+            //Ic11Parser.EQ => new Eq(tempVar, operand1, operand2),
+            //Ic11Parser.NEQ => new Neq(tempVar, operand1, operand2),
+            Ic11Parser.GT => new Gt(tempVar, operand1, operand2),
+            Ic11Parser.GE => new Ge(tempVar, operand1, operand2),
+            Ic11Parser.LT => new Lt(tempVar, operand1, operand2),
+            Ic11Parser.LE => new Le(tempVar, operand1, operand2),
+            _ => throw new NotImplementedException(),
+        };
         ProgramContext.InsertOperation(operation);
 
         return tempVar;

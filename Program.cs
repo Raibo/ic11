@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime;
 using ic11.TreeProcessing;
 using ic11.TreeProcessing.Results;
 
@@ -37,22 +33,25 @@ class Program
 
         //Console.WriteLine(listener.Writer.ToString());
 
-        ProgramContext context = new();
-        CompileVisitor visitor = new(context);
+        var context = new ProgramContext();
+        var visitor = new TestVisitor(context);
 
         IValue result = visitor.Visit(tree);
+        //Console.WriteLine("Operations:");
+        //foreach (var operation in context.Operations)
+        //{
+        //    Console.WriteLine(operation);
+        //}
 
-        Console.WriteLine("Operations:");
-        foreach (var operation in context.Operations)
-        {
-            Console.WriteLine(operation);
-        }
+        //Console.WriteLine("Variables:");
+        //foreach (var variable in context.Variables)
+        //{
+        //    Console.WriteLine($"{variable}");
+        //}
 
-        Console.WriteLine("Variables:");
-        foreach (var (variable, type) in context.Variables)
+        foreach (var instruction in visitor.ProgramContext.Instructions)
         {
-            Console.WriteLine($"{variable} = {type}");
+            Console.WriteLine(instruction.Render());
         }
-        
     }
 }

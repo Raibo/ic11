@@ -1,6 +1,6 @@
-namespace ic11.TreeProcessing.Results
+namespace ic11.TreeProcessing.Results;
+
+public interface IValue
 {
-    public interface IValue
-    {
-    }
+    string Render();
 }

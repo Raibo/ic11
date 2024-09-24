@@ -1,9 +1,10 @@
-namespace ic11.TreeProcessing.Results
+namespace ic11.TreeProcessing.Results;
+
+public class None : IValue
 {
-    public class None : IValue
+    public None()
     {
-        public None()
-        {
-        }
     }
+
+    public string Render() => "<NoneValue>";
 }

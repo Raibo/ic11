@@ -3,7 +3,7 @@ pin DialElectro d3;
 
 void Main()
 {
-    while(!false)
+    while(true)
     {
         yield;
         
