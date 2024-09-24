@@ -10,7 +10,7 @@ public class ProgramContext
     // test stuff
     public int IfCount = 0;
     public int WhileCount = 0;
-    public List<UserValue> UserValues = new();
+    public Dictionary<string, IValue> UserValuesMap = new();
     public Stack<string> CycleContinueLabels = new();
 
     public List<IInstruction> Instructions = new();

@@ -35,7 +35,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context)
     {
         var value = Visit(context.expression());
-        ProgramContext.UserValues.Add(new UserValue(context.IDENTIFIER().GetText(), value));
+        ProgramContext.UserValuesMap[context.IDENTIFIER().GetText()] = value;
         return null;
     }
 
@@ -177,9 +177,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitIdentifier([NotNull] Ic11Parser.IdentifierContext context)
     {
         var name = context.IDENTIFIER().GetText();
-
-        var userDefined = ProgramContext.UserValues.First(x => x.Name == name);
-        return userDefined.Value;
+        return ProgramContext.UserValuesMap[name];
     }
 
     public override IValue VisitContinueStatement([NotNull] ContinueStatementContext context)
