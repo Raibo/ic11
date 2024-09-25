@@ -3,7 +3,7 @@ pin Device db;
 void Main()
 {
     while(true)
-    {
+    { 
         yield;
         
         var a = 3;
