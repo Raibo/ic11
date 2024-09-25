@@ -10,7 +10,7 @@ pin DialBender d5;
 void Main()
 {
     while(true)
-    {
+    { 
         yield;
         
         if (FabElectro.IsSet && DialElectro.IsSet)
