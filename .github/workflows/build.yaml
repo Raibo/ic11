@@ -29,19 +29,23 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Create Windows executable
-      run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
+    - name: Build
+      run: dotnet build -c Release -r win-x64 --no-restore
+
+    - name: Create fat executable
+      run: dotnet publish -c Release --no-build --self-contained -p:PublishSingleFile=true -o ./publish
 
     - name: Install GitVersion
       run: dotnet tool install --global GitVersion.Tool
 
     - name: Generate Version
       id: gitversion
-      run: dotnet-gitversion /output json /showvariable FullSemVer
+      run: |
+        echo FullSemVer=$(dotnet-gitversion /output json /showvariable FullSemVer) >> $GITHUB_OUTPUTS
     
     - name: Print Version
       run: |
-        echo "Version: v$(gitversion.FullSemVer)" >> $GITHUB_STEP_SUMMARY
+        echo "Version: ${{ steps.gitversion.outputs.FullSemVer }}" 
     
     - name: Release
       uses: softprops/action-gh-release@v2
@@ -49,6 +53,5 @@ jobs:
       with:
         files: |
           ./publish/*
-        tag_name: v$(gitversion.FullSemVer)
-        name: Release v$(gitversion.FullSemVer)
+        
       
