@@ -49,3 +49,5 @@ build/
 .idea/
 
 grammars/.antlr/
+
+publish/

@@ -1,0 +1,16 @@
+{
+  "branches": ["master"],
+  "plugins": [
+    "@semantic-release/git",
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+        "@semantic-release/github",
+        {
+          "assets": [
+            { "path": "./publish/ic11.exe", "label": "Win-x64" }
+          ]
+        }
+      ]
+  ]
+}
