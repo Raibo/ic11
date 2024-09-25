@@ -45,7 +45,7 @@ jobs:
     
     - name: Print Version
       run: |
-        echo "Version: ${{ steps.gitversion.outputs.FullSemVer }}" 
+        echo "Version: ${{ steps.gitversion.outputs.FullSemVer }}" >> $GITHUB_STEP_SUMMARY
     
     - name: Release
       uses: softprops/action-gh-release@v2
