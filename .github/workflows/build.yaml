@@ -35,23 +35,9 @@ jobs:
     - name: Create fat executable
       run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
 
-    - name: Install GitVersion
-      run: dotnet tool install --global GitVersion.Tool
-
-    - name: Generate Version
-      id: gitversion
-      run: |
-        echo FullSemVer=$(dotnet-gitversion /output json /showvariable FullSemVer) >> $GITHUB_OUTPUT
-    
-    - name: Print Version
-      run: |
-        echo "Version: ${{ steps.gitversion.outputs.FullSemVer }}" >> $GITHUB_STEP_SUMMARY
-    
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      if: github.ref == 'refs/heads/master'
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v4
       with:
-        files: |
-          ./publish/*
-        
-      
+        dry_run: ${{ github.ref != 'refs/heads/master' }}
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
