@@ -30,10 +30,10 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build -c Release -r win-x64 --no-restore
+      run: dotnet build -c Release --no-restore
 
     - name: Create fat executable
-      run: dotnet publish -c Release --no-build --self-contained -p:PublishSingleFile=true -o ./publish
+      run: dotnet publish -c Release --no-build -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
 
     - name: Install GitVersion
       run: dotnet tool install --global GitVersion.Tool
