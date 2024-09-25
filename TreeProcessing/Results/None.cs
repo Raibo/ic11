@@ -7,4 +7,6 @@ public class None : IValue
     }
 
     public string Render() => "<NoneValue>";
+
+    public static readonly None Instance = new();
 }
