@@ -18,7 +18,7 @@ public class Variable : IValue
     public int LastInstructionIndex = -1;
 
     public Scope Scope;
-    public bool Purged;
+    public bool IsPurged;
 
     public void UpdateUsage(int instructionIndex)
     {

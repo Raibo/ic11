@@ -52,7 +52,7 @@ class Program
                 continue;
 
             var purgeCandidates = scope.LocalVariables
-                .Where(v => !v.Purged)
+                .Where(v => !v.IsPurged)
                 .Where(v => v.Register is not null)
                 .Where(v => v.LastInstructionIndex < i)
                 .ToList();
@@ -60,7 +60,7 @@ class Program
             foreach (var purgeCandidate in purgeCandidates)
             {
                 availableRegisters.Push(purgeCandidate.Register!);
-                purgeCandidate.Purged = true;
+                purgeCandidate.IsPurged = true;
             }
 
             var newVar = scope.LocalVariables.FirstOrDefault(v => v.FirstInstructionIndex == i);

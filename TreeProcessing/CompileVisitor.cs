@@ -301,6 +301,7 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
 
         // saving parameters to stack
         CompileContext.EnterScope(); // to avoid having temp variables in scope
+
         for(int i = declaredMethod.ParamCount - 1; i >= 0; i--)
         {
             var paramValue = Visit(expressions[i]);
@@ -313,6 +314,7 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
             paramValue.UpdateUsage(CompileContext.Instructions.Count);
             CompileContext.Instructions.Add(saveParamInstruction);
         }
+
         CompileContext.ExitScope();
 
         CompileContext.Instructions.Add(new JumpAl(CompileContext.CurrentScope, $"methodEnter{methodName}"));
@@ -326,7 +328,7 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
         }
 
         // retrieve vars from stack
-        foreach (var variable in CompileContext.Variables)
+        foreach (var variable in CompileContext.Variables.SkipLast(1)) // Excluding variable that holds the return value
         {
             var loadVarInstruction = new StackPop(CompileContext.CurrentScope, variable)
             {
