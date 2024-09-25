@@ -38,10 +38,11 @@ jobs:
 
     - name: Generate Version
       id: gitversion
-      run: gitversion /output json /showvariable FullSemVer
+      run: dotnet-gitversion /output json /showvariable FullSemVer
 
     - name: Release
       uses: softprops/action-gh-release@v2
+      if: github.ref == 'refs/heads/master'
       with:
         files: |
           ./publish/*
