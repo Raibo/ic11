@@ -19,7 +19,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
     public override IValue VisitDeclaration([NotNull] Ic11Parser.DeclarationContext context)
     {
-        CompileContext.Instructions.Add(new PinName(context.IDENTIFIER().GetText(), context.PINID().GetText()));
+        CompileContext.Instructions.Add(new PinName(CompileContext.CurrentScope, context.IDENTIFIER().GetText(), context.PINID().GetText()));
         return null;
     }
 
@@ -47,7 +47,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         // Device write
         if (identifiers.Length == 2)
         {
-            var instruction = new DeviceWrite(context.IDENTIFIER()[0].GetText(), context.IDENTIFIER()[1].GetText(), value);
+            var instruction = new DeviceWrite(CompileContext.CurrentScope, context.IDENTIFIER()[0].GetText(), context.IDENTIFIER()[1].GetText(), value);
             CompileContext.Instructions.Add(instruction);
         }
 
@@ -66,16 +66,9 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         return null;
     }
 
-    public override IValue VisitFunction([NotNull] Ic11Parser.FunctionContext context)
-    {
-        VisitChildren(context);
-
-        return null;
-    }
-
     public override IValue VisitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context)
     {
-        CompileContext.Instructions.Add(new Yield());
+        CompileContext.Instructions.Add(new Yield(CompileContext.CurrentScope));
         return null;
     }
 
@@ -83,21 +76,23 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     {
         var whileCount = ++CompileContext.WhileCount;
 
-        var labelEnterInstruction = new Label($"While{whileCount}Enter");
-        var labelExitInstruction = new Label($"While{whileCount}Exit");
+        var labelEnterInstruction = new Label(CompileContext.CurrentScope, $"While{whileCount}Enter");
+        var labelExitInstruction = new Label(CompileContext.CurrentScope, $"While{whileCount}Exit");
 
         CompileContext.CycleContinueLabels.Push(labelEnterInstruction.Name);
 
+        CompileContext.EnterScope();
         CompileContext.Instructions.Add(labelEnterInstruction);
         var conditionValue = Visit(context.expression());
         conditionValue.UpdateUsage(CompileContext.Instructions.Count);
 
-        var skipInstruction = new JumpLez(labelExitInstruction.Name, conditionValue);
+        var skipInstruction = new JumpLez(CompileContext.CurrentScope, labelExitInstruction.Name, conditionValue);
         CompileContext.Instructions.Add(skipInstruction);
 
         Visit(context.block());
+        CompileContext.ExitScope();
 
-        var cycleJumpInstruction = new Jump(labelEnterInstruction.Name);
+        var cycleJumpInstruction = new Jump(CompileContext.CurrentScope, labelEnterInstruction.Name);
         CompileContext.Instructions.Add(cycleJumpInstruction);
         CompileContext.Instructions.Add(labelExitInstruction);
 
@@ -112,23 +107,26 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
         var blocks = context.block();
 
+        CompileContext.EnterScope();
+
         var conditionValue = Visit(context.expression());
         conditionValue.UpdateUsage(CompileContext.Instructions.Count);
 
-        var ifSkipLabelInstruction = new Label($"If{ifCount}Skip");
+        var ifSkipLabelInstruction = new Label(CompileContext.CurrentScope, $"If{ifCount}Skip");
 
-        var ifSkipInstruction = new JumpLez(ifSkipLabelInstruction.Name, conditionValue);
+        var ifSkipInstruction = new JumpLez(CompileContext.CurrentScope, ifSkipLabelInstruction.Name, conditionValue);
         CompileContext.Instructions.Add(ifSkipInstruction);
 
         Visit(blocks[0]);
+        CompileContext.ExitScope();
 
         Label skipElseLabelInstruction = null;
 
         // Avoid entering ELSE block from IF block
         if (blocks.Length == 2)
         {
-            skipElseLabelInstruction = new Label($"else{ifCount}Skip");
-            var elseSkipInstruction = new Jump(skipElseLabelInstruction.Name);
+            skipElseLabelInstruction = new Label(CompileContext.CurrentScope, $"else{ifCount}Skip");
+            var elseSkipInstruction = new Jump(CompileContext.CurrentScope, skipElseLabelInstruction.Name);
             CompileContext.Instructions.Add(elseSkipInstruction);
         }
 
@@ -137,7 +135,9 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         // ELSE
         if (blocks.Length == 2)
         {
+            CompileContext.EnterScope();
             Visit(blocks[1]);
+            CompileContext.ExitScope();
             CompileContext.Instructions.Add(skipElseLabelInstruction);
         }
 
@@ -153,7 +153,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
         {
             case NEGATION:
                 var destination = CompileContext.ClaimTempVar();
-                CompileContext.Instructions.Add(new UnaryNot(destination, value));
+                CompileContext.Instructions.Add(new UnaryNot(CompileContext.CurrentScope, destination, value));
                 return destination;
             default:
                 throw new NotImplementedException("Only unary NOT is implemented");
@@ -170,11 +170,11 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
         var destination = CompileContext.ClaimTempVar();
 
-        IInstruction instruction = context.op.Type switch
+        InstructionBase instruction = context.op.Type switch
         {
-            SUB => new BinarySub(destination, operand1, operand2),
-            AND => new BinaryAnd(destination, operand1, operand2),
-            LE => new BinaryLe(destination, operand1, operand2),
+            SUB => new BinarySub(CompileContext.CurrentScope, destination, operand1, operand2),
+            AND => new BinaryAnd(CompileContext.CurrentScope, destination, operand1, operand2),
+            LE => new BinaryLe(CompileContext.CurrentScope, destination, operand1, operand2),
             _ => throw new NotImplementedException(),
         };
 
@@ -190,7 +190,7 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
 
         var destination = CompileContext.ClaimTempVar();
 
-        CompileContext.Instructions.Add(new DeviceRead(destination, device, deviceProperty));
+        CompileContext.Instructions.Add(new DeviceRead(CompileContext.CurrentScope, destination, device, deviceProperty));
 
         return destination;
     }
@@ -223,22 +223,29 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitContinueStatement([NotNull] ContinueStatementContext context)
     {
         var continueLabel = CompileContext.CycleContinueLabels.Peek();
-        CompileContext.Instructions.Add(new Jump(continueLabel));
+        CompileContext.Instructions.Add(new Jump(CompileContext.CurrentScope, continueLabel));
         return null;
     }
 
     public override IValue VisitBlock([NotNull] Ic11Parser.BlockContext context)
     {
-        var isMethod = context.Parent switch
-        {
-            FunctionContext => true,
-            _ => false,
-        };
-
-        CompileContext.EnterScope(isMethodScope: isMethod);
-
         var value = base.VisitBlock(context);
+        return value;
+    }
 
+    public override IValue VisitProgram([NotNull] Ic11Parser.ProgramContext context)
+    {
+        CompileContext.EnterScope();
+        var value = base.VisitProgram(context);
+        CompileContext.ExitScope();
+
+        return value;
+    }
+
+    public override IValue VisitFunction([NotNull] Ic11Parser.FunctionContext context)
+    {
+        CompileContext.EnterScope();
+        var value = VisitChildren(context);
         CompileContext.ExitScope();
 
         return value;
@@ -249,7 +256,6 @@ public class TestVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
     public override IValue VisitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context) => base.VisitFunctionCall(context);
     public override IValue VisitParenthesis([NotNull] Ic11Parser.ParenthesisContext context) => base.VisitParenthesis(context);
-    public override IValue VisitProgram([NotNull] Ic11Parser.ProgramContext context) => base.VisitProgram(context);
     public override IValue VisitStatement([NotNull] Ic11Parser.StatementContext context) => base.VisitStatement(context);
     public override IValue VisitTerminal(ITerminalNode node) => base.VisitTerminal(node);
     public override IValue VisitUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context) => base.VisitUndelimitedStatement(context);

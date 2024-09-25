@@ -10,13 +10,13 @@ public class CompileContext
     public int WhileCount = 0;
     public Stack<string> CycleContinueLabels = new();
     public Stack<Scope> Scopes = new();
+    public Scope? CurrentScope => Scopes.Peek();
     public List<Variable> GlobalVariables = new();
 
     public Dictionary<string, IValue> UserValuesMap => Scopes.Peek()!.UserValuesMap;
-    public Stack<string> AvailableRegisters => Scopes.Peek()!.AvailableRegisters;
     public List<Variable> Variables => Scopes.Peek()!.Variables;
 
-    public List<IInstruction> Instructions = new();
+    public List<InstructionBase> Instructions = new();
 
     public Variable ClaimTempVar()
     {

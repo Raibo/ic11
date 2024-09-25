@@ -14,11 +14,6 @@ void Main()
                 FabElectro.ClearMemory = true;
                 continue;
             }
-            else
-            {
-                var a = FabElectro.On;
-                var b = FabElectro.BizzareProp;
-            }
             
             var craftsDone = FabElectro.ExportCount;
             var craftsTarget = DialElectro.Setting;
@@ -27,8 +22,6 @@ void Main()
             
             DialElectro.Setting = craftsLeft;
             FabElectro.ClearMemory = true;
-
-            craftsLeft = 3;
             
             if (craftsLeft <= 0)
             {

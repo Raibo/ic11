@@ -18,6 +18,7 @@ public class Variable : IValue
     public int LastInstructionIndex = -1;
 
     public Scope Scope;
+    public bool Purged;
 
     public void UpdateUsage(int instructionIndex)
     {
@@ -26,4 +27,5 @@ public class Variable : IValue
 
     public override string ToString() => "VAR " + Name;
     public string Render() => Register ?? $"Unallocated_{Name}";
+    //public string Render() => $"{Name}[{Register}]";
 }

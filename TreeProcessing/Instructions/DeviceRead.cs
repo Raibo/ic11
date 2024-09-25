@@ -1,7 +1,8 @@
-﻿using ic11.TreeProcessing.Results;
+﻿using ic11.TreeProcessing.Context;
+using ic11.TreeProcessing.Results;
 
 namespace ic11.TreeProcessing.Instructions;
-public class DeviceRead : IInstruction
+public class DeviceRead : InstructionBase
 {
     public Variable Destination;
     public string Device;
@@ -9,16 +10,16 @@ public class DeviceRead : IInstruction
 
     private const string PinSetProperty = "IsSet";
 
-    public DeviceRead(Variable destination, string device, string deviceProperty)
+    public DeviceRead(Scope scope, Variable destination, string device, string deviceProperty) : base(scope)
     {
         Destination = destination;
         Device = device;
         DeviceProperty = deviceProperty;
     }
 
-    public InstructionType Type => InstructionType.DeviceRead;
+    public override InstructionType Type => InstructionType.DeviceRead;
 
-    public string Render()
+    public override string Render()
     {
         if (DeviceProperty == PinSetProperty)
             return $"sdse {Destination.Render()} {Device}";

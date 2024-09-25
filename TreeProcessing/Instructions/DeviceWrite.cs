@@ -1,19 +1,20 @@
-﻿using ic11.TreeProcessing.Results;
+﻿using ic11.TreeProcessing.Context;
+using ic11.TreeProcessing.Results;
 
 namespace ic11.TreeProcessing.Instructions;
-public class DeviceWrite : IInstruction
+public class DeviceWrite : InstructionBase
 {
     public string Device;
     public string DeviceProperty;
     public IValue Param;
 
-    public DeviceWrite(string device, string deviceProperty, IValue param)
+    public DeviceWrite(Scope scope, string device, string deviceProperty, IValue param) : base(scope)
     {
         Device = device;
         DeviceProperty = deviceProperty;
         Param = param;
     }
 
-    public InstructionType Type => InstructionType.DeviceWrite;
-    public string Render() => $"s {Device} {DeviceProperty} {Param.Render()}";
+    public override InstructionType Type => InstructionType.DeviceWrite;
+    public override string Render() => $"s {Device} {DeviceProperty} {Param.Render()}";
 }

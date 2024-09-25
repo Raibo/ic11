@@ -2,6 +2,7 @@
 using ic11.TreeProcessing;
 using ic11.TreeProcessing.Context;
 using ic11.TreeProcessing.Results;
+using Microsoft.Win32;
 using System.Text;
 using static Ic11Parser;
 
@@ -24,6 +25,8 @@ class Program
         
         IValue result = visitor.Visit(tree);
 
+        GiveRegisters(context);
+
         var sb = new StringBuilder();
 
         foreach (var instruction in context.Instructions)
@@ -31,10 +34,41 @@ class Program
             Console.WriteLine(instruction.Render());
             sb.AppendLine(instruction.Render());
         }
+    }
 
-        foreach (var variable in context.GlobalVariables)
+    private static void GiveRegisters(CompileContext context)
+    {
+        Stack<string> availableRegisters = new(new[] { "r14", "r13", "r12", "r11", "r10", "r9", "r8", "r7", "r6", "r5", "r4", "r3", "r2", "r1", "r0" });
+
+        for(int i = 0; i < context.Instructions.Count; i++)
         {
-            Console.WriteLine($"{variable.Name}\t{variable.FirstInstructionIndex}\t{variable.LastInstructionIndex}");
+            var instruction = context.Instructions[i];
+            var scope = instruction.Scope;
+
+            if (scope is null)
+                continue;
+
+            var purgeCandidates = scope.LocalVariables
+                .Where(v => !v.Purged)
+                .Where(v => v.Register is not null)
+                .Where(v => v.LastInstructionIndex < i)
+                .ToList();
+
+            foreach (var purgeCandidate in purgeCandidates)
+            {
+                availableRegisters.Push(purgeCandidate.Register!);
+                purgeCandidate.Purged = true;
+                Console.WriteLine($"[{i}/{scope.Id}] Variable {purgeCandidate.Name}({purgeCandidate.LastInstructionIndex}) no longer needs register {purgeCandidate.Register}");
+            }
+
+            var newVar = scope.LocalVariables.FirstOrDefault(v => v.FirstInstructionIndex == i);
+
+            if (newVar is not null)
+            {
+                var register = availableRegisters.Pop();
+                newVar.Register = register;
+                Console.WriteLine($"[{i}/{scope.Id}] Variable {newVar.Name}({newVar.LastInstructionIndex}) is given register {register}");
+            }
         }
     }
 }

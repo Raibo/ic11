@@ -1,9 +1,11 @@
-﻿namespace ic11.TreeProcessing.Instructions;
-public class Yield : IInstruction
+﻿using ic11.TreeProcessing.Context;
+
+namespace ic11.TreeProcessing.Instructions;
+public class Yield : InstructionBase
 {
-    public Yield()
+    public Yield(Scope scope) : base(scope)
     { }
 
-    public InstructionType Type => InstructionType.Yield;
-    public string Render() => $"yield";
+    public override InstructionType Type => InstructionType.Yield;
+    public override string Render() => $"yield";
 }

@@ -1,17 +1,18 @@
-﻿using ic11.TreeProcessing.Results;
+﻿using ic11.TreeProcessing.Context;
+using ic11.TreeProcessing.Results;
 
 namespace ic11.TreeProcessing.Instructions;
-public class JumpGtz : IInstruction
+public class JumpGtz : InstructionBase
 {
     public string Destination;
     public IValue Param;
 
-    public JumpGtz(string destination, IValue param)
+    public JumpGtz(Scope scope, string destination, IValue param) : base(scope)
     {
         Destination = destination;
         Param = param;
     }
 
-    public InstructionType Type => InstructionType.Jump;
-    public string Render() => $"bgtz {Param.Render()} {Destination}";
+    public override InstructionType Type => InstructionType.Jump;
+    public override string Render() => $"bgtz {Param.Render()} {Destination}";
 }

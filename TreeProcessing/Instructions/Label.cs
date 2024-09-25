@@ -1,13 +1,15 @@
-﻿namespace ic11.TreeProcessing.Instructions;
-public class Label : IInstruction
+﻿using ic11.TreeProcessing.Context;
+
+namespace ic11.TreeProcessing.Instructions;
+public class Label : InstructionBase
 {
     public string Name;
 
-    public Label(string name)
+    public Label(Scope scope, string name) : base(scope)
     {
         Name = name;
     }
 
-    public InstructionType Type => InstructionType.Label;
-    public string Render() => $"{Name}:";
+    public override InstructionType Type => InstructionType.Label;
+    public override string Render() => $"{Name}:";
 }
