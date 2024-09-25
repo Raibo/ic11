@@ -6,6 +6,8 @@ public class Scope
     public readonly int Id = _staticIndex++;
     public static int TempVarIndex;
     public int InitialTempVarIndex;
+    public DeclaredMethod? Method;
+
     public Dictionary<string, IValue> UserValuesMap = new();
     public List<Variable> Variables = new();
     public List<Variable> LocalVariables = new();
@@ -34,6 +36,7 @@ public class Scope
         newScope.Variables = new(Variables);
 
         newScope.InitialTempVarIndex = TempVarIndex;
+        newScope.Method = Method;
 
         return newScope;
     }

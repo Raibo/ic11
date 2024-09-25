@@ -10,8 +10,10 @@ public class CompileContext
     public int WhileCount = 0;
     public Stack<string> CycleContinueLabels = new();
     public Stack<Scope> Scopes = new();
-    public Scope? CurrentScope => Scopes.Peek();
+    public Scope CurrentScope => Scopes.Peek();
     public List<Variable> GlobalVariables = new();
+
+    public Dictionary<string, DeclaredMethod> DeclaredMethods = new();
 
     public Dictionary<string, IValue> UserValuesMap => Scopes.Peek()!.UserValuesMap;
     public List<Variable> Variables => Scopes.Peek()!.Variables;
@@ -25,13 +27,13 @@ public class CompileContext
         return newVar;
     }
 
-    public void EnterScope(bool isMethodScope = false)
+    public void EnterScope(DeclaredMethod? enteredMethod = null)
     {
-        var newScope = (Scopes.Count, isMethodScope) switch
+        var newScope = (Scopes.Count, enteredMethod) switch
         {
             (0, _) => new Scope(),
-            (_, true) => new Scope(),
-            _ => Scopes.Peek().Clone(),
+            (_, not null) => new Scope() { Method = enteredMethod },
+            _ => CurrentScope.Clone(),
         };
 
         Scopes.Push(newScope);

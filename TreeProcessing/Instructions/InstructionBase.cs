@@ -4,6 +4,7 @@ namespace ic11.TreeProcessing.Instructions;
 public abstract class InstructionBase
 {
     public Scope Scope;
+    public InstructionDescription? Description;
 
     public InstructionBase(Scope scope)
     {

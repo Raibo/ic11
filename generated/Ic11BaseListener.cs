@@ -132,6 +132,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitReturnStatement([NotNull] Ic11Parser.ReturnStatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.returnValueStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterReturnValueStatement([NotNull] Ic11Parser.ReturnValueStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.returnValueStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitReturnValueStatement([NotNull] Ic11Parser.ReturnValueStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.continueStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -143,6 +155,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.functionCallStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunctionCallStatement([NotNull] Ic11Parser.FunctionCallStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.functionCallStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunctionCallStatement([NotNull] Ic11Parser.FunctionCallStatementContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.undelimitedStatement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -179,6 +203,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIfStatement([NotNull] Ic11Parser.IfStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIdAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceWithIdAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -273,6 +309,20 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLiteral([NotNull] Ic11Parser.LiteralContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DeviceIdAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeviceIdAccess([NotNull] Ic11Parser.DeviceIdAccessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DeviceIdAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeviceIdAccess([NotNull] Ic11Parser.DeviceIdAccessContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

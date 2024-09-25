@@ -9,23 +9,28 @@ program: (declaration | function)* EOF;
 
 declaration: 'pin' IDENTIFIER PINID ';';
 
-function: 'void' IDENTIFIER '(' ')' block;
+function: retType=('void' | 'real') IDENTIFIER '(' (IDENTIFIER (',' IDENTIFIER)*)? ')' block;
 
 block: '{' statement* '}';
 
 statement: delimitedStatement | undelimitedStatement;
 
 delimitedStatement: (
-		assignment
+        deviceWithIdAssignment
+		| assignment
 		| yieldStatement
+        | returnValueStatement
 		| returnStatement
 		| continueStatement
 		| variableDeclaration
+        | functionCallStatement
 	) ';';
 
 yieldStatement: YIELD;
 returnStatement: RETURN;
+returnValueStatement: RETURN expression;
 continueStatement: CONTINUE;
+functionCallStatement: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 undelimitedStatement: whileStatement | ifStatement;
 
@@ -33,6 +38,7 @@ whileStatement: WHILE '(' expression ')' (block | statement);
 
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
+deviceWithIdAssignment: DEVICE_WITH_ID '(' idExpr=expression ')' '.' IDENTIFIER '=' valueExpr=expression;
 assignment: IDENTIFIER ('.' IDENTIFIER)* '=' expression;
 
 variableDeclaration: VAR IDENTIFIER '=' expression;
@@ -46,9 +52,10 @@ expression:
     | left=expression op=OR right=expression # BinaryOp
     | '(' expression ')' # Parenthesis
     | type=(INTEGER | BOOLEAN | REAL) # Literal
+    | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
     | IDENTIFIER # Identifier
     | IDENTIFIER '.' IDENTIFIER # MemberAccess
-    | IDENTIFIER '.' IDENTIFIER '(' ')' # FunctionCall
+    | DEVICE_WITH_ID '(' expression ')' '.' IDENTIFIER # DeviceIdAccess
     ;
 
 // Lexer rules
@@ -74,6 +81,7 @@ OR: '||';
 EQ: '==';
 NE: '!=';
 NEGATION: '!';
+DEVICE_WITH_ID: 'DeviceWithId';
 
 BOOLEAN: 'true' | 'false';
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;

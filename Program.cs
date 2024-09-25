@@ -21,9 +21,12 @@ class Program
         var tree = parser.program(); // Assuming 'program' is the entry point of your grammar
 
         var context = new CompileContext();
-        var visitor = new TestVisitor(context);
-        
-        IValue result = visitor.Visit(tree);
+
+        var methodVisitor = new MethodFindVisitor(context);
+        methodVisitor.Visit(tree);
+
+        var visitor = new CompileVisitor(context);
+        visitor.Visit(tree);
 
         GiveRegisters(context);
 
@@ -58,7 +61,6 @@ class Program
             {
                 availableRegisters.Push(purgeCandidate.Register!);
                 purgeCandidate.Purged = true;
-                Console.WriteLine($"[{i}/{scope.Id}] Variable {purgeCandidate.Name}({purgeCandidate.LastInstructionIndex}) no longer needs register {purgeCandidate.Register}");
             }
 
             var newVar = scope.LocalVariables.FirstOrDefault(v => v.FirstInstructionIndex == i);
@@ -67,7 +69,6 @@ class Program
             {
                 var register = availableRegisters.Pop();
                 newVar.Register = register;
-                Console.WriteLine($"[{i}/{scope.Id}] Variable {newVar.Name}({newVar.LastInstructionIndex}) is given register {register}");
             }
         }
     }
