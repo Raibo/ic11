@@ -8,7 +8,7 @@
         "@semantic-release/github",
         {
           "assets": [
-            { "path": "./publish/*", "label": "Win-x64" }
+            { "path": "./publish/ic11.exe", "label": "Win-x64" }
           ]
         }
       ]
