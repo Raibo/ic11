@@ -41,7 +41,7 @@ jobs:
     - name: Generate Version
       id: gitversion
       run: |
-        echo FullSemVer=$(dotnet-gitversion /output json /showvariable FullSemVer) >> $GITHUB_OUTPUTS
+        echo FullSemVer=$(dotnet-gitversion /output json /showvariable FullSemVer) >> $GITHUB_OUTPUT
     
     - name: Print Version
       run: |
