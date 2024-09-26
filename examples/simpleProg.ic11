@@ -1,17 +1,22 @@
+pin Device0 d0;
+
 void Main()
 {
-    while(true)
-    { 
-        yield;
+    yield;
         
-        var a = 3;
-        var b = 5;
+    var a = 1;
 
-        Base.Setting = Calculate(a, b);
+    if (a == 1)
+    {
+        Base.Setting = 10;
     }
-}
+    else
+    {
+        Base.Setting = 20;
+    }
 
-real Calculate(a, b)
-{
-    return a + a + b;
+    var c = 0;
+
+    while(c < 10)
+        c = c + 1;
 }

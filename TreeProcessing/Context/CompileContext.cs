@@ -22,7 +22,7 @@ public class CompileContext
 
     public Variable ClaimTempVar()
     {
-        var newVar = Scopes.Peek()!.ClaimTempVar(Instructions.Count);
+        var newVar = Scopes.Peek()!.ClaimNewVar(Instructions.Count);
         GlobalVariables.Add(newVar);
         return newVar;
     }

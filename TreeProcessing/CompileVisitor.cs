@@ -7,6 +7,7 @@ using static Ic11Parser;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Linq;
+using Antlr4.Runtime;
 
 namespace ic11.TreeProcessing;
 public class CompileVisitor : Ic11BaseVisitor<IValue>
@@ -36,9 +37,12 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
         if (!haveVariable)
             throw new Exception($"Variable {variableName} is not defined");
 
-        if (userValue is Variable userVariable)
-            userVariable.UpdateUsage(CompileContext.Instructions.Count - 1);
+        if (userValue is not Variable userVariable)
+            throw new Exception($"Assignment statement expects a variable");
 
+        userVariable.UpdateUsage(CompileContext.Instructions.Count - 1);
+
+        CompileContext.Instructions.Add(new Move(CompileContext.CurrentScope, userVariable, value));
         CompileContext.UserValuesMap[variableName] = value;
 
         return null;
@@ -74,8 +78,18 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
 
     public override IValue VisitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context)
     {
+        var variableName = context.IDENTIFIER().GetText();
         var value = Visit(context.expression());
-        CompileContext.UserValuesMap[context.IDENTIFIER().GetText()] = value;
+
+        var newVariable = value as Variable;
+
+        if (newVariable is null)
+        {
+            newVariable = CompileContext.ClaimTempVar();
+            CompileContext.Instructions.Add(new Move(CompileContext.CurrentScope, newVariable, value));
+        }
+
+        CompileContext.UserValuesMap[variableName] = newVariable;
         return null;
     }
 
@@ -88,6 +102,7 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitWhileStatement([NotNull] Ic11Parser.WhileStatementContext context)
     {
         var whileCount = ++CompileContext.WhileCount;
+        var innerCode = (IParseTree)context.block() ?? context.statement();
 
         var labelEnterInstruction = new Label(CompileContext.CurrentScope, $"While{whileCount}Enter");
         var labelExitInstruction = new Label(CompileContext.CurrentScope, $"While{whileCount}Exit");
@@ -102,7 +117,8 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
         var skipInstruction = new JumpLez(CompileContext.CurrentScope, labelExitInstruction.Name, conditionValue);
         CompileContext.Instructions.Add(skipInstruction);
 
-        Visit(context.block());
+        Visit(innerCode);
+
         CompileContext.ExitScope();
 
         var cycleJumpInstruction = new Jump(CompileContext.CurrentScope, labelEnterInstruction.Name);
@@ -117,8 +133,17 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitIfStatement([NotNull] Ic11Parser.IfStatementContext context)
     {
         var ifCount = ++CompileContext.IfCount;
+        var hasElsePart = context.ELSE() is not null;
 
         var blocks = context.block();
+        var rawStatements = context.statement();
+
+        List<IParseTree> codeContents = blocks.Any()
+            ? blocks.Select(b => (IParseTree)b).ToList()
+            : rawStatements.Select(s => (IParseTree)s).ToList();
+
+        if (hasElsePart && blocks.Length == 1 && rawStatements.Length == 1)
+            throw new Exception($"Inconsistent if-else satement. Either use blocks or raw statements for both parts.");
 
         CompileContext.EnterScope();
 
@@ -130,13 +155,13 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
         var ifSkipInstruction = new JumpLez(CompileContext.CurrentScope, ifSkipLabelInstruction.Name, conditionValue);
         CompileContext.Instructions.Add(ifSkipInstruction);
 
-        Visit(blocks[0]);
+        Visit(codeContents[0]);
         CompileContext.ExitScope();
 
         Label skipElseLabelInstruction = null;
 
         // Avoid entering ELSE block from IF block
-        if (blocks.Length == 2)
+        if (hasElsePart)
         {
             skipElseLabelInstruction = new Label(CompileContext.CurrentScope, $"else{ifCount}Skip");
             var elseSkipInstruction = new Jump(CompileContext.CurrentScope, skipElseLabelInstruction.Name);
@@ -146,10 +171,10 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
         CompileContext.Instructions.Add(ifSkipLabelInstruction);
 
         // ELSE
-        if (blocks.Length == 2)
+        if (hasElsePart)
         {
             CompileContext.EnterScope();
-            Visit(blocks[1]);
+            Visit(codeContents[1]);
             CompileContext.ExitScope();
             CompileContext.Instructions.Add(skipElseLabelInstruction);
         }
@@ -189,7 +214,14 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
             ADD => new BinaryAdd(CompileContext.CurrentScope, destination, operand1, operand2),
             SUB => new BinarySub(CompileContext.CurrentScope, destination, operand1, operand2),
             AND => new BinaryAnd(CompileContext.CurrentScope, destination, operand1, operand2),
+            OR => new BinaryOr(CompileContext.CurrentScope, destination, operand1, operand2),
+            EQ => new BinaryEq(CompileContext.CurrentScope, destination, operand1, operand2),
+            NE => new BinaryNe(CompileContext.CurrentScope, destination, operand1, operand2),
             LE => new BinaryLe(CompileContext.CurrentScope, destination, operand1, operand2),
+            LT => new BinaryLt(CompileContext.CurrentScope, destination, operand1, operand2),
+            GE => new BinaryGe(CompileContext.CurrentScope, destination, operand1, operand2),
+            GT => new BinaryGt(CompileContext.CurrentScope, destination, operand1, operand2),
+
             _ => throw new NotImplementedException(),
         };
 

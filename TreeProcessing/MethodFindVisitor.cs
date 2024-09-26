@@ -43,4 +43,9 @@ public class MethodFindVisitor : Ic11BaseVisitor<IValue>
 
         return null;
     }
+
+    private bool AllPathsReturnValue(Ic11Parser.BlockContext blockContext)
+    {
+        return false;
+    }
 }

@@ -4,7 +4,7 @@ namespace ic11.TreeProcessing.Context;
 public class Scope
 {
     public readonly int Id = _staticIndex++;
-    public static int TempVarIndex;
+    public static int VarIndex;
     public int InitialTempVarIndex;
     public DeclaredMethod? Method;
 
@@ -14,13 +14,13 @@ public class Scope
     
     private static int _staticIndex;
 
-    public Variable ClaimTempVar(int CurrentInstructionIndex)
+    public Variable ClaimNewVar(int CurrentInstructionIndex)
     {
-        var tempVar = new Variable($"t{TempVarIndex++}", CurrentInstructionIndex, this);
+        var newVar = new Variable($"var{VarIndex++}", CurrentInstructionIndex, this);
 
-        Variables.Add(tempVar);
-        LocalVariables.Add(tempVar);
-        return tempVar;
+        Variables.Add(newVar);
+        LocalVariables.Add(newVar);
+        return newVar;
     }
 
     public void BeforeExit()
@@ -35,7 +35,7 @@ public class Scope
         newScope.UserValuesMap = new Dictionary<string, IValue>(UserValuesMap);
         newScope.Variables = new(Variables);
 
-        newScope.InitialTempVarIndex = TempVarIndex;
+        newScope.InitialTempVarIndex = VarIndex;
         newScope.Method = Method;
 
         return newScope;
