@@ -1,5 +1,3 @@
-pin MyDevice d3;
-
 void Main()
 {
     while(true)
@@ -10,7 +8,6 @@ void Main()
         var b = 5;
 
         Base.Setting = Calculate(a, b);
-        var c = MyDevice.Setting;
     }
 }
 

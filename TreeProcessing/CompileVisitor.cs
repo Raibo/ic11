@@ -328,8 +328,14 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
             CompileContext.Instructions.Add(new StackPop(CompileContext.CurrentScope, returnValue));
         }
 
+        IEnumerable<Variable> variablesToReturn = CompileContext.Variables;
+
+        // Excluding variable that holds the return value
+        if (declaredMethod.ReturnsValue)
+            variablesToReturn = CompileContext.Variables.SkipLast(1);
+
         // retrieve vars from stack
-        foreach (var variable in CompileContext.Variables.SkipLast(1)) // Excluding variable that holds the return value
+        foreach (var variable in variablesToReturn)
         {
             var loadVarInstruction = new StackPop(CompileContext.CurrentScope, variable)
             {
