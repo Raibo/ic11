@@ -216,6 +216,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

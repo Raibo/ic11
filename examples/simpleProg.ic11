@@ -1,4 +1,4 @@
-pin Device db;
+pin MyDevice d3;
 
 void Main()
 {
@@ -9,7 +9,8 @@ void Main()
         var a = 3;
         var b = 5;
 
-        Device.Setting = Calculate(a, b);
+        Base.Setting = Calculate(a, b);
+        var c = MyDevice.Setting;
     }
 }
 

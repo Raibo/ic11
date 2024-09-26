@@ -122,6 +122,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

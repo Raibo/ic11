@@ -17,6 +17,7 @@ statement: delimitedStatement | undelimitedStatement;
 
 delimitedStatement: (
         deviceWithIdAssignment
+        | memberAssignment
 		| assignment
 		| yieldStatement
         | returnValueStatement
@@ -39,7 +40,8 @@ whileStatement: WHILE '(' expression ')' (block | statement);
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
 deviceWithIdAssignment: DEVICE_WITH_ID '(' idExpr=expression ')' '.' IDENTIFIER '=' valueExpr=expression;
-assignment: IDENTIFIER ('.' IDENTIFIER)* '=' expression;
+memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' expression;
+assignment: IDENTIFIER '=' expression;
 
 variableDeclaration: VAR IDENTIFIER '=' expression;
 
@@ -54,7 +56,7 @@ expression:
     | type=(INTEGER | BOOLEAN | REAL) # Literal
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
     | IDENTIFIER # Identifier
-    | IDENTIFIER '.' IDENTIFIER # MemberAccess
+    | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
     | DEVICE_WITH_ID '(' expression ')' '.' IDENTIFIER # DeviceIdAccess
     ;
 
@@ -66,6 +68,7 @@ ELSE: 'else';
 YIELD: 'yield';
 RETURN: 'return';
 CONTINUE: 'continue';
+BASE_DEVICE: 'Base';
 VAR: 'var';
 ADD: '+';
 SUB: '-';

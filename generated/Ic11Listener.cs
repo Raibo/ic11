@@ -181,6 +181,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

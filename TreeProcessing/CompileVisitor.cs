@@ -29,35 +29,33 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
     public override IValue VisitAssignment([NotNull] Ic11Parser.AssignmentContext context)
     {
         var value = Visit(context.expression());
-        var identifiers = context.IDENTIFIER();
+        var variableName = context.IDENTIFIER().GetText();
 
-        // Assignment
-        if (identifiers.Length == 1)
-        {
-            var variableName = identifiers[0].GetText();
+        var haveVariable = CompileContext.UserValuesMap.TryGetValue(variableName, out var userValue);
 
-            var haveVariable = CompileContext.UserValuesMap.TryGetValue(variableName, out var userValue);
+        if (!haveVariable)
+            throw new Exception($"Variable {variableName} is not defined");
 
-            if (!haveVariable)
-                throw new Exception($"Variable {variableName} is not defined");
+        if (userValue is Variable userVariable)
+            userVariable.UpdateUsage(CompileContext.Instructions.Count - 1);
 
-            if (userValue is Variable userVariable)
-                userVariable.UpdateUsage(CompileContext.Instructions.Count - 1);
+        CompileContext.UserValuesMap[variableName] = value;
 
-            CompileContext.UserValuesMap[variableName] = value;
-        }
+        return null;
+    }
 
-        // Device write
-        if (identifiers.Length == 2)
-        {
-            var instruction = new DeviceWrite(CompileContext.CurrentScope, context.IDENTIFIER()[0].GetText(), context.IDENTIFIER()[1].GetText(), value);
-            CompileContext.Instructions.Add(instruction);
-        }
+    public override IValue VisitMemberAssignment([NotNull] MemberAssignmentContext context)
+    {
+        var value = Visit(context.expression());
 
-        if (identifiers.Length > 2)
-        {
-            throw new NotImplementedException();
-        }
+        var member = context.member.Text;
+        var device = context.identifier.Text;
+
+        if (context.identifier.Type == BASE_DEVICE)
+            device = "db";
+
+        var instruction = new DeviceWrite(CompileContext.CurrentScope, device, member, value);
+        CompileContext.Instructions.Add(instruction);
 
         return null;
     }
@@ -202,12 +200,15 @@ public class CompileVisitor : Ic11BaseVisitor<IValue>
 
     public override IValue VisitMemberAccess([NotNull] Ic11Parser.MemberAccessContext context)
     {
-        var device = context.IDENTIFIER()[0].GetText();
-        var deviceProperty = context.IDENTIFIER()[1].GetText();
+        var member = context.member.Text;
+        var device = context.identifier.Text;
+
+        if (context.identifier.Type == BASE_DEVICE)
+            device = "db";
 
         var destination = CompileContext.ClaimTempVar();
 
-        CompileContext.Instructions.Add(new DeviceRead(CompileContext.CurrentScope, destination, device, deviceProperty));
+        CompileContext.Instructions.Add(new DeviceRead(CompileContext.CurrentScope, destination, device, member));
 
         return destination;
     }
