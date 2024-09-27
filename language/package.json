@@ -1,0 +1,25 @@
+{
+  "name": "ic11",
+  "displayName": "ic11",
+  "description": "ic11 programming language syntax",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "ic11",
+      "aliases": ["Ic11", "ic11"],
+      "extensions": [".ic11"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "ic11",
+      "scopeName": "source.ic11",
+      "path": "./syntaxes/ic11.tmLanguage.json"
+    }]
+  }
+}

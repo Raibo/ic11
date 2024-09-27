@@ -1,0 +1,42 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "ic11",
+	"scopeName": "source.ic11",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#identifiers"
+    },
+    {
+      "include": "#operators"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.ic11",
+          "match": "\\b(pin|void|real|yield|return|continue|var|while|if|else)\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.name.ic11",
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.ic11",
+          "match": "(\\+|\\-|\\*|\\/|%|<|>|<=|>=|==|!=|=)"
+        }
+      ]
+    }
+  }
+}
