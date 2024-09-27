@@ -5,6 +5,7 @@ namespace ic11.ControlFlow.TreeProcessing;
 public abstract class ControlFlowTreeVisitorBase<TResult>
 {
     public bool AllowMethodSkip = false;
+    public TResult SkippedReturnValue = default!;
 
     private readonly Dictionary<Type, MethodInfo> _methodsMap = new();
     protected abstract Type VisitorType { get; }
@@ -15,7 +16,7 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
         var methodInfo = GetVisitMethodForNodeType(nodeType);
 
         return methodInfo is null
-            ? default!
+            ? SkippedReturnValue
             : (TResult)methodInfo.Invoke(this, new[] { node })!;
     }
 

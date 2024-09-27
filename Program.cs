@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using ic11.ControlFlow.Nodes;
 using ic11.ControlFlow.TreeProcessing;
 using ic11.TreeProcessing;
 using ic11.TreeProcessing.Context;
@@ -41,6 +42,7 @@ class Program
         flowAnalyzer.Visit(tree);
 
         Console.WriteLine(new ControlFlowTreeVisualizer().Visualize(flowContext.Root));
+        new ReturnStatementsVisitor().Visit((Root)flowContext.Root);
     }
 
     private static void GiveRegisters(CompileContext context)
