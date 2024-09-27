@@ -1,22 +1,26 @@
-pin Device0 d0;
+
+
 
 void Main()
 {
-    yield;
-        
-    var a = 1;
+    
+}
 
-    if (a == 1)
+real Method()
+{
+    if (1 < 2)
     {
-        Base.Setting = 10;
+        if (2 < 3)
+        {
+            return 1;
+        }
+        else
+        {
+            var a = 4;
+        }
     }
     else
     {
-        Base.Setting = 20;
+        return 2;
     }
-
-    var c = 0;
-
-    while(c < 10)
-        c = c + 1;
 }

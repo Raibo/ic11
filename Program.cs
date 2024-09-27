@@ -1,10 +1,8 @@
 ﻿using Antlr4.Runtime;
+using ic11.ControlFlow.TreeProcessing;
 using ic11.TreeProcessing;
 using ic11.TreeProcessing.Context;
-using ic11.TreeProcessing.Results;
-using Microsoft.Win32;
 using System.Text;
-using static Ic11Parser;
 
 class Program
 {
@@ -37,13 +35,19 @@ class Program
             Console.WriteLine(instruction.Render());
             sb.AppendLine(instruction.Render());
         }
+
+        var flowContext = new FlowContext();
+        var flowAnalyzer = new ControlFlowAnalyzerVisitor(flowContext);
+        flowAnalyzer.Visit(tree);
+
+        Console.WriteLine(new ControlFlowTreeVisualizer().Visualize(flowContext.Root));
     }
 
     private static void GiveRegisters(CompileContext context)
     {
         Stack<string> availableRegisters = new(new[] { "r14", "r13", "r12", "r11", "r10", "r9", "r8", "r7", "r6", "r5", "r4", "r3", "r2", "r1", "r0" });
 
-        for(int i = 0; i < context.Instructions.Count; i++)
+        for (int i = 0; i < context.Instructions.Count; i++)
         {
             var instruction = context.Instructions[i];
             var scope = instruction.Scope;
