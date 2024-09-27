@@ -3,6 +3,9 @@ public abstract class Node
 {
     public Node? Parent;
     public readonly int Id;
+
+    public bool IsUnreachableCode = false;
+
     private static int NextNodeId;
 
     public Node()

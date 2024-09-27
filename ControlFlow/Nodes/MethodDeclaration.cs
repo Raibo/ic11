@@ -9,6 +9,8 @@ public class MethodDeclaration : Node, IStatement, IStatementsContainer
     public List<string> Parameters;
     public List<IStatement> Statements { get; init; } = new();
 
+    public bool NotAllPathsReturnValue = false;
+
     public MethodDeclaration(string name, MethodReturnType returnType, List<string> parameters)
     {
         Name = name;

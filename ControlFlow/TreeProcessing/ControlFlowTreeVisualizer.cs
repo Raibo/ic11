@@ -27,54 +27,67 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
             ? new string(' ', _depth * _indent)
             : String.Empty;
 
-    private object? WriteLine(string s) => _sb.AppendLine($"{Indent()}{s}");
+    private void WriteLine(string s) => _sb.AppendLine($"{Indent()}{s}");
+
+    private string Tags(Node node)
+    {
+        var tagSb = new StringBuilder();
+
+        if (node.IsUnreachableCode)
+            tagSb.Append(" [Unreachable]");
+
+        if (node is MethodDeclaration dec && dec.NotAllPathsReturnValue)
+            tagSb.Append(" [NotAllPathsReturnValue]");
+
+        return tagSb.ToString();
+    }
 
     private object? Visit(Root root)
     {
-        WriteLine("Root");
+        WriteLine($"Root{Tags(root)}");
         VisitStatements(root.Statements);
         return null;
     }
 
     private object? Visit(PinDeclaration node)
     {
-        WriteLine($"PinDeclaration (Name {node.Name}, Device {node.Device})");
+        WriteLine($"PinDeclaration (Name {node.Name}, Device {node.Device}){Tags(node)}");
         return null;
     }
 
     private object? Visit(MethodDeclaration node)
     {
-        WriteLine($"{node.ReturnType} {node.Name}");
+        WriteLine($"{node.ReturnType} {node.Name}{Tags(node)}");
         VisitStatements(node.Statements);
         return null;
     }
 
     private object? Visit(While node)
     {
-        WriteLine($"While-expr");
+        WriteLine($"While-expr{Tags(node)}");
         _depth++;
         Visit((Node)node.Expression);
         _depth--;
 
-        WriteLine("While");
+        WriteLine($"While{Tags(node)}");
         VisitStatements(node.Statements);
         return null;
     }
 
     private object? Visit(If node)
     {
-        WriteLine($"If-expr");
+        WriteLine($"If-expr{Tags(node)}");
         _depth++;
         Visit((Node)node.Expression);
         _depth--;
 
-        WriteLine($"If");
+        WriteLine($"If{Tags(node)}");
         node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.If;
         VisitStatements(node.Statements);
 
         if (node.ElseStatements.Any())
         {
-            WriteLine($"Else");
+            WriteLine($"Else{Tags(node)}");
             node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.Else;
             VisitStatements(node.Statements);
         }
@@ -95,13 +108,13 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Yield node)
     {
-        WriteLine("Yield");
+        WriteLine($"Yield{Tags(node)}");
         return null;
     }
 
     private object? Visit(VariableDeclaration node)
     {
-        WriteLine($"Var declaration {node.Name} = ?");
+        WriteLine($"Var declaration {node.Name} = ?{Tags(node)}");
         _depth++;
         Visit((Node)node.Expression);
         _depth--;
@@ -110,13 +123,13 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(VariableAccess node)
     {
-        WriteLine($"Var access {node.Name}");
+        WriteLine($"Var access {node.Name}{Tags(node)}");
         return null;
     }
 
     private object? Visit(VariableAssignment node)
     {
-        WriteLine($"Var assignment {node.Name} = ?");
+        WriteLine($"Var assignment {node.Name} = ?{Tags(node)}");
         _depth++;
         Visit((Node)node.Expression);
         _depth--;
@@ -125,13 +138,13 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Literal node)
     {
-        WriteLine($"Literal {node.Value}");
+        WriteLine($"Literal {node.Value}{Tags(node)}");
         return null;
     }
 
     private object? Visit(MemberAssignment node)
     {
-        WriteLine($"Device assignment {node.Name}.{node.MemberName} = ?");
+        WriteLine($"Device assignment {node.Name}.{node.MemberName} = ?{Tags(node)}");
         _depth++;
         Visit((Node)node.Expression);
         _depth--;
@@ -140,7 +153,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(BinaryOperation node)
     {
-        WriteLine($"Binary operation {node.Type}");
+        WriteLine($"Binary operation {node.Type}{Tags(node)}");
         _depth++;
         Visit((Node)node.Left);
         Visit((Node)node.Right);
@@ -150,13 +163,13 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(MemberAccess node)
     {
-        WriteLine($"Member access {node.Name}.{node.MemberName}");
+        WriteLine($"Member access {node.Name}.{node.MemberName}{Tags(node)}");
         return null;
     }
 
     private object? Visit(MethodCall node)
     {
-        WriteLine($"Method call {node.Name}(. . .)");
+        WriteLine($"Method call {node.Name}(. . .){Tags(node)}");
 
         _depth++;
         foreach (var item in node.ArgumentExpressions)
@@ -167,7 +180,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(UnaryOperation node)
     {
-        WriteLine($"Unary operation {node.Type}");
+        WriteLine($"Unary operation {node.Type}{Tags(node)}");
         _depth++;
         Visit((Node)node.Operand);
         _depth--;
@@ -176,7 +189,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(DeviceWithIdAccess node)
     {
-        WriteLine($"Device with id access (member {node.Member})");
+        WriteLine($"Device with id access (member {node.Member}){Tags(node)}");
         _depth++;
         Visit((Node)node.RefIdExpr);
         _depth--;
@@ -185,7 +198,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(DeviceWithIdAssignment node)
     {
-        WriteLine($"Device with id assignment (member {node.Member})");
+        WriteLine($"Device with id assignment (member {node.Member}){Tags(node)}");
         _depth++;
         Visit((Node)node.RefIdExpr);
         Visit((Node)node.ValueExpr);
@@ -197,11 +210,11 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         if (!node.HasValue)
         {
-            WriteLine($"Return");
+            WriteLine($"Return{Tags(node)}");
             return null;
         }
 
-        WriteLine($"Return value");
+        WriteLine($"Return value{Tags(node)}");
         _depth++;
         Visit((Node)node.Expression!);
         _depth--;

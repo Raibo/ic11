@@ -41,8 +41,8 @@ class Program
         var flowAnalyzer = new ControlFlowAnalyzerVisitor(flowContext);
         flowAnalyzer.Visit(tree);
 
-        Console.WriteLine(new ControlFlowTreeVisualizer().Visualize(flowContext.Root));
         new ReturnStatementsVisitor().Visit((Root)flowContext.Root);
+        Console.WriteLine(new ControlFlowTreeVisualizer().Visualize(flowContext.Root));
     }
 
     private static void GiveRegisters(CompileContext context)

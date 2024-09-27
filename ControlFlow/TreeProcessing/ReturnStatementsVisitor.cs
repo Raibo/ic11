@@ -1,4 +1,5 @@
-﻿using ic11.ControlFlow.Nodes;
+﻿using ic11.ControlFlow.NodeInterfaces;
+using ic11.ControlFlow.Nodes;
 
 namespace ic11.ControlFlow.TreeProcessing;
 public class ReturnStatementsVisitor : ControlFlowTreeVisitorBase<bool>
@@ -20,73 +21,48 @@ public class ReturnStatementsVisitor : ControlFlowTreeVisitorBase<bool>
             Visit(method);
         }
     }
+    private bool Visit(Return node) => true;
+
+    private bool ContainReturn(IEnumerable<IStatement> statements)
+    {
+        bool foundReturnStatement = false;
+
+        foreach (Node statement in statements)
+        {
+            if (foundReturnStatement)
+            {
+                statement.IsUnreachableCode = true;
+                continue;
+            }
+
+            var guaranteedReturn = Visit(statement);
+
+            if (guaranteedReturn)
+                foundReturnStatement = true;
+        }
+
+        return foundReturnStatement;
+    }
 
     private void Visit(MethodDeclaration node)
     {
-        for (int i = 0; i < node.Statements.Count; i++)
-        {
-            var statement = (Node)node.Statements[i];
-            var guaranteedReturn = Visit(statement);
+        bool containReturn = ContainReturn(node.Statements);
 
-            if (guaranteedReturn && !statement.Equals(node.Statements.Last()))
-                Console.WriteLine($"Unreachable code in method {node.Name}");
-
-            if (guaranteedReturn)
-                return;
-        }
-
-        if (node.ReturnType == DataHolders.MethodReturnType.Real)
-            Console.WriteLine($"Not all code paths return a value in method {node.Name}");
+        if (!containReturn && node.ReturnType == DataHolders.MethodReturnType.Real)
+            node.NotAllPathsReturnValue = true;
     }
-
-    private bool Visit(Return node) => true;
 
     private bool Visit(If node)
     {
-        bool ifGuaranteedReturn = false;
-
-        foreach (Node item in node.IfStatements)
-        {
-            var guaranteedReturn = Visit(item);
-
-            if (guaranteedReturn && !item.Equals(node.IfStatements.Last()))
-                Console.WriteLine($"Unreachable code in 'if'");
-
-            if (guaranteedReturn)
-            {
-                ifGuaranteedReturn = true;
-                break;
-            }
-        }
-
-        bool elseGuaranteedReturn = false;
-
-        foreach (Node item in node.ElseStatements)
-        {
-            var guaranteedReturn = Visit(item);
-
-            if (guaranteedReturn && !item.Equals(node.ElseStatements.Last()))
-                Console.WriteLine($"Unreachable code in 'else'");
-
-            if (guaranteedReturn)
-            {
-                elseGuaranteedReturn = true;
-                break;
-            }
-        }
+        bool ifGuaranteedReturn = ContainReturn(node.IfStatements);
+        bool elseGuaranteedReturn = ContainReturn(node.ElseStatements);
 
         return ifGuaranteedReturn && elseGuaranteedReturn;
     }
 
     private bool Visit(While node)
     {
-        foreach (Node item in node.Statements)
-        {
-            var guaranteedReturn = Visit(item);
-
-            if (guaranteedReturn && !item.Equals(node.Statements.Last()))
-                Console.WriteLine($"Unreachable code in 'while'");
-        }
+        ContainReturn(node.Statements);
 
         return false;
     }
