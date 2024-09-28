@@ -92,9 +92,6 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         if (!node.Scope!.UserDefinedVariables.TryGetValue(node.Name, out var targetVariable))
             throw new Exception($"Variable {node.Name} is not defined");
 
-        if (node.IndexInScope < targetVariable.DeclareIndex)
-            throw new Exception($"Variable {node.Name} is not defined");
-
         targetVariable.LastReassignedIndex = node.IndexInScope;
 
         var expressionVariable = VisitNode((Node)node.Expression);
@@ -108,9 +105,6 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
     private Variable Visit(VariableAccess node)
     {
         if (!node.Scope!.UserDefinedVariables.TryGetValue(node.Name, out var variable))
-            throw new Exception($"Variable {node.Name} is not defined");
-
-        if (node.IndexInScope < variable.DeclareIndex)
             throw new Exception($"Variable {node.Name} is not defined");
 
         node.Variable = variable;
