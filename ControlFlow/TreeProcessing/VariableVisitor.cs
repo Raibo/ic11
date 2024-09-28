@@ -93,6 +93,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             throw new Exception($"Variable {node.Name} is not defined");
 
         targetVariable.LastReassignedIndex = node.IndexInScope;
+        node.Variable = targetVariable;
 
         var expressionVariable = VisitNode((Node)node.Expression);
 

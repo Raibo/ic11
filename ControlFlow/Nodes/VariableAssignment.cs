@@ -1,10 +1,12 @@
-﻿using ic11.ControlFlow.NodeInterfaces;
+﻿using ic11.ControlFlow.Context;
+using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
 public class VariableAssignment : Node, IStatement, IExpressionContainer
 {
     public string Name;
     public IExpression Expression;
+    public Variable? Variable;
 
     public VariableAssignment(string name, IExpression expression)
     {

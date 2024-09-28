@@ -44,6 +44,9 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         if (node is VariableDeclaration d && d.Variable is not null)
             tagSb.Append($" [var{d.Variable.Id}/{d.Variable.Register}]");
 
+        if (node is VariableAssignment a && a.Variable is not null)
+            tagSb.Append($" [var{a.Variable.Id}/{a.Variable.Register}]");
+
         if (node.IsUnreachableCode)
             tagSb.Append(" [Unreachable]");
 
