@@ -1,8 +1,12 @@
-﻿namespace ic11.ControlFlow.Nodes;
+﻿using ic11.ControlFlow.Context;
+
+namespace ic11.ControlFlow.Nodes;
 public abstract class Node
 {
     public Node? Parent;
     public readonly int Id;
+    public Scope? Scope;
+    public int IndexInScope;
 
     public bool IsUnreachableCode = false;
 

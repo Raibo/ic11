@@ -1,68 +1,32 @@
 ﻿using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
-using System.Text;
+using ic11.TreeProcessing.Context;
+using ic11.TreeProcessing.Instructions;
+using ic11.TreeProcessing.Results;
 
 namespace ic11.ControlFlow.TreeProcessing;
-public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
+public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<IValue?>
 {
-    private StringBuilder _sb;
-    private int _depth;
-    private const int _indent = 4;
+    protected override Type VisitorType => typeof(Ic10CommandGenerator);
 
-    protected override Type VisitorType => typeof(ControlFlowTreeVisualizer);
+    public readonly CompileContext CompileContext;
 
-    public string Visualize(Node node)
+    private Scope CurrentScope => CompileContext.CurrentScope;
+
+    public Ic10CommandGenerator(CompileContext compileContext)
     {
-        _sb = new();
-        _depth = 0;
-
-        Visit(node);
-
-        return _sb.ToString();
+        CompileContext = compileContext;
     }
-
-    private string Indent() =>
-        _depth > 0
-            //? new string(' ', _depth * _indent - 2) + "^-"
-            ? new string(' ', _depth * _indent)
-            : String.Empty;
-
-    private void WriteLine(string s) => _sb.AppendLine($"{Indent()}{s}");
-
-    private string Tags(Node node)
-    {
-        var tagSb = new StringBuilder();
-
-        if (node.Scope is not null)
-            tagSb.Append($" [scope {node.Scope.Id}]");
-
-        tagSb.Append($" [ord {node.IndexInScope}]");
-
-        if (node is IExpression ex && ex.Variable is not null)
-            tagSb.Append($" [var{ex.Variable.Id}/{ex.Variable.Register}]");
-
-        if (node is VariableDeclaration d && d.Variable is not null)
-            tagSb.Append($" [var{d.Variable.Id}/{d.Variable.Register}]");
-
-        if (node.IsUnreachableCode)
-            tagSb.Append(" [Unreachable]");
-
-        if (node is MethodDeclaration dec && dec.NotAllPathsReturnValue)
-            tagSb.Append(" [NotAllPathsReturnValue]");
-
-        return tagSb.ToString();
-    }
-
+    /*
     private object? Visit(Root root)
     {
-        WriteLine($"Root{Tags(root)}");
         VisitStatements(root.Statements);
         return null;
     }
 
     private object? Visit(PinDeclaration node)
     {
-        WriteLine($"PinDeclaration (Name {node.Name}, Device {node.Device}){Tags(node)}");
+        
         return null;
     }
 
@@ -230,5 +194,5 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.Expression!);
         _depth--;
         return null;
-    }
+    }*/
 }

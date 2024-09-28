@@ -1,4 +1,6 @@
-﻿using ic11.ControlFlow.Nodes;
+﻿using ic11.ControlFlow.DataHolders;
+using ic11.ControlFlow.NodeInterfaces;
+using ic11.ControlFlow.Nodes;
 using System.Reflection;
 
 namespace ic11.ControlFlow.TreeProcessing;
@@ -29,7 +31,8 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
             .Where(m => m.Name == nameof(Visit))
             .Where(m => m.ReturnParameter.ParameterType == typeof(TResult))
             .Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType == nodeType)
-            .SingleOrDefault();
+            .OrderByDescending(m => InheritanceCount(m.DeclaringType))
+            .FirstOrDefault();
 
         if (preciseMethod is not null)
             return preciseMethod;
@@ -38,5 +41,61 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
             throw new Exception($"No {nameof(Visit)} method for node type {nodeType.Name}");
 
         return null;
+    }
+
+    private int InheritanceCount(Type? type)
+    {
+        if (type is null)
+            return 0;
+
+        var currentType = type;
+
+        var count = 0;
+        while (currentType != typeof(object))
+        {
+            currentType = currentType!.BaseType;
+            count++;
+        }
+
+        return count;
+    }
+
+    protected virtual TResult Visit(Root node)
+    {
+        foreach (Node item in ((IStatementsContainer)node).Statements)
+            Visit(item);
+
+        return default!;
+    }
+
+    protected virtual TResult Visit(MethodDeclaration node)
+    {
+        foreach (Node item in ((IStatementsContainer)node).Statements)
+            Visit(item);
+
+        return default!;
+    }
+
+    protected virtual TResult Visit(While node)
+    {
+        foreach (Node item in ((IStatementsContainer)node).Statements)
+            Visit(item);
+
+        return default!;
+    }
+
+    protected virtual TResult Visit(If node)
+    {
+        node.CurrentStatementsContainer = IfStatementsContainer.If;
+
+        foreach (Node item in ((IStatementsContainer)node).Statements)
+            Visit(item);
+
+        node.CurrentStatementsContainer = IfStatementsContainer.Else;
+
+        foreach (Node item in ((IStatementsContainer)node).Statements)
+            Visit(item);
+
+        return default!;
     }
 }

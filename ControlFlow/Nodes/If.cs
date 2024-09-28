@@ -2,7 +2,7 @@
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class If : Node, IStatement, IStatementsContainer
+public class If : Node, IStatement, IStatementsContainer, IExpressionContainer
 {
     public IExpression Expression;
     public List<IStatement> IfStatements = new();
@@ -19,5 +19,13 @@ public class If : Node, IStatement, IStatementsContainer
     {
         Expression = expression;
         ((Node)expression).Parent = this;
+    }
+
+    public IEnumerable<IExpression> Expressions
+    {
+        get
+        {
+            yield return Expression;
+        }
     }
 }

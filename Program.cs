@@ -42,6 +42,10 @@ class Program
         flowAnalyzer.Visit(tree);
 
         new ReturnStatementsVisitor().Visit((Root)flowContext.Root);
+        new ScopeVisitor().Visit((Root)flowContext.Root);
+        new VariableVisitor().Visit((Root)flowContext.Root);
+        new RegisterVisitor().Visit((Root)flowContext.Root);
+
         Console.WriteLine(new ControlFlowTreeVisualizer().Visualize(flowContext.Root));
     }
 
