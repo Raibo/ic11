@@ -37,4 +37,20 @@ public class Scope
         childScope.CurrentNodeOrder = CurrentNodeOrder;
         return childScope;
     }
+
+    public string GetAvailableRegister(int nodeIndex)
+    {
+        var usedRegisters = Variables
+            .Where(v => v.DeclareIndex < nodeIndex)
+            .Where(v => v.LastUseIndex > nodeIndex)
+            .Select(v => v.Register)
+            .ToHashSet();
+
+        var availableRegisters = Enumerable.Range(0, 15)
+            .OrderBy(r => r)
+            .Select(r => $"r{r}")
+            .Except(usedRegisters);
+
+        return availableRegisters.First();
+    }
 }
