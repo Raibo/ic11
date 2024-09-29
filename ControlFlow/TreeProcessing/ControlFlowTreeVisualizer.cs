@@ -135,7 +135,16 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private object? Visit(VariableAccess node)
+    private object? Visit(ConstantDeclaration node)
+    {
+        WriteLine($"Const declaration {node.Name} = {node.Expression.CtKnownValue}{Tags(node)}");
+        _depth++;
+        Visit((Node)node.Expression);
+        _depth--;
+        return null;
+    }
+
+    private object? Visit(UserDefinedValueAccess node)
     {
         WriteLine($"Var access {node.Name}{Tags(node)}");
         return null;

@@ -8,6 +8,7 @@ public class FlowContext
     public Node CurrentNode;
     public List<IStatement>? CurrentStatementList;
     public List<UserDefinedVariable> AllUserDefinedVariables = new();
+    public List<UserDefinedConstant> AllUserDefinedConstants = new();
 
     public FlowContext()
     {

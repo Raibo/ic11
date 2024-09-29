@@ -1,11 +1,11 @@
 pin Device0 d0;
 pin Device1 d1;
 
+const b = 3;
 
 void Main()
 {
     var a = 1 + 2 + 3 + 4;
-    var b = 2;
     var c = a + b;
 
     Base.Setting = c;

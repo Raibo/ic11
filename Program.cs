@@ -20,23 +20,23 @@ class Program
 
         var tree = parser.program(); // Assuming 'program' is the entry point of your grammar
 
-        var context = new CompileContext();
+        //var context = new CompileContext();
 
-        var methodVisitor = new MethodFindVisitor(context);
-        methodVisitor.Visit(tree);
+        //var methodVisitor = new MethodFindVisitor(context);
+        //methodVisitor.Visit(tree);
 
-        var visitor = new CompileVisitor(context);
-        visitor.Visit(tree);
+        //var visitor = new CompileVisitor(context);
+        //visitor.Visit(tree);
 
-        GiveRegisters(context);
+        //GiveRegisters(context);
 
-        var sb = new StringBuilder();
+        //var sb = new StringBuilder();
 
-        foreach (var instruction in context.Instructions)
-        {
-            Console.WriteLine(instruction.Render());
-            sb.AppendLine(instruction.Render());
-        }
+        //foreach (var instruction in context.Instructions)
+        //{
+        //    Console.WriteLine(instruction.Render());
+        //    sb.AppendLine(instruction.Render());
+        //}
 
         var flowContext = new FlowContext();
         var flowAnalyzer = new ControlFlowAnalyzerVisitor(flowContext);

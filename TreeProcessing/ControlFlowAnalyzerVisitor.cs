@@ -91,6 +91,17 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
+    public override Node? VisitConstantDeclaration([NotNull] ConstantDeclarationContext context)
+    {
+        var constantName = context.IDENTIFIER().GetText();
+        var expression = (IExpression)Visit(context.expression())!;
+        var newNode = new ConstantDeclaration(constantName, expression);
+
+        AddToStatements(newNode);
+
+        return null;
+    }
+
     public override Node VisitLiteral([NotNull] Ic11Parser.LiteralContext context)
     {
         var value = context.GetText();
@@ -226,7 +237,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
     {
         var name = context.IDENTIFIER().GetText();
 
-        var newNode = new VariableAccess(name);
+        var newNode = new UserDefinedValueAccess(name);
 
         return newNode;
     }
@@ -313,7 +324,6 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
 
     public override Node VisitParenthesis([NotNull] Ic11Parser.ParenthesisContext context) =>
         Visit(context.expression())!;
-
     public override Node? VisitChildren(IRuleNode node) => base.VisitChildren(node);
     public override Node? VisitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) => base.VisitDelimitedStatement(context);
     public override Node? VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);

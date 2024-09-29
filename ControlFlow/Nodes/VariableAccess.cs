@@ -2,13 +2,13 @@
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class VariableAccess : Node, IExpression
+public class UserDefinedValueAccess : Node, IExpression
 {
     public string Name;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue { get; set; }
 
-    public VariableAccess(string name)
+    public UserDefinedValueAccess(string name)
     {
         Name = name;
     }

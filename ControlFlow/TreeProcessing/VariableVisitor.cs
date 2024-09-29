@@ -12,8 +12,9 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
     private HashSet<Type> _preciselyTreatedNodes = new()
     {
         typeof(VariableDeclaration),
+        typeof(ConstantDeclaration),
         typeof(VariableAssignment),
-        typeof(VariableAccess),
+        typeof(UserDefinedValueAccess),
         typeof(PinDeclaration),
         typeof(If),
     };
@@ -82,19 +83,32 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         node.Variable = node.Scope!.ClaimNewVariable();
         node.Variable.DeclareIndex = node.IndexInScope;
 
-        if (scope.UserDefinedVariables.ContainsKey(node.Name))
-            throw new Exception($"Variable already exists");
-
         var newUserDefinedVariable = new UserDefinedVariable(node.Name, node.Variable!, node.IndexInScope, node.Expression.CtKnownValue.HasValue);
-        scope.UserDefinedVariables[node.Name] = newUserDefinedVariable;
+
+        scope.AddUserVariable(newUserDefinedVariable);
         _flowContext.AllUserDefinedVariables.Add(newUserDefinedVariable);
+
+        return null;
+    }
+
+    protected Variable? Visit(ConstantDeclaration node)
+    {
+        if (!node.Expression.CtKnownValue.HasValue)
+            throw new Exception($"Constant must have a compile time known value");
+
+        var scope = node.Scope!;
+
+        var newUserDefinedConstant = new UserDefinedConstant(node.Name, node.Expression.CtKnownValue.Value, node.IndexInScope);
+
+        scope.AddUserConstant(newUserDefinedConstant);
+        _flowContext.AllUserDefinedConstants.Add(newUserDefinedConstant);
 
         return null;
     }
 
     private Variable? Visit(VariableAssignment node)
     {
-        if (!node.Scope!.UserDefinedVariables.TryGetValue(node.Name, out var targetVariable))
+        if (!node.Scope!.TryGetUserVariable(node.Name, out var targetVariable))
             throw new Exception($"Variable {node.Name} is not defined");
 
         targetVariable.LastReassignedIndex = node.IndexInScope;
@@ -108,16 +122,26 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         return null;
     }
 
-    private Variable Visit(VariableAccess node)
+    private Variable? Visit(UserDefinedValueAccess node)
     {
-        if (!node.Scope!.UserDefinedVariables.TryGetValue(node.Name, out var userDefinedVariable))
-            throw new Exception($"Variable {node.Name} is not defined");
+        if (node.Scope!.TryGetUserVariable(node.Name, out var userDefinedVariable))
+        {
+            node.Variable = userDefinedVariable.Variable;
+            userDefinedVariable.LastReferencedIndex = node.IndexInScope;
+            userDefinedVariable.Variable.LastReferencedIndex = node.IndexInScope;
 
-        node.Variable = userDefinedVariable.Variable;
-        userDefinedVariable.LastReferencedIndex = node.IndexInScope;
-        userDefinedVariable.Variable.LastReferencedIndex = node.IndexInScope;
+            return userDefinedVariable.Variable;
+        }
 
-        return userDefinedVariable.Variable;
+        if (node.Scope!.TryGetUserConstant(node.Name, out var userDefinedConstant))
+        {
+            node.CtKnownValue = userDefinedConstant.CtKnownValue;
+            userDefinedConstant.LastReferencedIndex = node.IndexInScope;
+
+            return null;
+        }
+
+        throw new Exception($"'{node.Name}' is not defined");
     }
 
     private Variable? Visit(PinDeclaration node)

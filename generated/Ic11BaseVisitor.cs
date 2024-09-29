@@ -215,6 +215,16 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.constantDeclaration"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// <para>

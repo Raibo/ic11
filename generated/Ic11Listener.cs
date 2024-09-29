@@ -211,6 +211,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.constantDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.constantDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>

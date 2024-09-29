@@ -140,6 +140,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.constantDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>

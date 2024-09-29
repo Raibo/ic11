@@ -252,6 +252,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.constantDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.constantDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// <para>The default implementation does nothing.</para>

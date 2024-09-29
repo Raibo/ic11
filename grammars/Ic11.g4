@@ -5,7 +5,7 @@ options {
 }
 
 // Parser rules
-program: (declaration | function)* EOF;
+program: (declaration | ( constantDeclaration ';') | function)* EOF;
 
 declaration: 'pin' IDENTIFIER PINID ';';
 
@@ -24,6 +24,7 @@ delimitedStatement: (
 		| returnStatement
 		| continueStatement
 		| variableDeclaration
+        | constantDeclaration
         | functionCallStatement
 	) ';';
 
@@ -44,6 +45,7 @@ memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=
 assignment: IDENTIFIER '=' expression;
 
 variableDeclaration: VAR IDENTIFIER '=' expression;
+constantDeclaration: CONST IDENTIFIER '=' expression;
 
 expression:
     op=(NEGATION | SUB) operand=expression # UnaryOp
@@ -70,6 +72,7 @@ RETURN: 'return';
 CONTINUE: 'continue';
 BASE_DEVICE: 'Base';
 VAR: 'var';
+CONST: 'const';
 ADD: '+';
 SUB: '-';
 MUL: '*';

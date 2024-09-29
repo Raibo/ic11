@@ -8,10 +8,13 @@ public class Scope
     public MethodDeclaration? Method;
 
     public int CurrentNodeOrder = 0;
-    public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
     public List<Variable> Variables = new();
 
     private static int _staticIndex = 0;
+
+    public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
+    public Dictionary<string, UserDefinedConstant> UserDefinedConstants = new();
+    public Dictionary<string, UserDefinedConstant> GlobalUserDefinedConstants = new();
 
     public Variable ClaimNewVariable()
     {
@@ -25,10 +28,12 @@ public class Scope
     {
         var childScope = new Scope();
         childScope.Parent = this;
+        childScope.GlobalUserDefinedConstants = GlobalUserDefinedConstants;
 
         if (method is not null)
         {
             childScope.Method = method;
+
             return childScope;
         }
 
@@ -52,5 +57,45 @@ public class Scope
             .Except(usedRegisters);
 
         return availableRegisters.First();
+    }
+
+    public void AddUserVariable(UserDefinedVariable variable)
+    {
+        if (GlobalUserDefinedConstants.ContainsKey(variable.Name) || UserDefinedConstants.ContainsKey(variable.Name)
+            || UserDefinedVariables.ContainsKey(variable.Name))
+        {
+            throw new Exception($"'{variable.Name}' already exists");
+        }
+
+        UserDefinedVariables[variable.Name] = variable;
+    }
+
+    public bool TryGetUserVariable(string name, out UserDefinedVariable variable) =>
+        UserDefinedVariables.TryGetValue(name, out variable!);
+
+    public void AddUserConstant(UserDefinedConstant constant)
+    {
+        var placeToAdd = Parent is null
+            ? GlobalUserDefinedConstants
+            : UserDefinedConstants;
+
+        if (GlobalUserDefinedConstants.ContainsKey(constant.Name) || UserDefinedConstants.ContainsKey(constant.Name)
+            || UserDefinedVariables.ContainsKey(constant.Name))
+        {
+            throw new Exception($"'{constant.Name}' already exists");
+        }
+
+        placeToAdd[constant.Name] = constant;
+    }
+
+    public bool TryGetUserConstant(string name, out UserDefinedConstant constant)
+    {
+        if (GlobalUserDefinedConstants.TryGetValue(name, out constant!))
+            return true;
+
+        if (UserDefinedConstants.TryGetValue(name, out constant!))
+            return true;
+
+        return false;
     }
 }
