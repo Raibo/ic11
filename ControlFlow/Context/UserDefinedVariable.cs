@@ -14,5 +14,6 @@ public class UserDefinedVariable
         DeclaredIndex = declaredIndex;
     }
 
-    public override string ToString() => $"{{{Name}, declared {DeclaredIndex}, last referenced {LastReferencedIndex}, last reassigned {LastReassignedIndex}}}";
+    public override string ToString() =>
+        $"{{ {Name}, declared {DeclaredIndex}, last referenced {LastReferencedIndex}, last reassigned {LastReassignedIndex} }}";
 }
