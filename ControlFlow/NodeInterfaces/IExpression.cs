@@ -4,4 +4,5 @@ namespace ic11.ControlFlow.NodeInterfaces;
 public interface IExpression
 {
     Variable? Variable { get; set; }
+    decimal? CtKnownValue { get; }
 }

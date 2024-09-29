@@ -152,7 +152,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Literal node)
     {
-        WriteLine($"Literal {node.Value}{Tags(node)}");
+        WriteLine($"Literal {node.CtKnownValue}{Tags(node)}");
         return null;
     }
 

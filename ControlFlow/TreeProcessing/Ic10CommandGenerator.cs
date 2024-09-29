@@ -10,14 +10,14 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<IValue?>
     protected override Type VisitorType => typeof(Ic10CommandGenerator);
 
     public readonly CompileContext CompileContext;
-
+    /*
     private Scope CurrentScope => CompileContext.CurrentScope;
 
     public Ic10CommandGenerator(CompileContext compileContext)
     {
         CompileContext = compileContext;
     }
-    /*
+
     private object? Visit(Root root)
     {
         VisitStatements(root.Statements);

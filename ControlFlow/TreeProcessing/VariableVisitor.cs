@@ -52,7 +52,8 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         if (node is IExpression ex)
         {
-            ex.Variable = node.Scope!.ClaimNewVariable();
+            if (ex.CtKnownValue is null)
+                ex.Variable = node.Scope!.ClaimNewVariable();
 
             if (ex.Variable is not null)
                 ex.Variable.DeclareIndex = node.IndexInScope;
@@ -84,7 +85,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         if (scope.UserDefinedVariables.ContainsKey(node.Name))
             throw new Exception($"Variable already exists");
 
-        var newUserDefinedVariable = new UserDefinedVariable(node.Name, node.Variable!, node.IndexInScope);
+        var newUserDefinedVariable = new UserDefinedVariable(node.Name, node.Variable!, node.IndexInScope, node.Expression.CtKnownValue.HasValue);
         scope.UserDefinedVariables[node.Name] = newUserDefinedVariable;
         _flowContext.AllUserDefinedVariables.Add(newUserDefinedVariable);
 
@@ -124,7 +125,10 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         if (node is PinDeclaration pin)
         {
             if (_root.DevicePinMap.Values.Contains(pin.Device))
-                throw new Exception($"Pin {pin.Device} already has ");
+                throw new Exception($"Pin {pin.Device} already defined");
+
+            if (_root.DevicePinMap.ContainsKey(pin.Name))
+                throw new Exception($"Pin {pin.Name} already defined");
 
             _root.DevicePinMap[pin.Name] = pin.Device;
         }

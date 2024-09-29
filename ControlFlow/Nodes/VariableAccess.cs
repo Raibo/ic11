@@ -6,6 +6,7 @@ public class VariableAccess : Node, IExpression
 {
     public string Name;
     public Variable? Variable { get; set; }
+    public decimal? CtKnownValue { get; set; }
 
     public VariableAccess(string name)
     {

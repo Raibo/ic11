@@ -4,10 +4,9 @@ pin Device1 d1;
 
 void Main()
 {
-    var a = 0;
-    var b = a;
+    var a = 1 + 2 + 3 + 4;
+    var b = 2;
     var c = a + b;
-    b = 2;
-    var aa = a;
-    var bb = b;
+
+    Base.Setting = c;
 }

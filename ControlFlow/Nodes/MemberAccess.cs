@@ -7,6 +7,7 @@ public class MemberAccess : Node, IExpression
     public string Name;
     public string MemberName;
     public Variable? Variable { get; set; }
+    public decimal? CtKnownValue => null;
 
     public MemberAccess(string name, string memberName)
     {

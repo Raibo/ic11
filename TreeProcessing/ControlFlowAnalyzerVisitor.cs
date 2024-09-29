@@ -101,7 +101,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         if (value == "false")
             value = "0";
 
-        var parsedValue = double.Parse(value);
+        var parsedValue = decimal.Parse(value);
 
         return new Literal(parsedValue);
     }

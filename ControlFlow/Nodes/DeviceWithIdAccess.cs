@@ -7,6 +7,7 @@ public class DeviceWithIdAccess : Node, IExpression, IExpressionContainer
     public IExpression RefIdExpr;
     public string Member;
     public Variable? Variable { get; set; }
+    public decimal? CtKnownValue => null;
 
     public DeviceWithIdAccess(IExpression refIdExpr, string member)
     {
