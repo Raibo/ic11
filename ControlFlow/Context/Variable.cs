@@ -6,7 +6,7 @@ public class Variable
     private static int _staticId = 0;
 
     public int DeclareIndex;
-    public int LastUseIndex = -1;
+    public int LastReferencedIndex = -1;
     public int LastReassignedIndex = -1;
 
     public string Register;

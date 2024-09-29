@@ -4,12 +4,10 @@ pin Device1 d1;
 
 void Main()
 {
-    var a = Base.Setting - Device0.Setting;
-    var b = 1;
-    var c = 2;
-    var d = 3;
-    var e = 4;
-    Device1.Setting = a;
-
-    var sum = b + c + d + e;
+    var a = 0;
+    var b = a;
+    var c = a + b;
+    b = 2;
+    var aa = a;
+    var bb = b;
 }

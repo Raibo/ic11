@@ -8,7 +8,7 @@ public class Scope
     public MethodDeclaration? Method;
 
     public int CurrentNodeOrder = 0;
-    public Dictionary<string, Variable> UserDefinedVariables = new();
+    public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
     public List<Variable> Variables = new();
 
     private static int _staticIndex = 0;
@@ -42,7 +42,7 @@ public class Scope
     {
         var usedRegisters = Variables
             .Where(v => v.DeclareIndex < nodeIndex)
-            .Where(v => v.LastUseIndex > nodeIndex)
+            .Where(v => v.LastReferencedIndex > nodeIndex)
             .Select(v => v.Register)
             .ToHashSet();
 

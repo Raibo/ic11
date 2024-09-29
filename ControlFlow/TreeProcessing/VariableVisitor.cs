@@ -6,6 +6,7 @@ namespace ic11.ControlFlow.TreeProcessing;
 public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 {
     protected override Type VisitorType => typeof(VariableVisitor);
+    private readonly FlowContext _flowContext;
     private Root _root;
 
     private HashSet<Type> _preciselyTreatedNodes = new()
@@ -17,9 +18,10 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         typeof(If),
     };
 
-    public VariableVisitor()
+    public VariableVisitor(FlowContext flowContext)
     {
         AllowMethodSkip = true;
+        _flowContext = flowContext;
     }
 
     public void Visit(Root node)
@@ -44,7 +46,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
                 var innerVariable = VisitNode(item);
 
                 if (innerVariable is not null)
-                    innerVariable.LastUseIndex = node.IndexInScope;
+                    innerVariable.LastReferencedIndex = node.IndexInScope;
             }
         }
 
@@ -72,7 +74,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         var exprVar = VisitNode((Node)node.Expression);
 
         if (exprVar is not null)
-            exprVar.LastUseIndex = node.IndexInScope;
+            exprVar.LastReferencedIndex = node.IndexInScope;
 
         var scope = node.Scope!;
 
@@ -82,7 +84,9 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         if (scope.UserDefinedVariables.ContainsKey(node.Name))
             throw new Exception($"Variable already exists");
 
-        scope.UserDefinedVariables[node.Name] = node.Variable!;
+        var newUserDefinedVariable = new UserDefinedVariable(node.Name, node.Variable!, node.IndexInScope);
+        scope.UserDefinedVariables[node.Name] = newUserDefinedVariable;
+        _flowContext.AllUserDefinedVariables.Add(newUserDefinedVariable);
 
         return null;
     }
@@ -93,25 +97,26 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             throw new Exception($"Variable {node.Name} is not defined");
 
         targetVariable.LastReassignedIndex = node.IndexInScope;
-        node.Variable = targetVariable;
+        node.Variable = targetVariable.Variable;
 
         var expressionVariable = VisitNode((Node)node.Expression);
 
         if (expressionVariable is not null)
-            expressionVariable.LastUseIndex = node.IndexInScope;
+            expressionVariable.LastReferencedIndex = node.IndexInScope;
 
         return null;
     }
 
     private Variable Visit(VariableAccess node)
     {
-        if (!node.Scope!.UserDefinedVariables.TryGetValue(node.Name, out var variable))
+        if (!node.Scope!.UserDefinedVariables.TryGetValue(node.Name, out var userDefinedVariable))
             throw new Exception($"Variable {node.Name} is not defined");
 
-        node.Variable = variable;
-        variable.LastUseIndex = node.IndexInScope;
+        node.Variable = userDefinedVariable.Variable;
+        userDefinedVariable.LastReferencedIndex = node.IndexInScope;
+        userDefinedVariable.Variable.LastReferencedIndex = node.IndexInScope;
 
-        return variable;
+        return userDefinedVariable.Variable;
     }
 
     private Variable? Visit(PinDeclaration node)

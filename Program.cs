@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using ic11.ControlFlow.Context;
 using ic11.ControlFlow.Nodes;
 using ic11.ControlFlow.TreeProcessing;
 using ic11.TreeProcessing;
@@ -43,7 +44,7 @@ class Program
 
         new ReturnStatementsVisitor().Visit((Root)flowContext.Root);
         new ScopeVisitor().Visit((Root)flowContext.Root);
-        new VariableVisitor().Visit((Root)flowContext.Root);
+        new VariableVisitor(flowContext).Visit((Root)flowContext.Root);
         new RegisterVisitor().Visit((Root)flowContext.Root);
 
         Console.WriteLine(new ControlFlowTreeVisualizer().Visualize(flowContext.Root));
