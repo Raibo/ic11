@@ -1,5 +1,7 @@
 pin DialElectro d3;
 
+const b = 3;
+
 void Main()
 {
     while(true)
@@ -11,7 +13,8 @@ void Main()
         if (DialElectro.IsSet)
             a = GetSetting(DialElectro.ReferenceId);
         
-        Base.Setting = a;
+        if (true)
+            Base.Setting = a + b;
     }
 }
 

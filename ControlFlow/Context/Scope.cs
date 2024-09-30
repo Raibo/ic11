@@ -15,7 +15,6 @@ public class Scope
 
     public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
     public Dictionary<string, UserDefinedConstant> UserDefinedConstants = new();
-    public Dictionary<string, UserDefinedConstant> GlobalUserDefinedConstants = new();
 
     public Variable ClaimNewVariable()
     {
@@ -30,7 +29,6 @@ public class Scope
         var childScope = new Scope();
         Children.Add(childScope);
         childScope.Parent = this;
-        childScope.GlobalUserDefinedConstants = GlobalUserDefinedConstants;
 
         if (method is not null)
         {
@@ -66,11 +64,8 @@ public class Scope
 
     public void AddUserVariable(UserDefinedVariable variable)
     {
-        if (GlobalUserDefinedConstants.ContainsKey(variable.Name) || UserDefinedConstants.ContainsKey(variable.Name)
-            || UserDefinedVariables.ContainsKey(variable.Name))
-        {
+        if (UserDefinedConstants.ContainsKey(variable.Name) || UserDefinedVariables.ContainsKey(variable.Name))
             throw new Exception($"'{variable.Name}' already exists");
-        }
 
         UserDefinedVariables[variable.Name] = variable;
 
@@ -83,30 +78,15 @@ public class Scope
 
     public void AddUserConstant(UserDefinedConstant constant)
     {
-        var placeToAdd = Parent is null
-            ? GlobalUserDefinedConstants
-            : UserDefinedConstants;
-
-        if (GlobalUserDefinedConstants.ContainsKey(constant.Name) || UserDefinedConstants.ContainsKey(constant.Name)
-            || UserDefinedVariables.ContainsKey(constant.Name))
-        {
+        if (UserDefinedConstants.ContainsKey(constant.Name) || UserDefinedVariables.ContainsKey(constant.Name))
             throw new Exception($"'{constant.Name}' already exists");
-        }
 
-        placeToAdd[constant.Name] = constant;
+        UserDefinedConstants[constant.Name] = constant;
 
         foreach (var item in Children)
             item.AddUserConstant(constant);
     }
 
-    public bool TryGetUserConstant(string name, out UserDefinedConstant constant)
-    {
-        if (GlobalUserDefinedConstants.TryGetValue(name, out constant!))
-            return true;
-
-        if (UserDefinedConstants.TryGetValue(name, out constant!))
-            return true;
-
-        return false;
-    }
+    public bool TryGetUserConstant(string name, out UserDefinedConstant constant) =>
+        UserDefinedConstants.TryGetValue(name, out constant!);
 }
