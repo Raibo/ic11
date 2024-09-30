@@ -9,6 +9,7 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
 
     private readonly FlowContext _flowContext;
     private readonly List<MethodCall> _methodCalls = new();
+    private MethodDeclaration _currentMethod;
 
     public MethodsVisitor(FlowContext flowContext)
     {
@@ -40,7 +41,16 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
         }
     }
 
-    private bool Visit(Return node) => true;
+    private bool Visit(Return node)
+    {
+        if (_currentMethod.ReturnType == DataHolders.MethodReturnType.Void && node.HasValue)
+            throw new Exception($"Unexpected return value in a void method");
+
+        if (_currentMethod.ReturnType != DataHolders.MethodReturnType.Void && !node.HasValue)
+            throw new Exception($"Return value expected");
+
+        return true;
+    }
 
     private bool ContainReturn(IEnumerable<IStatement> statements)
     {
@@ -75,6 +85,7 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
             throw new Exception($"Method '{node.Name}' cannot return value");
 
         _flowContext.DeclaredMethods[node.Name] = node;
+        _currentMethod = node;
 
         bool containReturn = ContainReturn(node.Statements);
 

@@ -5,6 +5,7 @@ public class Scope
 {
     public readonly int Id = _staticIndex++;
     public Scope? Parent;
+    public List<Scope> Children = new();
     public MethodDeclaration? Method;
 
     public int CurrentNodeOrder = 0;
@@ -27,6 +28,7 @@ public class Scope
     public Scope CreateChildScope(MethodDeclaration? method = null)
     {
         var childScope = new Scope();
+        Children.Add(childScope);
         childScope.Parent = this;
         childScope.GlobalUserDefinedConstants = GlobalUserDefinedConstants;
 
@@ -71,6 +73,9 @@ public class Scope
         }
 
         UserDefinedVariables[variable.Name] = variable;
+
+        foreach (var item in Children)
+            item.AddUserVariable(variable);
     }
 
     public bool TryGetUserVariable(string name, out UserDefinedVariable variable) =>
@@ -89,6 +94,9 @@ public class Scope
         }
 
         placeToAdd[constant.Name] = constant;
+
+        foreach (var item in Children)
+            item.AddUserConstant(constant);
     }
 
     public bool TryGetUserConstant(string name, out UserDefinedConstant constant)

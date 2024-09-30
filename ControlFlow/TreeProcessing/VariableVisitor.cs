@@ -60,6 +60,9 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             if (ex.Variable is not null)
                 ex.Variable.DeclareIndex = node.IndexInScope;
 
+            if (node is MethodCall mc && _flowContext.DeclaredMethods[mc.Name].ReturnType == DataHolders.MethodReturnType.Void)
+                throw new Exception($"Void method used as an expression");
+
             variable = ex.Variable;
         }
 
