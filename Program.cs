@@ -33,6 +33,7 @@ class Program
         var instructions = new Ic10CommandGenerator(flowContext).Visit((Root)flowContext.Root);
 
         UselessMoveRemover.Remove(instructions);
+        LabelsRemoval.RemoveLabels(instructions);
 
         foreach (var item in instructions)
             Console.WriteLine(item.Render());
