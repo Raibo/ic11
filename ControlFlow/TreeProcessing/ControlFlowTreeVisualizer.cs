@@ -39,7 +39,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         tagSb.Append($" [ord {node.IndexInScope}]");
 
         if (node is IExpression ex && ex.Variable is not null)
-            tagSb.Append($" [var{ex.Variable.Id}/{ex.Variable.Register}]");
+            tagSb.Append($" [var{ex.Variable.Id}/{ex.Variable.Register}:d{ex.Variable.DeclareIndex}:a{ex.Variable.LastReassignedIndex}:r{ex.Variable.LastReferencedIndex}]");
 
         if (node is VariableDeclaration d && d.Variable is not null)
             tagSb.Append($" [var{d.Variable.Id}/{d.Variable.Register}]");

@@ -33,23 +33,19 @@ public class Scope
         if (method is not null)
         {
             childScope.Method = method;
-
             return childScope;
         }
 
         childScope.UserDefinedVariables = new(UserDefinedVariables);
         childScope.Variables = new(Variables);
         childScope.CurrentNodeOrder = CurrentNodeOrder;
+        childScope.Method = Method;
         return childScope;
     }
 
     public string GetAvailableRegister(int nodeIndex)
     {
-        var usedRegisters = Variables
-            .Where(v => v.DeclareIndex < nodeIndex)
-            .Where(v => v.LastReferencedIndex > nodeIndex)
-            .Select(v => v.Register)
-            .ToHashSet();
+        var usedRegisters = GetUsedRegisters(nodeIndex);
 
         var availableRegisters = Enumerable.Range(0, 15)
             .OrderBy(r => r)
@@ -58,6 +54,13 @@ public class Scope
 
         return availableRegisters.First();
     }
+
+    public List<string> GetUsedRegisters(int nodeIndex) =>
+        Variables
+            .Where(v => v.DeclareIndex < nodeIndex)
+            .Where(v => v.LastReferencedIndex > nodeIndex)
+            .Select(v => v.Register)
+            .ToList();
 
     public void AddUserVariable(UserDefinedVariable variable)
     {

@@ -5,4 +5,5 @@ public interface IExpression
 {
     Variable? Variable { get; set; }
     decimal? CtKnownValue { get; }
+    string Render() => CtKnownValue?.ToString() ?? Variable!.Register;
 }

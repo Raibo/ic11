@@ -17,6 +17,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         typeof(UserDefinedValueAccess),
         typeof(PinDeclaration),
         typeof(If),
+        typeof(MethodDeclaration),
     };
 
     public VariableVisitor(FlowContext flowContext)
@@ -156,6 +157,37 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
             _root.DevicePinMap[pin.Name] = pin.Device;
         }
+
+        return null;
+    }
+
+    private Variable? Visit(MethodDeclaration node)
+    {
+        foreach (Node item in node.Statements)
+            VisitNode(item);
+
+        return null;
+    }
+
+    private Variable? Visit(If node)
+    {
+        foreach (Node item in node.Expressions)
+        {
+            var innerVariable = VisitNode(item);
+
+            if (innerVariable is not null)
+                innerVariable.LastReferencedIndex = node.IndexInScope;
+        }
+
+        node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.If;
+
+        foreach (Node item in node.Statements)
+            VisitNode(item);
+
+        node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.Else;
+
+        foreach (Node item in node.Statements)
+            VisitNode(item);
 
         return null;
     }

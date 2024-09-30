@@ -25,9 +25,18 @@ public class RegisterVisitor
         if (node is VariableDeclaration d && d.Variable is not null && d.Variable.Register is null)
             d.Variable.Register = node.Scope!.GetAvailableRegister(node.IndexInScope);
 
-        if (node is IStatementsContainer sc)
+        if (node is IStatementsContainer sc && node is not If)
         {
             foreach (Node item in sc.Statements)
+                VisitNode(item);
+        }
+
+        if (node is If ifNode)
+        {
+            foreach (Node item in ifNode.IfStatements)
+                VisitNode(item);
+
+            foreach (Node item in ifNode.ElseStatements)
                 VisitNode(item);
         }
 

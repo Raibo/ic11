@@ -1,198 +1,269 @@
-﻿using ic11.ControlFlow.NodeInterfaces;
+﻿using ic11.ControlFlow.Context;
+using ic11.ControlFlow.DataHolders;
+using ic11.ControlFlow.Instructions;
+using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
 using ic11.TreeProcessing.Context;
-using ic11.TreeProcessing.Instructions;
 using ic11.TreeProcessing.Results;
 
 namespace ic11.ControlFlow.TreeProcessing;
-public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<IValue?>
+public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 {
     protected override Type VisitorType => typeof(Ic10CommandGenerator);
 
-    public readonly CompileContext CompileContext;
-    /*
-    private Scope CurrentScope => CompileContext.CurrentScope;
+    public readonly List<Instruction> Instructions = new();
+    private readonly FlowContext _flowContext;
+    private readonly Stack<string> _continueLabels = new();
 
-    public Ic10CommandGenerator(CompileContext compileContext)
+    public Ic10CommandGenerator(FlowContext flowContext)
     {
-        CompileContext = compileContext;
+        _flowContext = flowContext;
     }
 
-    private object? Visit(Root root)
+    public List<Instruction> Visit(Root root)
     {
         VisitStatements(root.Statements);
+        return Instructions;
+    }
+
+    private object? VisitStatements(List<IStatement> statements)
+    {
+        foreach (var item in statements)
+            Visit((Node)item);
+
         return null;
     }
 
     private object? Visit(PinDeclaration node)
     {
-        
+        Instructions.Add(new DeviceAlias(node.Name, node.Device));
+
         return null;
     }
 
     private object? Visit(MethodDeclaration node)
     {
-        WriteLine($"{node.ReturnType} {node.Name}{Tags(node)}");
-        VisitStatements(node.Statements);
-        return null;
-    }
+        Instructions.Add(new Label($"methodEnter{node.Name}"));
 
-    private object? Visit(While node)
-    {
-        WriteLine($"While-expr{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Expression);
-        _depth--;
-
-        WriteLine($"While{Tags(node)}");
-        VisitStatements(node.Statements);
-        return null;
-    }
-
-    private object? Visit(If node)
-    {
-        WriteLine($"If-expr{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Expression);
-        _depth--;
-
-        WriteLine($"If{Tags(node)}");
-        node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.If;
-        VisitStatements(node.Statements);
-
-        if (node.ElseStatements.Any())
+        if (node.Name == "Main")
         {
-            WriteLine($"Else{Tags(node)}");
-            node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.Else;
+            // Ignore parameters
             VisitStatements(node.Statements);
+            Instructions.Add(new Jump(JumpType.J, "9999")); // end program
+            return null;
         }
 
-        return null;
-    }
+        // Pop parameters
+        foreach(string paramName in node.Parameters)
+        {
+            var variable = node.InnerScope!.UserDefinedVariables[paramName].Variable;
+            Instructions.Add(new StackPop(variable));
+        }
 
-    private object? VisitStatements(List<IStatement> statements)
-    {
-        _depth++;
+        // Push return address
+        Instructions.Add(new StackPush("ra"));
 
-        foreach (var item in statements)
-            Visit((Node)item);
+        VisitStatements(node.Statements);
 
-        _depth--;
-        return null;
-    }
+        Instructions.Add(new Label($"methodExit{node.Name}"));
+        Instructions.Add(new StackPop("ra"));
 
-    private object? Visit(Yield node)
-    {
-        WriteLine($"Yield{Tags(node)}");
-        return null;
-    }
+        // Push return value
+        if (node.ReturnType == MethodReturnType.Real)
+            Instructions.Add(new StackPush("r15"));
 
-    private object? Visit(VariableDeclaration node)
-    {
-        WriteLine($"Var declaration {node.Name} = ?{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Expression);
-        _depth--;
-        return null;
-    }
+        Instructions.Add(new Jump(JumpType.J, "ra"));
 
-    private object? Visit(VariableAccess node)
-    {
-        WriteLine($"Var access {node.Name}{Tags(node)}");
-        return null;
-    }
-
-    private object? Visit(VariableAssignment node)
-    {
-        WriteLine($"Var assignment {node.Name} = ?{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Expression);
-        _depth--;
-        return null;
-    }
-
-    private object? Visit(Literal node)
-    {
-        WriteLine($"Literal {node.Value}{Tags(node)}");
-        return null;
-    }
-
-    private object? Visit(MemberAssignment node)
-    {
-        WriteLine($"Device assignment {node.Name}.{node.MemberName} = ?{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Expression);
-        _depth--;
-        return null;
-    }
-
-    private object? Visit(BinaryOperation node)
-    {
-        WriteLine($"Binary operation {node.Type}{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Left);
-        Visit((Node)node.Right);
-        _depth--;
-        return null;
-    }
-
-    private object? Visit(MemberAccess node)
-    {
-        WriteLine($"Member access {node.Name}.{node.MemberName}{Tags(node)}");
         return null;
     }
 
     private object? Visit(MethodCall node)
     {
-        WriteLine($"Method call {node.Name}(. . .){Tags(node)}");
+        // save registers to stack
+        var usedRegisters = node.Scope!.GetUsedRegisters(node.IndexInScope);
+        var declaredMethod = _flowContext.DeclaredMethods[node.Name];
 
-        _depth++;
-        foreach (var item in node.ArgumentExpressions)
+        foreach (var register in usedRegisters)
+            Instructions.Add(new StackPush(register));
+
+        // saving parameters to stack
+        foreach (var item in node.Expressions.Reverse())
+        {
             Visit((Node)item);
-        _depth--;
+            var value = item.CtKnownValue?.ToString() ?? item.Variable!.Register;
+            Instructions.Add(new StackPush(value));
+        }
+
+        Instructions.Add(new Jump(JumpType.Jal, $"methodEnter{node.Name}"));
+
+        if (declaredMethod.ReturnType != MethodReturnType.Void)
+            Instructions.Add(new StackPop(node.Variable!.Register));
+
+        // retrieve vars from stack
+        foreach (var register in usedRegisters)
+            Instructions.Add(new StackPop(register));
+
         return null;
     }
 
-    private object? Visit(UnaryOperation node)
+    protected override object? Visit(While node)
     {
-        WriteLine($"Unary operation {node.Type}{Tags(node)}");
-        _depth++;
+        Visit((Node)node.Expression);
+
+        var labelEnterInstruction = new Label($"While{node.Id}Enter");
+        var labelExitInstruction = new Label($"While{node.Id}Exit");
+
+        Instructions.Add(labelEnterInstruction);
+        Visit((Node)node.Expression);
+        Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
+
+        _continueLabels.Push(labelExitInstruction.Name);
+        VisitStatements(node.Statements);
+        _continueLabels.Pop();
+
+        Instructions.Add(new Jump(JumpType.J, labelEnterInstruction.Name));
+        Instructions.Add(labelExitInstruction);
+
+        return null;
+    }
+
+    protected override object? Visit(If node)
+    {
+        Visit((Node)node.Expression);
+
+        var ifSkipLabelInstruction = new Label($"If{node.Id}Skip");
+
+        Instructions.Add(new Jump(JumpType.Beqz, ifSkipLabelInstruction.Name, node.Expression.Render()));
+
+        VisitStatements(node.IfStatements);
+
+
+        Label? skipElseLabelInstruction = null;
+
+        // Avoid entering ELSE block from IF block
+        if (node.ElseStatements.Any())
+        {
+            skipElseLabelInstruction = new Label($"else{node.Id}Skip");
+            Instructions.Add(new Jump(JumpType.J, skipElseLabelInstruction.Name));
+        }
+
+        Instructions.Add(ifSkipLabelInstruction);
+
+        // ELSE
+        if (node.ElseStatements.Any())
+        {
+            VisitStatements(node.ElseStatements);
+            Instructions.Add(skipElseLabelInstruction!);
+        }
+
+        return null;
+    }
+
+    private object? Visit(Nodes.Yield node)
+    {
+        Instructions.Add(new Instructions.Yield());
+        return null;
+    }
+
+    private object? Visit(VariableDeclaration node)
+    {
+        Visit((Node)node.Expression);
+        Instructions.Add(new Move(node.Variable!, node.Expression));
+        return null;
+    }
+
+    private object? Visit(UserDefinedValueAccess node)
+    {
+        return null;
+    }
+
+    private object? Visit(VariableAssignment node)
+    {
+        Visit((Node)node.Expression);
+        return null;
+    }
+
+    private object? Visit(Literal node)
+    {
+        return null;
+    }
+
+    private object? Visit(Nodes.MemberAssignment node)
+    {
+        Visit((Node)node.Expression);
+        Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName, node.Expression));
+        return null;
+    }
+
+    private object? Visit(Nodes.BinaryOperation node)
+    {
+        if (node.CtKnownValue.HasValue)
+            return null;
+
+        Visit((Node)node.Left);
+        Visit((Node)node.Right);
+
+        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, node.Left, node.Right, node.Type));
+
+        return null;
+    }
+
+    private object? Visit(Nodes.UnaryOperation node)
+    {
+        if (node.CtKnownValue.HasValue)
+            return null;
+
         Visit((Node)node.Operand);
-        _depth--;
+
+        Instructions.Add(new Instructions.UnaryOperation(node.Variable!, node.Operand, node.Type));
+
         return null;
     }
 
-    private object? Visit(DeviceWithIdAccess node)
+    private object? Visit(Nodes.MemberAccess node)
     {
-        WriteLine($"Device with id access (member {node.Member}){Tags(node)}");
-        _depth++;
+        Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.MemberName));
+        return null;
+    }
+
+    private object? Visit(Nodes.DeviceWithIdAccess node)
+    {
         Visit((Node)node.RefIdExpr);
-        _depth--;
+        Instructions.Add(new Instructions.DeviceWithIdAccess(node.Variable!, node.RefIdExpr, node.Member));
+
         return null;
     }
 
-    private object? Visit(DeviceWithIdAssignment node)
+    private object? Visit(Nodes.DeviceWithIdAssignment node)
     {
-        WriteLine($"Device with id assignment (member {node.Member}){Tags(node)}");
-        _depth++;
         Visit((Node)node.RefIdExpr);
         Visit((Node)node.ValueExpr);
-        _depth--;
+
+        Instructions.Add(new Instructions.DeviceWithIdAssignment(node.RefIdExpr, node.Member, node.ValueExpr));
+
         return null;
     }
 
     private object? Visit(Return node)
     {
-        if (!node.HasValue)
+        var declaredMethod = node.Scope?.Method ?? throw new Exception($"Encountered return outside of a method");
+
+        if (declaredMethod.ReturnType == MethodReturnType.Void)
         {
-            WriteLine($"Return{Tags(node)}");
-            return null;
+            Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
+        }
+        else
+        {
+            Visit((Node)node.Expression!);
+            Instructions.Add(new Move("r15", node.Expression!));
+            Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
         }
 
-        WriteLine($"Return value{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Expression!);
-        _depth--;
         return null;
-    }*/
+    }
+
+    private object? Visit(ConstantDeclaration node)
+    {
+        return null;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using ic11.ControlFlow.DataHolders;
+﻿using ic11.ControlFlow.Context;
+using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
 using Scope = ic11.ControlFlow.Context.Scope;
@@ -7,6 +8,12 @@ namespace ic11.ControlFlow.TreeProcessing;
 public class ScopeVisitor
 {
     private Scope _currentScope = new();
+    private readonly FlowContext _flowContext;
+
+    public ScopeVisitor(FlowContext flowContext)
+    {
+        _flowContext = flowContext;
+    }
 
     public object? Visit(Root node)
     {
@@ -41,9 +48,32 @@ public class ScopeVisitor
 
         if (statement is IStatementsContainer st)
         {
-            _currentScope = _currentScope.CreateChildScope(statement is MethodDeclaration md ? md : null);
+            var md = statement as MethodDeclaration;
+
+            _currentScope = _currentScope.CreateChildScope(md);
+
+            if (md is not null)
+            {
+                md.InnerScope = _currentScope;
+                AddParameterVariables(md);
+            }
+
             VisitStatementList(st.Statements);
             _currentScope = _currentScope.Parent!;
+        }
+    }
+
+    private void AddParameterVariables(MethodDeclaration node)
+    {
+        foreach (var parameter in node.Parameters)
+        {
+            var variable = _currentScope!.ClaimNewVariable();
+            variable.DeclareIndex = -1;
+
+            var newUserDefinedVariable = new UserDefinedVariable(parameter, variable!, -1, false);
+
+            _currentScope.AddUserVariable(newUserDefinedVariable);
+            _flowContext.AllUserDefinedVariables.Add(newUserDefinedVariable);
         }
     }
 
