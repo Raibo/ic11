@@ -131,6 +131,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.breakStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBreakStatement([NotNull] Ic11Parser.BreakStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.breakStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBreakStatement([NotNull] Ic11Parser.BreakStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.functionCallStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -156,6 +156,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.breakStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBreakStatement([NotNull] Ic11Parser.BreakStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.breakStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBreakStatement([NotNull] Ic11Parser.BreakStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.functionCallStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

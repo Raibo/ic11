@@ -23,6 +23,7 @@ delimitedStatement: (
         | returnValueStatement
 		| returnStatement
 		| continueStatement
+        | breakStatement
 		| variableDeclaration
         | constantDeclaration
         | functionCallStatement
@@ -32,6 +33,7 @@ yieldStatement: YIELD;
 returnStatement: RETURN;
 returnValueStatement: RETURN expression;
 continueStatement: CONTINUE;
+breakStatement: BREAK;
 functionCallStatement: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 undelimitedStatement: whileStatement | ifStatement;
@@ -70,6 +72,7 @@ ELSE: 'else';
 YIELD: 'yield';
 RETURN: 'return';
 CONTINUE: 'continue';
+BREAK: 'break';
 BASE_DEVICE: 'Base';
 VAR: 'var';
 CONST: 'const';

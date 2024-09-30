@@ -243,4 +243,16 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         _depth--;
         return null;
     }
+
+    private object? Visit(Continue node)
+    {
+        WriteLine($"Continue{Tags(node)}");
+        return null;
+    }
+
+    private object? Visit(Break node)
+    {
+        WriteLine($"Break{Tags(node)}");
+        return null;
+    }
 }

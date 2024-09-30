@@ -92,6 +92,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitContinueStatement([NotNull] Ic11Parser.ContinueStatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.breakStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBreakStatement([NotNull] Ic11Parser.BreakStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.functionCallStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

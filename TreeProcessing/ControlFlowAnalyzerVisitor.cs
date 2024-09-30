@@ -283,6 +283,15 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
 
         return null;
     }
+
+    public override Node? VisitBreakStatement([NotNull] BreakStatementContext context)
+    {
+        var newNode = new Break();
+        AddToStatements(newNode);
+
+        return null;
+    }
+
     public override Node VisitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context)
     {
         var name = context.IDENTIFIER().GetText();

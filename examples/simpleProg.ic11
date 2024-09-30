@@ -11,38 +11,10 @@ void Main()
 {
     while(true)
     {
-        yield;
-        
-        if (FabElectro.IsSet && DialElectro.IsSet)
-            ProcessMachine(FabElectro.ReferenceId, DialElectro.ReferenceId);
-        
-        if (FabLathe.IsSet && DialLathe.IsSet)
-            ProcessMachine(FabLathe.ReferenceId, DialLathe.ReferenceId);
-        
-        if (FabBender.IsSet && DialBender.IsSet)
-            ProcessMachine(FabBender.ReferenceId, DialBender.ReferenceId);
-    }
-}
-
-void ProcessMachine(machineId, dialId)
-{
-    if (!DeviceWithId(machineId).Activate)
-    {
-        DeviceWithId(machineId).ClearMemory = true;
-        return;
-    }
-    
-    var craftsDone = DeviceWithId(machineId).ExportCount;
-    var craftsTarget = DeviceWithId(dialId).Setting;
-    
-    var craftsLeft = craftsTarget - craftsDone;
-    
-    DeviceWithId(dialId).Setting = craftsLeft;
-    DeviceWithId(machineId).ClearMemory = true;
-    
-    if (craftsLeft <= 0)
-    {
-        DeviceWithId(dialId).Setting = 1;
-        DeviceWithId(machineId).Activate = false;
+        break;
+        while(2)
+        {
+            break;
+        }
     }
 }

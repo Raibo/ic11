@@ -12,6 +12,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     public readonly List<Instruction> Instructions = new();
     private readonly FlowContext _flowContext;
     private readonly Stack<string> _continueLabels = new();
+    private readonly Stack<string> _breakLabels = new();
 
     public Ic10CommandGenerator(FlowContext flowContext)
     {
@@ -133,12 +134,34 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.Expression);
         Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
 
-        _continueLabels.Push(labelExitInstruction.Name);
+        _continueLabels.Push(labelEnterInstruction.Name);
+        _breakLabels.Push(labelExitInstruction.Name);
         VisitStatements(node.Statements);
+        _breakLabels.Pop();
         _continueLabels.Pop();
 
         Instructions.Add(new Jump(JumpType.J, labelEnterInstruction.Name));
         Instructions.Add(labelExitInstruction);
+
+        return null;
+    }
+
+    private object? Visit(Continue node)
+    {
+        if (!_continueLabels.Any())
+            throw new Exception("Cuntinue must be inside a cycle");
+
+        Instructions.Add(new Jump(JumpType.J, _continueLabels.Peek()));
+
+        return null;
+    }
+
+    private object? Visit(Break node)
+    {
+        if (!_continueLabels.Any())
+            throw new Exception("Break must be inside a cycle");
+
+        Instructions.Add(new Jump(JumpType.J, _breakLabels.Peek()));
 
         return null;
     }
