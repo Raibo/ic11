@@ -24,6 +24,7 @@ class Program
         var flowAnalyzer = new ControlFlowAnalyzerVisitor(flowContext);
         flowAnalyzer.Visit(tree);
 
+        new RootStatementsSorter().SortStatements((Root)flowContext.Root);
         new MethodsVisitor(flowContext).Visit((Root)flowContext.Root);
         new ScopeVisitor(flowContext).Visit((Root)flowContext.Root);
         new VariableVisitor(flowContext).Visit((Root)flowContext.Root);

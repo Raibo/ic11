@@ -1,6 +1,17 @@
 pin DialElectro d3;
+pin Something d2;
 
 const b = 3;
+
+real OuterGetSetting(dialId)
+{
+    return GetSetting(dialId);
+}
+
+real GetSetting(dialId)
+{
+    return DeviceWithId(dialId).Setting;
+}
 
 void Main()
 {
@@ -11,14 +22,10 @@ void Main()
         var a = 0;
         
         if (DialElectro.IsSet)
-            a = GetSetting(DialElectro.ReferenceId);
+            a = OuterGetSetting(DialElectro.ReferenceId);
         
         if (true)
             Base.Setting = a + b;
     }
 }
 
-real GetSetting(dialId)
-{
-    return DeviceWithId(dialId).Setting;
-}

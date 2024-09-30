@@ -3,8 +3,6 @@ using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.Instructions;
 using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
-using ic11.TreeProcessing.Context;
-using ic11.TreeProcessing.Results;
 
 namespace ic11.ControlFlow.TreeProcessing;
 public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
@@ -102,6 +100,24 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         // retrieve vars from stack
         foreach (var register in usedRegisters)
             Instructions.Add(new StackPop(register));
+
+        return null;
+    }
+
+    private object? Visit(Return node)
+    {
+        var declaredMethod = node.Scope?.Method ?? throw new Exception($"Encountered return outside of a method");
+
+        if (declaredMethod.ReturnType == MethodReturnType.Void)
+        {
+            Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
+        }
+        else
+        {
+            Visit((Node)node.Expression!);
+            Instructions.Add(new Move("r15", node.Expression!));
+            Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
+        }
 
         return null;
     }
@@ -240,24 +256,6 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.ValueExpr);
 
         Instructions.Add(new Instructions.DeviceWithIdAssignment(node.RefIdExpr, node.Member, node.ValueExpr));
-
-        return null;
-    }
-
-    private object? Visit(Return node)
-    {
-        var declaredMethod = node.Scope?.Method ?? throw new Exception($"Encountered return outside of a method");
-
-        if (declaredMethod.ReturnType == MethodReturnType.Void)
-        {
-            Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
-        }
-        else
-        {
-            Visit((Node)node.Expression!);
-            Instructions.Add(new Move("r15", node.Expression!));
-            Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
-        }
 
         return null;
     }
