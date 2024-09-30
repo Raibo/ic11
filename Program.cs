@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using ic11.ControlFlow.Context;
+using ic11.ControlFlow.InstructionsProcessing;
 using ic11.ControlFlow.Nodes;
 using ic11.ControlFlow.TreeProcessing;
 using ic11.TreeProcessing;
@@ -30,6 +31,8 @@ class Program
         new VariableVisitor(flowContext).Visit((Root)flowContext.Root);
         new RegisterVisitor().Visit((Root)flowContext.Root);
         var instructions = new Ic10CommandGenerator(flowContext).Visit((Root)flowContext.Root);
+
+        UselessMoveRemover.Remove(instructions);
 
         foreach (var item in instructions)
             Console.WriteLine(item.Render());

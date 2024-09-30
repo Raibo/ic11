@@ -60,7 +60,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             if (ex.Variable is not null)
                 ex.Variable.DeclareIndex = node.IndexInScope;
 
-            if (node is MethodCall mc && _flowContext.DeclaredMethods[mc.Name].ReturnType == DataHolders.MethodReturnType.Void)
+            if (IsVoidCallAsExpression(node))
                 throw new Exception($"Void method used as an expression");
 
             variable = ex.Variable;
@@ -73,6 +73,17 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         }
 
         return variable;
+
+        bool IsVoidCallAsExpression(Node node)
+        {
+            if (node is not MethodCall mc)
+                return false;
+
+            var isCalledMethodVoid = _flowContext.DeclaredMethods[mc.Name].ReturnType == DataHolders.MethodReturnType.Void;
+            var isInExpressionsList = node.Parent is IExpressionContainer ec && ec.Expressions.Any(x => node.Equals(x));
+
+            return isCalledMethodVoid && isInExpressionsList;
+        }
     }
 
     protected Variable? Visit(VariableDeclaration node)
