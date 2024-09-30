@@ -1,0 +1,70 @@
+{
+  "name": "ic11",
+  "displayName": "ic11",
+  "description": "ic11 programming language syntax",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "languages": [
+      {
+        "id": "ic11",
+        "aliases": [
+          "Ic11",
+          "ic11"
+        ],
+        "extensions": [
+          ".ic11"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "ic10",
+        "aliases": [
+          "Ic10",
+          "ic10"
+        ],
+        "extensions": [
+          ".ic10"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ic11",
+        "scopeName": "source.ic11",
+        "path": "./syntaxes/ic11.tmLanguage.json"
+      },
+      {
+        "language": "ic10",
+        "scopeName": "source.ic10",
+        "path": "./syntaxes/ic10.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "ic11.compile",
+        "title": "Compile IC11"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "eslint": "^9.9.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}

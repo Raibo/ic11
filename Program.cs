@@ -12,6 +12,20 @@ class Program
     static void Main(string[] args)
     {
         var path = "examples/simpleProg.ic11";
+        if (args.Length > 0)
+            path = args[0];
+
+        if (args.Length > 1)
+        {
+            Console.WriteLine("Usage: ic11 [path]");
+        }
+        
+        if (!File.Exists(path))
+        {
+            Console.Error.WriteLine($"File {path} does not exist");
+            return;
+        }
+
         var input = File.ReadAllText(path);
 
         AntlrInputStream inputStream = new AntlrInputStream(input);

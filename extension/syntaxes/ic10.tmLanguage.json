@@ -1,0 +1,26 @@
+{
+    "name": "ic10",
+    "scopeName": "source.ic10",
+    "patterns": [
+        {
+            "name": "keyword.control.ic10",
+            "match": "^[a-zA-Z0-9]+"
+        },
+        {
+            "name": "constant.numeric.ic10",
+            "match": "\\b\\d+\\b"
+        },
+        {
+            "name": "variable.register.ic10",
+            "match": "\\b(r[0-9]|r1[0-5]|ra|sp)\\b"
+        },
+        {
+            "name": "variable.device.ic10",
+            "match": "\\b(d[0-5]|db)\\b"
+        },
+        {
+            "name": "storage.type.ic10",
+            "match": "\\b(alias)\\b"
+        }
+    ]
+}
