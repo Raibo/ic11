@@ -1,0 +1,13 @@
+alias PowerLedSource d0
+alias FlashLight d1
+alias PowerLedTarget d2
+beqz 1 12
+l r0 PowerLedSource Setting
+s db Setting r0
+slt r1 r0 20000
+s FlashLight On r1
+sdse r1 PowerLedTarget
+beqz r1 11
+s PowerLedTarget Setting r0
+j 3
+j 9999

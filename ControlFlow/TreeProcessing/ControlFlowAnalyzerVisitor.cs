@@ -6,7 +6,7 @@ using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
 using static Ic11Parser;
 
-namespace ic11.TreeProcessing;
+namespace ic11.ControlFlow.TreeProcessing;
 public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
 {
     public FlowContext FlowContext;
@@ -32,7 +32,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
 
     public override Node? Visit(IParseTree tree) => base.Visit(tree);
 
-    public override Node? VisitDeclaration([NotNull] Ic11Parser.DeclarationContext context)
+    public override Node? VisitDeclaration([NotNull] DeclarationContext context)
     {
         if (CurrentNode is not Root root)
             throw new Exception($"Pin declaration must be top level statement");
@@ -43,7 +43,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitFunction([NotNull] Ic11Parser.FunctionContext context)
+    public override Node? VisitFunction([NotNull] FunctionContext context)
     {
         var identifiers = context.IDENTIFIER();
         var name = identifiers[0].GetText();
@@ -71,7 +71,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context)
+    public override Node? VisitYieldStatement([NotNull] YieldStatementContext context)
     {
         var newNode = new Yield();
 
@@ -80,7 +80,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitVariableDeclaration([NotNull] Ic11Parser.VariableDeclarationContext context)
+    public override Node? VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
     {
         var variableName = context.IDENTIFIER().GetText();
         var expression = (IExpression)Visit(context.expression())!;
@@ -102,7 +102,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitLiteral([NotNull] Ic11Parser.LiteralContext context)
+    public override Node VisitLiteral([NotNull] LiteralContext context)
     {
         var value = context.GetText();
 
@@ -117,7 +117,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return new Literal(parsedValue);
     }
 
-    public override Node? VisitIfStatement([NotNull] Ic11Parser.IfStatementContext context)
+    public override Node? VisitIfStatement([NotNull] IfStatementContext context)
     {
         var hasElsePart = context.ELSE() is not null;
 
@@ -167,7 +167,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitWhileStatement([NotNull] Ic11Parser.WhileStatementContext context)
+    public override Node? VisitWhileStatement([NotNull] WhileStatementContext context)
     {
         var innerCode = (IParseTree)context.block() ?? context.statement();
         var expression = (IExpression)Visit(context.expression())!;
@@ -181,7 +181,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitAssignment([NotNull] Ic11Parser.AssignmentContext context)
+    public override Node? VisitAssignment([NotNull] AssignmentContext context)
     {
         var expression = (IExpression)Visit(context.expression())!;
         var variableName = context.IDENTIFIER().GetText();
@@ -192,7 +192,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitBinaryOp([NotNull] Ic11Parser.BinaryOpContext context)
+    public override Node VisitBinaryOp([NotNull] BinaryOpContext context)
     {
         var operand1 = (IExpression)Visit(context.left)!;
         var operand2 = (IExpression)Visit(context.right)!;
@@ -218,7 +218,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node VisitUnaryOp([NotNull] Ic11Parser.UnaryOpContext context)
+    public override Node VisitUnaryOp([NotNull] UnaryOpContext context)
     {
         var operand = (IExpression)Visit(context.operand)!;
 
@@ -233,7 +233,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node VisitIdentifier([NotNull] Ic11Parser.IdentifierContext context)
+    public override Node VisitIdentifier([NotNull] IdentifierContext context)
     {
         var name = context.IDENTIFIER().GetText();
 
@@ -255,7 +255,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitMemberAccess([NotNull] Ic11Parser.MemberAccessContext context)
+    public override Node VisitMemberAccess([NotNull] MemberAccessContext context)
     {
         var member = context.member.Text;
         var device = context.identifier.Text;
@@ -292,7 +292,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context)
+    public override Node VisitFunctionCall([NotNull] FunctionCallContext context)
     {
         var name = context.IDENTIFIER().GetText();
         var paramExpressions = context.expression().Select(e => (IExpression)Visit(e)!).ToList();
@@ -331,15 +331,15 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitParenthesis([NotNull] Ic11Parser.ParenthesisContext context) =>
+    public override Node VisitParenthesis([NotNull] ParenthesisContext context) =>
         Visit(context.expression())!;
     public override Node? VisitChildren(IRuleNode node) => base.VisitChildren(node);
-    public override Node? VisitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) => base.VisitDelimitedStatement(context);
+    public override Node? VisitDelimitedStatement([NotNull] DelimitedStatementContext context) => base.VisitDelimitedStatement(context);
     public override Node? VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
-    public override Node? VisitStatement([NotNull] Ic11Parser.StatementContext context) => base.VisitStatement(context);
+    public override Node? VisitStatement([NotNull] StatementContext context) => base.VisitStatement(context);
     public override Node? VisitTerminal(ITerminalNode node) => base.VisitTerminal(node);
-    public override Node? VisitUndelimitedStatement([NotNull] Ic11Parser.UndelimitedStatementContext context) => base.VisitUndelimitedStatement(context);
-    public override Node? VisitBlock([NotNull] Ic11Parser.BlockContext context) => base.VisitBlock(context);
+    public override Node? VisitUndelimitedStatement([NotNull] UndelimitedStatementContext context) => base.VisitUndelimitedStatement(context);
+    public override Node? VisitBlock([NotNull] BlockContext context) => base.VisitBlock(context);
     protected override Node? AggregateResult(Node? aggregate, Node? nextResult) => base.AggregateResult(aggregate, nextResult);
-    
+
 }

@@ -1,20 +1,19 @@
-pin FabElectro d0;
-pin DialElectro d3;
+pin PowerLedSource d0;
+pin FlashLight d1;
+pin PowerLedTarget d2;
 
-pin FabLathe d1;
-pin DialLathe d4;
-
-pin FabBender d2;
-pin DialBender d5;
+const MinPower = 20000;
 
 void Main()
 {
     while(true)
     {
-        break;
-        while(2)
-        {
-            break;
-        }
+        var power = PowerLedSource.Setting;
+        Base.Setting = power;
+
+        FlashLight.On = power < MinPower;
+
+        if (PowerLedTarget.IsSet)
+            PowerLedTarget.Setting = power;
     }
 }
