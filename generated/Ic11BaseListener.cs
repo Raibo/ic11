@@ -228,6 +228,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -359,6 +371,20 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDeviceIdAccess([NotNull] Ic11Parser.DeviceIdAccessContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

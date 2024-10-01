@@ -273,12 +273,30 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
+    private object? Visit(Nodes.DeviceWithIndexAccess node)
+    {
+        Visit((Node)node.IndexExpr);
+        Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.IndexExpr, node.Member));
+
+        return null;
+    }
+
     private object? Visit(Nodes.DeviceWithIdAssignment node)
     {
         Visit((Node)node.RefIdExpr);
         Visit((Node)node.ValueExpr);
 
         Instructions.Add(new Instructions.DeviceWithIdAssignment(node.RefIdExpr, node.Member, node.ValueExpr));
+
+        return null;
+    }
+
+    private object? Visit(Nodes.DeviceWithIndexAssignment node)
+    {
+        Visit((Node)node.IndexExpr);
+        Visit((Node)node.ValueExpr);
+
+        Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.IndexExpr, node.Member, node.ValueExpr));
 
         return null;
     }

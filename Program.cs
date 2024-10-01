@@ -34,7 +34,7 @@ class Program
         var tree = parser.program(); // Assuming 'program' is the entry point of your grammar
 
         var flowContext = new FlowContext();
-        var flowAnalyzer = new ControlFlowAnalyzerVisitor(flowContext);
+        var flowAnalyzer = new ControlFlowBuilderVisitor(flowContext);
         flowAnalyzer.Visit(tree);
 
         new RootStatementsSorter().SortStatements((Root)flowContext.Root);

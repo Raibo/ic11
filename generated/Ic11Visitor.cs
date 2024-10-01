@@ -128,6 +128,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -193,6 +199,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDeviceIdAccess([NotNull] Ic11Parser.DeviceIdAccessContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>DeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

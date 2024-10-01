@@ -6,14 +6,5 @@ const MinPower = 20000;
 
 void Main()
 {
-    while(true)
-    {
-        var power = PowerLedSource.Setting;
-        Base.Setting = power;
-
-        FlashLight.On = power < MinPower;
-
-        if (PowerLedTarget.IsSet)
-            PowerLedTarget.Setting = power;
-    }
+    Device[0].Setting = Device[1].Pressure;
 }

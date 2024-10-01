@@ -17,6 +17,7 @@ statement: delimitedStatement | undelimitedStatement;
 
 delimitedStatement: (
         deviceWithIdAssignment
+        | deviceWithIndexAssignment
         | memberAssignment
 		| assignment
 		| yieldStatement
@@ -43,6 +44,7 @@ whileStatement: WHILE '(' expression ')' (block | statement);
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
 deviceWithIdAssignment: DEVICE_WITH_ID '(' idExpr=expression ')' '.' IDENTIFIER '=' valueExpr=expression;
+deviceWithIndexAssignment: DEVICE '[' indexExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
 memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' expression;
 assignment: IDENTIFIER '=' expression;
 
@@ -62,6 +64,7 @@ expression:
     | IDENTIFIER # Identifier
     | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
     | DEVICE_WITH_ID '(' expression ')' '.' IDENTIFIER # DeviceIdAccess
+    | DEVICE '[' expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
     ;
 
 // Lexer rules
@@ -90,6 +93,7 @@ OR: '||';
 EQ: '==';
 NE: '!=';
 NEGATION: '!';
+DEVICE: 'Device';
 DEVICE_WITH_ID: 'DeviceWithId';
 
 BOOLEAN: 'true' | 'false';

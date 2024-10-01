@@ -7,7 +7,7 @@ using ic11.ControlFlow.Nodes;
 using static Ic11Parser;
 
 namespace ic11.ControlFlow.TreeProcessing;
-public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
+public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 {
     public FlowContext FlowContext;
 
@@ -25,7 +25,7 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         ((IStatementsContainer)CurrentNode).AddToStatements(node);
     }
 
-    public ControlFlowAnalyzerVisitor(FlowContext flowContext)
+    public ControlFlowBuilderVisitor(FlowContext flowContext)
     {
         FlowContext = flowContext;
     }
@@ -201,6 +201,8 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         {
             ADD => BinaryOperationType.Add,
             SUB => BinaryOperationType.Sub,
+            MUL => BinaryOperationType.Mul,
+            DIV => BinaryOperationType.Div,
             AND => BinaryOperationType.And,
             OR => BinaryOperationType.Or,
             EQ => BinaryOperationType.Eq,
@@ -255,12 +257,35 @@ public class ControlFlowAnalyzerVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
+    public override Node? VisitDeviceWithIndexAssignment([NotNull] DeviceWithIndexAssignmentContext context)
+    {
+        var index = (IExpression)Visit(context.indexExpr)!;
+        var value = (IExpression)Visit(context.valueExpr)!;
+
+        var deviceProperty = context.member.Text;
+
+        var newNode = new DeviceWithIndexAssignment(index, value, deviceProperty);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
     public override Node VisitMemberAccess([NotNull] MemberAccessContext context)
     {
         var member = context.member.Text;
         var device = context.identifier.Text;
 
         var newNode = new MemberAccess(device, member);
+
+        return newNode;
+    }
+
+    public override Node? VisitDeviceIndexAccess([NotNull] DeviceIndexAccessContext context)
+    {
+        var member = context.member.Text;
+        var indexValue = (IExpression)Visit(context.expression())!;
+
+        var newNode = new DeviceWithIndexAccess(indexValue, member);
 
         return newNode;
     }
