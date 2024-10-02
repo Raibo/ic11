@@ -28,18 +28,18 @@ void Main()
 
     while(true)
     {
-        yield;
-        var j = 0;
-        while(j < setCount)
+        i = 0;
+        while(i < setCount)
         {
-            ProcessMachine(machineIds[j], dialIds[j]);
-            j = j + 1;
+            ProcessMachine(machineIds[i], dialIds[i]);
+            i = i + 1;
         }
     }
 }
 
 void ProcessMachine(machineId, dialId)
 {
+    yield;
     if (!DeviceWithId(machineId).Activate)
     {
         DeviceWithId(machineId).ClearMemory = true;

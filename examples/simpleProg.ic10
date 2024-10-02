@@ -37,17 +37,14 @@ j While19Enter
 While19Exit:
 While47Enter:
 beqz 1 While47Exit
-yield
 move r3 0
-While54Enter:
+While53Enter:
 slt r4 r3 r2
-beqz r4 While54Exit
+beqz r4 While53Exit
 add r5 r1 r3
 get r5 db r5
 add r4 r0 r3
 get r4 db r4
-push r5
-push r4
 push r3
 push r2
 push r1
@@ -59,12 +56,10 @@ pop r0
 pop r1
 pop r2
 pop r3
-pop r4
-pop r5
 add r4 r3 1
 move r3 r4
-j While54Enter
-While54Exit:
+j While53Enter
+While53Exit:
 j While47Enter
 While47Exit:
 j 9999
@@ -72,6 +67,7 @@ methodEnterProcessMachine:
 pop r0
 pop r3
 push ra
+yield
 ld r1 r0 Activate
 seqz r1 r1
 beqz r1 If68Skip

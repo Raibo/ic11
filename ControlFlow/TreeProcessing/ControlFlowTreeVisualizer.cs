@@ -264,4 +264,40 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         _depth--;
         return null;
     }
+
+    private object? Visit(ArrayDeclaration node)
+    {
+        WriteLine($"Array decl{Tags(node)}");
+        _depth++;
+
+        foreach (Node item in node.Expressions)
+            Visit(item);
+
+        _depth--;
+        return null;
+    }
+
+    private object? Visit(ArrayAssignment node)
+    {
+        WriteLine($"Array assignment{Tags(node)}");
+        _depth++;
+
+        foreach (Node item in node.Expressions)
+            Visit(item);
+
+        _depth--;
+        return null;
+    }
+
+    private object? Visit(ArrayAccess node)
+    {
+        WriteLine($"Array access{Tags(node)}");
+        _depth++;
+
+        foreach (Node item in node.Expressions)
+            Visit(item);
+
+        _depth--;
+        return null;
+    }
 }

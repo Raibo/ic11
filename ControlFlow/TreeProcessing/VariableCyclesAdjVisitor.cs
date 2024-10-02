@@ -1,6 +1,4 @@
-﻿using ic11.ControlFlow.Context;
-using ic11.ControlFlow.NodeInterfaces;
-using ic11.ControlFlow.Nodes;
+﻿using ic11.ControlFlow.Nodes;
 
 namespace ic11.ControlFlow.TreeProcessing;
 public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
@@ -20,7 +18,7 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
 
     protected override object? Visit(While node)
     {
-        var cycleStartIndex = FirstExpressionIndex(node.Expression);
+        var cycleStartIndex = node.Expression.FirstIndexInTree;
         var cycleFinishIndex = LastStatementIndex(node);
 
         var relevantVariables = node.Scope!.Variables
@@ -41,19 +39,4 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
     }
 
     private static int LastStatementIndex(While node) => ((Node)node.Statements.Last()).IndexInScope;
-
-    private int FirstExpressionIndex(IExpression ex)
-    {
-        var index = ((Node)ex).IndexInScope;
-
-        if (ex is IExpressionContainer ec)
-        {
-            foreach (var item in ec.Expressions)
-            {
-                index = Math.Min(index, FirstExpressionIndex(item));
-            }
-        }
-
-        return index;
-    }
 }

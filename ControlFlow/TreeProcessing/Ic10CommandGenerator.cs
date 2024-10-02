@@ -96,8 +96,8 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         foreach (var item in node.Expressions.Reverse())
             Visit((Node)item);
 
-        // save registers to stack
-        var usedRegisters = node.Scope!.GetUsedRegisters(node.IndexInScope, node.IndexInScope);
+        // save registers to stack             (Don't save params calculations)
+        var usedRegisters = node.Scope!.GetUsedRegisters(node.IndexInScope + 1, node.IndexInScope + 1);
         var declaredMethod = _flowContext.DeclaredMethods[node.Name];
 
         foreach (var register in ((IEnumerable<string>)usedRegisters).Reverse())
