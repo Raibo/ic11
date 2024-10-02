@@ -51,3 +51,5 @@ build/
 grammars/.antlr/
 
 publish/
+
+*.ic10
