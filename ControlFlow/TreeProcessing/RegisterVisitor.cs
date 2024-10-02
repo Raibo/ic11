@@ -19,9 +19,6 @@ public class RegisterVisitor
                 VisitNode(item);
         }
 
-        if (node is IExpression ex1 && ex1.Variable?.Id == 1)
-        { }
-
         if (node is IExpression ex && ex.Variable is not null && ex.Variable.Register is null)
             ex.Variable.Register = node.Scope!.GetAvailableRegister(ex.Variable.DeclareIndex, ex.Variable.LastReferencedIndex);
 
