@@ -10,6 +10,7 @@ public class FlowContext
     public List<IStatement>? CurrentStatementList;
     public List<UserDefinedVariable> AllUserDefinedVariables = new();
     public List<UserDefinedConstant> AllUserDefinedConstants = new();
+    public List<UserDefinedArray> AllUserDefinedArrays = new();
 
     public FlowContext()
     {

@@ -1,10 +1,62 @@
-pin PowerLedSource d0;
-pin FlashLight d1;
-pin PowerLedTarget d2;
+pin FabElectro d0;
+pin DialElectro d3;
 
-const MinPower = 20000;
+pin FabLathe d1;
+pin DialLathe d4;
+
+pin FabBender d2;
+pin DialBender d5;
 
 void Main()
 {
-    Device[0].Setting = Device[1].Pressure;
+    var machineIds = [3];
+    var dialIds = [3];
+
+    var setCount = 0;
+    var i = 0;
+    while (i < 3)
+    {
+        if (Device[i].IsSet && Device[i + 3].IsSet)
+        {
+            machineIds[setCount] = Device[i].ReferenceId;
+            dialIds[setCount] =  Device[i + 3].ReferenceId;
+            setCount = setCount + 1;
+        }
+
+        i = i + 1;
+    }
+
+    while(true)
+    {
+        yield;
+        var j = 0;
+        while(j < setCount)
+        {
+            ProcessMachine(machineIds[j], dialIds[j]);
+            j = j + 1;
+        }
+    }
+}
+
+void ProcessMachine(machineId, dialId)
+{
+    if (!DeviceWithId(machineId).Activate)
+    {
+        DeviceWithId(machineId).ClearMemory = true;
+        return;
+    }
+    
+    var craftsDone = DeviceWithId(machineId).ExportCount;
+    var craftsTarget = DeviceWithId(dialId).Setting;
+    
+    var craftsLeft = craftsTarget - craftsDone;
+    
+    DeviceWithId(dialId).Setting = craftsLeft;
+    DeviceWithId(machineId).ClearMemory = true;
+    
+    if (craftsLeft <= 0)
+    {
+        DeviceWithId(dialId).Setting = 1;
+        DeviceWithId(machineId).Activate = false;
+    }
 }

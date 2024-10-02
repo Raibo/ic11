@@ -19,11 +19,23 @@ public class RegisterVisitor
                 VisitNode(item);
         }
 
+        if (node is IExpression ex1 && ex1.Variable?.Id == 1)
+        { }
+
         if (node is IExpression ex && ex.Variable is not null && ex.Variable.Register is null)
-            ex.Variable.Register = node.Scope!.GetAvailableRegister(node.IndexInScope);
+            ex.Variable.Register = node.Scope!.GetAvailableRegister(ex.Variable.DeclareIndex, ex.Variable.LastReferencedIndex);
 
         if (node is VariableDeclaration d && d.Variable is not null && d.Variable.Register is null)
-            d.Variable.Register = node.Scope!.GetAvailableRegister(node.IndexInScope);
+            d.Variable.Register = node.Scope!.GetAvailableRegister(d.Variable.DeclareIndex, d.Variable.LastReferencedIndex);
+
+        if (node is ArrayDeclaration ad && ad.AddressVariable is not null && ad.AddressVariable.Register is null)
+            ad.AddressVariable.Register = node.Scope!.GetAvailableRegister(ad.AddressVariable.DeclareIndex, ad.AddressVariable.LastReferencedIndex);
+
+        if (node is ArrayAssignment ass && ass.Variable is not null && ass.Variable.Register is null)
+            ass.Variable.Register = node.Scope!.GetAvailableRegister(ass.Variable.DeclareIndex, ass.Variable.LastReferencedIndex);
+
+        if (node is ArrayAccess aa && aa.Variable is not null && aa.Variable.Register is null)
+            aa.Variable.Register = node.Scope!.GetAvailableRegister(aa.Variable.DeclareIndex, aa.Variable.LastReferencedIndex);
 
         if (node is IStatementsContainer sc && node is not If)
         {

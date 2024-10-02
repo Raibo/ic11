@@ -9,8 +9,10 @@ public class MethodDeclaration : Node, IStatement, IStatementsContainer
     public MethodReturnType ReturnType;
     public List<string> Parameters;
     public List<IStatement> Statements { get; init; } = new();
+    public List<Variable> ParameterVariables = new();
 
     public bool NotAllPathsReturnValue = false;
+    public bool ContainsArrays = false;
     public Scope? InnerScope;
 
     public MethodDeclaration(string name, MethodReturnType returnType, List<string> parameters)

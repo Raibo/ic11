@@ -19,16 +19,18 @@ delimitedStatement: (
         deviceWithIdAssignment
         | deviceWithIndexAssignment
         | memberAssignment
-		| assignment
-		| yieldStatement
+        | assignment
+        | yieldStatement
         | returnValueStatement
-		| returnStatement
-		| continueStatement
+        | returnStatement
+        | continueStatement
         | breakStatement
-		| variableDeclaration
+        | variableDeclaration
         | constantDeclaration
         | functionCallStatement
-	) ';';
+        | arrayDeclaration
+        | arrayAssignment
+    ) ';';
 
 yieldStatement: YIELD;
 returnStatement: RETURN;
@@ -51,6 +53,13 @@ assignment: IDENTIFIER '=' expression;
 variableDeclaration: VAR IDENTIFIER '=' expression;
 constantDeclaration: CONST IDENTIFIER '=' expression;
 
+arrayDeclaration:
+    VAR IDENTIFIER '=' '[' sizeExpr=expression ']' # arraySizeDeclaration
+    | VAR IDENTIFIER '=' '{' (expression (',' expression)*)? ','? '}' # arrayListDeclaration
+    ;
+
+arrayAssignment: IDENTIFIER '[' indexExpr=expression ']' '=' valueExpr=expression;
+
 expression:
     op=(NEGATION | SUB) operand=expression # UnaryOp
     | left=expression op=(MUL | DIV | MOD) right=expression # BinaryOp
@@ -65,6 +74,7 @@ expression:
     | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
     | DEVICE_WITH_ID '(' expression ')' '.' IDENTIFIER # DeviceIdAccess
     | DEVICE '[' expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
+    | IDENTIFIER '[' expression ']' # ArrayElementAccess
     ;
 
 // Lexer rules

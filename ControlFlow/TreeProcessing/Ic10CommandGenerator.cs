@@ -62,9 +62,23 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         // Push return address
         Instructions.Add(new StackPush("ra"));
 
+        // r15 is used to store arrays sizes sum, so if there are arrays, we need to init it with 0
+        if (node.ContainsArrays)
+            Instructions.Add(new Move("r15", new Literal(0)));
+
         VisitStatements(node.Statements);
 
         Instructions.Add(new Label($"methodExit{node.Name}"));
+
+        // if return type is real, we do this in "return" statement
+        if (node.ReturnType == MethodReturnType.Void && node.ContainsArrays)
+        {
+            var r15Expr = new DirectExpression("r15");
+            var spExpr = new DirectExpression("sp");
+
+            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, BinaryOperationType.Sub));
+        }
+
         Instructions.Add(new StackPop("ra"));
 
         // Push return value
@@ -78,17 +92,20 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(MethodCall node)
     {
+        // calculating parameters
+        foreach (var item in node.Expressions.Reverse())
+            Visit((Node)item);
+
         // save registers to stack
-        var usedRegisters = node.Scope!.GetUsedRegisters(node.IndexInScope);
+        var usedRegisters = node.Scope!.GetUsedRegisters(node.IndexInScope, node.IndexInScope);
         var declaredMethod = _flowContext.DeclaredMethods[node.Name];
 
-        foreach (var register in usedRegisters)
-            Instructions.Add(new StackPush(register));
+        foreach (var register in ((IEnumerable<string>)usedRegisters).Reverse())
+        Instructions.Add(new StackPush(register));
 
         // saving parameters to stack
         foreach (var item in node.Expressions.Reverse())
         {
-            Visit((Node)item);
             var value = item.CtKnownValue?.ToString() ?? item.Variable!.Register;
             Instructions.Add(new StackPush(value));
         }
@@ -115,6 +132,15 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         }
         else
         {
+            // if return type is void, we do this in the exit part
+            if (node.Scope.Method.ContainsArrays)
+            {
+                var r15Expr = new DirectExpression("r15");
+                var spExpr = new DirectExpression("sp");
+
+                Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, BinaryOperationType.Sub));
+            }
+
             Visit((Node)node.Expression!);
             Instructions.Add(new Move("r15", node.Expression!));
             Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
@@ -125,8 +151,6 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     protected override object? Visit(While node)
     {
-        Visit((Node)node.Expression);
-
         var labelEnterInstruction = new Label($"While{node.Id}Enter");
         var labelExitInstruction = new Label($"While{node.Id}Exit");
 
@@ -219,6 +243,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     private object? Visit(VariableAssignment node)
     {
         Visit((Node)node.Expression);
+        Instructions.Add(new Move(node.Variable!, node.Expression));
         return null;
     }
 
@@ -303,6 +328,71 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(ConstantDeclaration node)
     {
+        return null;
+    }
+
+    private object? Visit(ArrayDeclaration node)
+    {
+        if (node.DeclarationType == ArrayDeclarationType.Size)
+        {
+            Visit((Node)node.SizeExpression);
+
+            var spExpr = new DirectExpression("sp");
+            Instructions.Add(new Move(node.AddressVariable!, spExpr));
+            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, BinaryOperationType.Add));
+
+            var r15Expr = new DirectExpression("r15");
+            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, node.SizeExpression, BinaryOperationType.Add));
+
+            return null;
+        }
+
+        if (node.DeclarationType == ArrayDeclarationType.List)
+        {
+            var size = node.InitialElementExpressions.Count;
+
+            foreach (var item in node.InitialElementExpressions)
+            {
+                Visit((Node)item);
+                Instructions.Add(new StackPush(item));
+            }
+
+            var spExpr = new DirectExpression("sp");
+            Instructions.Add(new Move(node.AddressVariable!, spExpr));
+
+            var r15Expr = new DirectExpression("r15");
+            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, new Literal(size), BinaryOperationType.Add));
+
+            return null;
+        }
+
+        throw new Exception($"Unexpected array declaration type {node.DeclarationType}");
+    }
+
+    private object? Visit(ArrayAssignment node)
+    {
+        Visit((Node)node.IndexExpression);
+        Visit((Node)node.ValueExpression);
+
+        var arrayAddr = new DirectExpression(node.Array.AddressVariable!);
+        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, BinaryOperationType.Add));
+
+        var elementAddr = new DirectExpression(node.Variable!);
+        Instructions.Add(new StackPut("db", elementAddr, node.ValueExpression));
+
+        return null;
+    }
+
+    private object? Visit(ArrayAccess node)
+    {
+        Visit((Node)node.IndexExpression);
+
+        var arrayAddr = new DirectExpression(node.Array.AddressVariable!);
+        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, BinaryOperationType.Add));
+
+        var elementAddr = new DirectExpression(node.Variable!);
+        Instructions.Add(new StackGet("db", node.Variable!, elementAddr));
+
         return null;
     }
 }

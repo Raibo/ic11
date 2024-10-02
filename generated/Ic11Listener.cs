@@ -241,6 +241,40 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>arraySizeDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArraySizeDeclaration([NotNull] Ic11Parser.ArraySizeDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arraySizeDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArraySizeDeclaration([NotNull] Ic11Parser.ArraySizeDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>arrayListDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayListDeclaration([NotNull] Ic11Parser.ArrayListDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arrayListDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayListDeclaration([NotNull] Ic11Parser.ArrayListDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.arrayAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.arrayAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -324,6 +358,18 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ArrayElementAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayElementAccess([NotNull] Ic11Parser.ArrayElementAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ArrayElementAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayElementAccess([NotNull] Ic11Parser.ArrayElementAccessContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

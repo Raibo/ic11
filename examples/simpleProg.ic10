@@ -1,13 +1,96 @@
-alias PowerLedSource d0
-alias FlashLight d1
-alias PowerLedTarget d2
-beqz 1 12
-l r0 PowerLedSource Setting
-s db Setting r0
-slt r1 r0 20000
-s FlashLight On r1
-sdse r1 PowerLedTarget
-beqz r1 11
-s PowerLedTarget Setting r0
-j 3
+alias FabElectro d0
+alias FabLathe d1
+alias FabBender d2
+alias DialElectro d3
+alias DialLathe d4
+alias DialBender d5
+methodEnterMain:
+move r0 sp
+add sp sp 3
+add r15 r15 3
+move r1 sp
+add sp sp 3
+add r15 r15 3
+move r2 0
+move r3 0
+While19Enter:
+slt r4 r3 3
+beqz r4 While19Exit
+sdse r4 dr3
+add r5 r3 3
+sdse r6 dr5
+and r4 r4 r6
+beqz r4 If27Skip
+l r4 dr3 ReferenceId
+add r5 r0 r2
+put db r5 r4
+add r4 r3 3
+l r5 dr4 ReferenceId
+add r4 r1 r2
+put db r4 r5
+add r4 r2 1
+move r2 r4
+If27Skip:
+add r4 r3 1
+move r3 r4
+j While19Enter
+While19Exit:
+While47Enter:
+beqz 1 While47Exit
+yield
+move r3 0
+While54Enter:
+slt r4 r3 r2
+beqz r4 While54Exit
+add r5 r1 r3
+get r5 db r5
+add r4 r0 r3
+get r4 db r4
+push r5
+push r4
+push r3
+push r2
+push r1
+push r0
+push r5
+push r4
+jal methodEnterProcessMachine
+pop r0
+pop r1
+pop r2
+pop r3
+pop r4
+pop r5
+add r4 r3 1
+move r3 r4
+j While54Enter
+While54Exit:
+j While47Enter
+While47Exit:
 j 9999
+methodEnterProcessMachine:
+pop r0
+pop r3
+push ra
+ld r1 r0 Activate
+seqz r1 r1
+beqz r1 If68Skip
+sd r0 ClearMemory 1
+j methodExitProcessMachine
+If68Skip:
+ld r1 r0 ExportCount
+move r2 r1
+ld r1 r3 Setting
+move r4 r1
+sub r1 r4 r2
+move r2 r1
+sd r3 Setting r2
+sd r0 ClearMemory 1
+sle r1 r2 0
+beqz r1 If92Skip
+sd r3 Setting 1
+sd r0 Activate 0
+If92Skip:
+methodExitProcessMachine:
+pop ra
+j ra

@@ -288,6 +288,46 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>arraySizeDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArraySizeDeclaration([NotNull] Ic11Parser.ArraySizeDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arraySizeDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArraySizeDeclaration([NotNull] Ic11Parser.ArraySizeDeclarationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>arrayListDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArrayListDeclaration([NotNull] Ic11Parser.ArrayListDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>arrayListDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArrayListDeclaration([NotNull] Ic11Parser.ArrayListDeclarationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.arrayAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.arrayAssignment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -385,6 +425,20 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ArrayElementAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArrayElementAccess([NotNull] Ic11Parser.ArrayElementAccessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ArrayElementAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArrayElementAccess([NotNull] Ic11Parser.ArrayElementAccessContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

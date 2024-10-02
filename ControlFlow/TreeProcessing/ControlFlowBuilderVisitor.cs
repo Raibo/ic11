@@ -47,7 +47,11 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     {
         var identifiers = context.IDENTIFIER();
         var name = identifiers[0].GetText();
-        var parameters = identifiers.Skip(1).Select(i => i.GetText()).ToList();
+
+        var parameters = identifiers.Skip(1)
+            .Select(i => i.GetText())
+            .ToList();
+
         var block = context.block();
 
         var returnType = context.retType.Text switch
@@ -167,6 +171,19 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
+    public override Node VisitMemberAccess([NotNull] MemberAccessContext context)
+    {
+        var member = context.member.Text;
+        var device = context.identifier.Text;
+
+        if (context.identifier.Type == BASE_DEVICE)
+            device = "db";
+
+        var newNode = new MemberAccess(device, member);
+
+        return newNode;
+    }
+
     public override Node? VisitWhileStatement([NotNull] WhileStatementContext context)
     {
         var innerCode = (IParseTree)context.block() ?? context.statement();
@@ -270,16 +287,6 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitMemberAccess([NotNull] MemberAccessContext context)
-    {
-        var member = context.member.Text;
-        var device = context.identifier.Text;
-
-        var newNode = new MemberAccess(device, member);
-
-        return newNode;
-    }
-
     public override Node? VisitDeviceIndexAccess([NotNull] DeviceIndexAccessContext context)
     {
         var member = context.member.Text;
@@ -320,7 +327,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     public override Node VisitFunctionCall([NotNull] FunctionCallContext context)
     {
         var name = context.IDENTIFIER().GetText();
-        var paramExpressions = context.expression().Select(e => (IExpression)Visit(e)!).ToList();
+
+        var paramExpressions = context.expression()
+            .Select(e => (IExpression)Visit(e)!)
+            .ToList();
 
         var newNode = new MethodCall(name, paramExpressions);
 
@@ -330,7 +340,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     public override Node? VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
     {
         var name = context.IDENTIFIER().GetText();
-        var paramExpressions = context.expression().Select(e => (IExpression)Visit(e)!).ToList();
+
+        var paramExpressions = context.expression()
+            .Select(e => (IExpression)Visit(e)!)
+            .ToList();
 
         var newNode = new MethodCall(name, paramExpressions);
         AddToStatements(newNode);
@@ -354,6 +367,47 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         AddToStatements(newNode);
 
         return null;
+    }
+
+    public override Node? VisitArraySizeDeclaration([NotNull] ArraySizeDeclarationContext context)
+    {
+        var sizeExpression = (IExpression)Visit(context.sizeExpr)!;
+
+        var newNode = new ArrayDeclaration(context.IDENTIFIER().GetText(), sizeExpression);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitArrayListDeclaration([NotNull] ArrayListDeclarationContext context)
+    {
+        var elementExpressions = context.expression()
+            .Select(ec => (IExpression)Visit(ec)!)
+            .ToList();
+
+        var newNode = new ArrayDeclaration(context.IDENTIFIER().GetText(), elementExpressions);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitArrayAssignment([NotNull] ArrayAssignmentContext context)
+    {
+        var indexExpr = (IExpression)Visit(context.indexExpr)!;
+        var valueExpr = (IExpression)Visit(context.valueExpr)!;
+
+        var newNode = new ArrayAssignment(context.IDENTIFIER().GetText(), indexExpr, valueExpr);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitArrayElementAccess([NotNull] ArrayElementAccessContext context)
+    {
+        var indexExpr = (IExpression)Visit(context.expression())!;
+        var newNode = new ArrayAccess(context.IDENTIFIER().GetText(), indexExpr);
+
+        return newNode;
     }
 
     public override Node VisitParenthesis([NotNull] ParenthesisContext context) =>

@@ -158,6 +158,26 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitConstantDeclaration([NotNull] Ic11Parser.ConstantDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>arraySizeDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArraySizeDeclaration([NotNull] Ic11Parser.ArraySizeDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>arrayListDeclaration</c>
+	/// labeled alternative in <see cref="Ic11Parser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayListDeclaration([NotNull] Ic11Parser.ArrayListDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.arrayAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -206,6 +226,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ArrayElementAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayElementAccess([NotNull] Ic11Parser.ArrayElementAccessContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>FunctionCall</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

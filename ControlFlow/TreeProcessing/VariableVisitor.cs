@@ -18,6 +18,9 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         typeof(PinDeclaration),
         typeof(If),
         typeof(MethodDeclaration),
+        typeof(ArrayDeclaration),
+        typeof(ArrayAssignment),
+        typeof(ArrayAccess),
     };
 
     public VariableVisitor(FlowContext flowContext)
@@ -55,10 +58,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         if (node is IExpression ex)
         {
             if (ex.CtKnownValue is null)
-                ex.Variable = node.Scope!.ClaimNewVariable();
-
-            if (ex.Variable is not null)
-                ex.Variable.DeclareIndex = node.IndexInScope;
+                ex.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
 
             if (IsVoidCallAsExpression(node))
                 throw new Exception($"Void method used as an expression");
@@ -95,8 +95,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         var scope = node.Scope!;
 
-        node.Variable = node.Scope!.ClaimNewVariable();
-        node.Variable.DeclareIndex = node.IndexInScope;
+        node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
 
         var newUserDefinedVariable = new UserDefinedVariable(node.Name, node.Variable!, node.IndexInScope, node.Expression.CtKnownValue.HasValue);
 
@@ -127,6 +126,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             throw new Exception($"Variable {node.Name} is not defined");
 
         targetVariable.LastReassignedIndex = node.IndexInScope;
+        targetVariable.LastReferencedIndex = node.IndexInScope;
         node.Variable = targetVariable.Variable;
 
         var expressionVariable = VisitNode((Node)node.Expression);
@@ -204,5 +204,81 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             VisitNode(item);
 
         return null;
+    }
+
+    private Variable? Visit(ArrayDeclaration node)
+    {
+        node.AddressVariable = node.Scope!.ClaimNewVariable(node.IndexInScope);
+
+        var newUserArray = new UserDefinedArray(node.Name, node, node.IndexInScope);
+        node.Scope!.AddUserArray(newUserArray);
+        _flowContext.AllUserDefinedArrays.Add(newUserArray);
+
+        if (node.DeclarationType == DataHolders.ArrayDeclarationType.Size)
+        {
+            var sizeVariable = VisitNode((Node)node.SizeExpression);
+
+            if (sizeVariable is not null)
+                sizeVariable.LastReferencedIndex = node.IndexInScope;
+        }
+        else
+        {
+            foreach (Node item in node.InitialElementExpressions)
+            {
+                var innerVariable = VisitNode(item);
+
+                if (innerVariable is not null)
+                    innerVariable.LastReferencedIndex = node.IndexInScope;
+            }
+        }
+
+        return null;
+    }
+
+    private Variable? Visit(ArrayAssignment node)
+    {
+        if (!node.Scope!.TryGetUserArray(node.Name, out var targetArray))
+            throw new Exception($"Array {node.Name} is not defined");
+
+        node.Array = targetArray.Array;
+
+        targetArray.LastReferencedIndex = node.IndexInScope;
+        targetArray.Array.AddressVariable!.LastReferencedIndex = node.IndexInScope;
+
+        node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
+        node.Variable.LastReferencedIndex = node.IndexInScope;
+
+        var indexExprVariable = VisitNode((Node)node.IndexExpression);
+
+        if (indexExprVariable is not null)
+            indexExprVariable.LastReferencedIndex = node.IndexInScope;
+
+        var valueExprVariable = VisitNode((Node)node.ValueExpression);
+
+        if (valueExprVariable is not null)
+            valueExprVariable.LastReferencedIndex = node.IndexInScope;
+
+        return null;
+    }
+
+    private Variable? Visit(ArrayAccess node)
+    {
+        if (!node.Scope!.TryGetUserArray(node.Name, out var userDefinedArray))
+            throw new Exception($"Array '{node.Name}' is not defined");
+
+        node.Array = userDefinedArray.Array;
+
+        var indexVariable = VisitNode((Node)node.IndexExpression);
+
+        if (indexVariable is not null)
+            indexVariable.LastReferencedIndex = node.IndexInScope;
+
+        node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
+        node.Variable.LastReferencedIndex = node.IndexInScope;
+
+        userDefinedArray.LastReferencedIndex = node.IndexInScope;
+        userDefinedArray.Array.AddressVariable!.LastReferencedIndex = node.IndexInScope;
+
+        return node.Variable;
     }
 }

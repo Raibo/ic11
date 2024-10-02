@@ -59,6 +59,7 @@ public class ScopeVisitor
             }
 
             VisitStatementList(st.Statements);
+            _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;
             _currentScope = _currentScope.Parent!;
         }
     }
@@ -67,8 +68,8 @@ public class ScopeVisitor
     {
         foreach (var parameter in node.Parameters)
         {
-            var variable = _currentScope!.ClaimNewVariable();
-            variable.DeclareIndex = -1;
+            var variable = _currentScope!.ClaimNewVariable(-1);
+            node.ParameterVariables.Add(variable);
 
             var newUserDefinedVariable = new UserDefinedVariable(parameter, variable!, -1, false);
 
@@ -87,6 +88,7 @@ public class ScopeVisitor
         {
             _currentScope = _currentScope.CreateChildScope();
             VisitStatementList(node.Statements);
+            _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;
             _currentScope = _currentScope.Parent!;
         }
 
@@ -96,7 +98,9 @@ public class ScopeVisitor
         {
             _currentScope = _currentScope.CreateChildScope();
             VisitStatementList(node.Statements);
+            _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;
             _currentScope = _currentScope.Parent!;
+
         }
 
         return default!;

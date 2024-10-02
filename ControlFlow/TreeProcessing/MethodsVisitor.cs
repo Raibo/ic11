@@ -107,4 +107,11 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
 
         return false;
     }
+
+    private bool Visit(ArrayDeclaration node)
+    {
+        _currentMethod.ContainsArrays = true;
+
+        return false;
+    }
 }

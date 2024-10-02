@@ -41,11 +41,12 @@ class Program
         new MethodsVisitor(flowContext).Visit((Root)flowContext.Root);
         new ScopeVisitor(flowContext).Visit((Root)flowContext.Root);
         new VariableVisitor(flowContext).Visit((Root)flowContext.Root);
+        new VariableCyclesAdjVisitor().VisitRoot((Root)flowContext.Root);
         new RegisterVisitor().Visit((Root)flowContext.Root);
         var instructions = new Ic10CommandGenerator(flowContext).Visit((Root)flowContext.Root);
 
         UselessMoveRemover.Remove(instructions);
-        LabelsRemoval.RemoveLabels(instructions);
+        //LabelsRemoval.RemoveLabels(instructions);
 
         foreach (var item in instructions)
             Console.WriteLine(item.Render());

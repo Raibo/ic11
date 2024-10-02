@@ -15,13 +15,24 @@ public class Scope
 
     public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
     public Dictionary<string, UserDefinedConstant> UserDefinedConstants = new();
+    public Dictionary<string, UserDefinedArray> UserDefinedArrays = new();
 
-    public Variable ClaimNewVariable()
+    public Variable ClaimNewVariable(int declareIndex)
     {
         var newVar = new Variable();
-        newVar.DeclareIndex = CurrentNodeOrder - 1;
-        Variables.Add(newVar);
+        newVar.DeclareScope = this;
+        newVar.DeclareIndex = declareIndex;
+        AddVariable(newVar);
+
         return newVar;
+    }
+
+    private void AddVariable(Variable variable)
+    {
+        Variables.Add(variable);
+
+        foreach (var item in Children)
+            item.AddVariable(variable);
     }
 
     public Scope CreateChildScope(MethodDeclaration? method = null)
@@ -43,28 +54,29 @@ public class Scope
         return childScope;
     }
 
-    public string GetAvailableRegister(int nodeIndex)
+    public string GetAvailableRegister(int fromNodeIndex, int toNodeIndex)
     {
-        var usedRegisters = GetUsedRegisters(nodeIndex);
+        var usedRegisters = GetUsedRegisters(fromNodeIndex, toNodeIndex);
 
         var availableRegisters = Enumerable.Range(0, 15)
             .OrderBy(r => r)
             .Select(r => $"r{r}")
             .Except(usedRegisters);
 
-        return availableRegisters.First();
+        var register = availableRegisters.First();
+        return register;
     }
 
-    public List<string> GetUsedRegisters(int nodeIndex) =>
+    public List<string> GetUsedRegisters(int fromNodeIndex, int toNodeIndex) =>
         Variables
-            .Where(v => v.DeclareIndex < nodeIndex)
-            .Where(v => v.LastReferencedIndex > nodeIndex)
+            .Where(v => v.DeclareIndex <= toNodeIndex)
+            .Where(v => v.LastReferencedIndex >= fromNodeIndex)
             .Select(v => v.Register)
             .ToList();
 
     public void AddUserVariable(UserDefinedVariable variable)
     {
-        if (UserDefinedConstants.ContainsKey(variable.Name) || UserDefinedVariables.ContainsKey(variable.Name))
+        if (IsNameAlreadyTaken(variable.Name))
             throw new Exception($"'{variable.Name}' already exists");
 
         UserDefinedVariables[variable.Name] = variable;
@@ -78,7 +90,7 @@ public class Scope
 
     public void AddUserConstant(UserDefinedConstant constant)
     {
-        if (UserDefinedConstants.ContainsKey(constant.Name) || UserDefinedVariables.ContainsKey(constant.Name))
+        if (IsNameAlreadyTaken(constant.Name))
             throw new Exception($"'{constant.Name}' already exists");
 
         UserDefinedConstants[constant.Name] = constant;
@@ -89,4 +101,23 @@ public class Scope
 
     public bool TryGetUserConstant(string name, out UserDefinedConstant constant) =>
         UserDefinedConstants.TryGetValue(name, out constant!);
+
+    public void AddUserArray(UserDefinedArray array)
+    {
+        if (IsNameAlreadyTaken(array.Name))
+            throw new Exception($"'{array.Name}' already exists");
+
+        UserDefinedArrays[array.Name] = array;
+
+        foreach (var item in Children)
+            item.AddUserArray(array);
+    }
+
+    public bool TryGetUserArray(string name, out UserDefinedArray array) =>
+        UserDefinedArrays.TryGetValue(name, out array!);
+
+    public bool IsNameAlreadyTaken(string name) =>
+        UserDefinedConstants.ContainsKey(name)
+        || UserDefinedVariables.ContainsKey(name)
+        || UserDefinedArrays.ContainsKey(name);
 }

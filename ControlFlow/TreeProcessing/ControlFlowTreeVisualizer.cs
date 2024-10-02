@@ -255,4 +255,13 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         WriteLine($"Break{Tags(node)}");
         return null;
     }
+
+    private object? Visit(DeviceWithIndexAccess node)
+    {
+        WriteLine($"Device with index access (member {node.Member}){Tags(node)}");
+        _depth++;
+        Visit((Node)node.IndexExpr);
+        _depth--;
+        return null;
+    }
 }
