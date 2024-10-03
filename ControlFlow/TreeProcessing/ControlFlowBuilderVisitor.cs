@@ -4,6 +4,7 @@ using ic11.ControlFlow.Context;
 using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
+using System.Globalization;
 using static Ic11Parser;
 
 namespace ic11.ControlFlow.TreeProcessing;
@@ -116,7 +117,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         if (value == "false")
             value = "0";
 
-        var parsedValue = decimal.Parse(value);
+        var parsedValue = decimal.Parse(value, CultureInfo.InvariantCulture);
 
         return new Literal(parsedValue);
     }
