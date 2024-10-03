@@ -4,6 +4,9 @@
 	"scopeName": "source.ic11",
   "patterns": [
     {
+      "include": "#comments"
+    },
+    {
       "include": "#keywords"
     },
     {
@@ -14,9 +17,6 @@
     },
     {
       "include": "#constants"
-    },
-    {
-      "include": "#comments"
     }
   ],
   "repository": {
@@ -25,6 +25,14 @@
         {
           "name": "keyword.control.ic11",
           "match": "\\b(pin|void|real|yield|return|continue|var|while|if|else)\\b"
+        },
+        {
+          "name": "support.type.device.ic11",
+          "match": "\\b(Base|DeviceWithId)\\b"
+        },
+        {
+          "name": "constant.language.pin.ic11",
+          "match": "\\b(db|d0|d1|d2|d3|d4|d5)\\b"
         }
       ]
     },
@@ -37,10 +45,6 @@
         {
           "name": "entity.name.function.ic11",
           "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\s*(?=\\()"
-        },
-        {
-          "name": "support.type.device.ic11",
-          "match": "\\b(Base|DeviceWithId)\\b"
         }
       ]
     },
@@ -69,10 +73,6 @@
         {
           "name": "constant.language.boolean.ic11",
           "match": "\\b(true|false)\\b"
-        },
-        {
-          "name": "constant.language.pin.ic11",
-          "match": "\\b(db|d0|d1|d2|d3|d4|d5)\\b"
         }
       ]
     },
@@ -81,6 +81,11 @@
         {
           "name": "comment.line.double-slash.ic11",
           "match": "//.*$"
+        },
+        {
+          "name": "comment.block.ic11",
+          "begin": "/\\*",
+          "end": "\\*/"
         }
       ]
     }
