@@ -246,6 +246,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         {
             NEGATION => UnaryOperationType.Not,
             SUB => UnaryOperationType.Minus,
+            ABS => UnaryOperationType.Abs,
             _ => throw new NotImplementedException(),
         };
 

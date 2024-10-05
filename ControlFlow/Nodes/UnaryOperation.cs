@@ -40,6 +40,7 @@ public class UnaryOperation : Node, IExpression, IExpressionContainer
         {
             UnaryOperationType.Not => value == 0m ? 1m : 0m,
             UnaryOperationType.Minus => value * -1m,
+            UnaryOperationType.Abs => Math.Abs(value),
             _ => throw new Exception("Unexpected unary operation type"),
         };
     }

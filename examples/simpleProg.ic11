@@ -1,19 +1,21 @@
 pin Pump d0;
 pin PaInput d1;
 pin PaOutput d2;
-pin TankStorage d3;
+pin CanStorage d3;
 pin Dial d4;
 pin Led d5;
 
 // TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.314)
 // PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
 
-const GasConstant = 8.314;
-const TargetPressure = 9500;
-const Tolerance = 0.1;
+// Set here pump direction that will pump gas inside the canister
+const AddGasPumpMode = 0;
 
-const MinPower = 0.05;
+// Acceptable margin of error, in moles
+const Tolerance = 0.01;
 
+// Don't care about high volume canisters
+const canVolume = 64;
 
 void Main()
 {
@@ -21,34 +23,47 @@ void Main()
     {
         yield;
 
-        if (Dial.Setting)
+        var canMoles = CanStorage.Quantity;
+        Led.Setting = canMoles;
 
+        var pipeVolume = PaOutput.Volume;
+        var totalVolume = canVolume + pipeVolume;
 
-        if (PaOutput.Pressure >= TargetPressure)
+        var targetCanMoles = Dial.Setting;
+        var totalTargetMoles = targetCanMoles * totalVolume / canVolume;
+        var totalCurrentMoles = PaOutput.TotalMoles + canMoles;
+
+        var addMoles = totalTargetMoles - totalCurrentMoles;
+
+        if (CanStorage.)
+
+        // Good enough, exit
+        if (Abs(addMoles) <= Tolerance)
         {
             Pump.On = false;
-            continue;
-        }
-        
-        var transferMolesPerLiter = PaInput.TotalMoles / PaInput.Volume;
-
-        var targetMoles = 0;
-
-        if (PaOutput.Pressure > 0)
-            targetMoles = TargetPressure / PaOutput.Pressure * PaOutput.TotalMoles;
-        else
-            targetMoles = PaOutput.Volume * TargetPressure / PaInput.Temperature / GasConstant;
-        
-        var targAddMoles = targetMoles - PaOutput.TotalMoles;
-        var pumpPower = targAddMoles / transferMolesPerLiter;
-
-        if (pumpPower < MinPower)
-        {
-            Pump.On = false;
+            Led.Color = 2;
             continue;
         }
 
-        Pump.Setting = pumpPower;
-        Pump.On = true;
+        Led.Color = 0;
+
+        if(addMoles > 0) // Add gas
+        {
+            var addMolesPerLiter = PaInput.TotalMoles / PaInput.Volume;
+            var pumpPower = addMoles / addMolesPerLiter;
+            
+            Pump.Mode = AddGasPumpMode;
+            Pump.Setting = pumpPower;
+            Pump.On = true;
+        }
+        else // Remove gas
+        {
+            var removeMolesPerLiter = PaOutput.TotalMoles / PaOutput.Volume;
+            var removePower = Abs(addMoles) / removeMolesPerLiter;
+
+            Pump.Mode = !AddGasPumpMode;
+            Pump.Setting = removePower;
+            Pump.On = true;
+        }
     }
 }

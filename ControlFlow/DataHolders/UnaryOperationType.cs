@@ -3,4 +3,5 @@ public enum UnaryOperationType
 {
     Not,
     Minus,
+    Abs,
 }

@@ -1,63 +1,56 @@
-alias Pump1 d0
-alias PaInput1 d1
-alias PaOutput1 d2
-alias Pump2 d3
-alias PaInput2 d4
-alias PaOutput2 d5
-beqz 1 19
+alias Pump d0
+alias PaInput d1
+alias PaOutput d2
+alias CanStorage d3
+alias Dial d4
+alias Led d5
+beqz 1 55
 yield
-push 9500
-push 2
-push 1
-push 0
-jal 20
-push 19000
-push 5
-push 4
-push 3
-jal 20
-j 6
-j 9999
-pop r3
-pop r4
-pop r0
-pop r2
-push ra
-l r1 dr0 Pressure
-sge r1 r1 r2
-beqz r1 30
-s dr3 On 0
-j 61
-l r1 dr4 TotalMoles
-l r5 dr4 Volume
-div r6 r1 r5
-move r1 r6
-move r5 0
-l r6 dr0 Pressure
-sgt r6 r6 0
-beqz r6 44
-l r6 dr0 Pressure
-div r7 r2 r6
-l r6 dr0 TotalMoles
-mul r8 r7 r6
-move r5 r8
-j 50
-l r6 dr0 Volume
-mul r7 r6 r2
-l r2 dr4 Temperature
-div r4 r7 r2
-div r2 r4 8.314
-move r5 r2
-l r2 dr0 TotalMoles
-sub r0 r5 r2
+l r0 CanStorage Quantity
+move r1 r0
+s Led Setting r1
+l r0 PaOutput Volume
 move r2 r0
+add r0 64 r2
+move r2 r0
+l r0 Dial Setting
+move r3 r0
+mul r0 r3 r2
+div r2 r0 64
+move r0 r2
+l r2 PaOutput TotalMoles
+add r3 r2 r1
+move r1 r3
+sub r2 r0 r1
+move r0 r2
+abs r1 r0
+sle r1 r1 0.01
+beqz r1 31
+s Pump On 0
+s Led Color 2
+j 6
+s Led Color 0
+sgt r1 r0 0
+beqz r1 44
+l r1 PaInput TotalMoles
+l r2 PaInput Volume
+div r3 r1 r2
+move r1 r3
+div r2 r0 r1
+move r1 r2
+s Pump Mode 0
+s Pump Setting r1
+s Pump On 1
+j 54
+l r1 PaOutput TotalMoles
+l r2 PaOutput Volume
+div r3 r1 r2
+move r1 r3
+abs r2 r0
 div r0 r2 r1
 move r1 r0
-slt r0 r1 0.05
-beqz r0 59
-s dr3 On 0
-j 61
-s dr3 Setting r1
-s dr3 On 1
-pop ra
-j ra
+s Pump Mode 1
+s Pump Setting r1
+s Pump On 1
+j 6
+j 9999

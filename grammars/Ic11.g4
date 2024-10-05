@@ -62,6 +62,7 @@ arrayAssignment: IDENTIFIER '[' indexExpr=expression ']' '=' valueExpr=expressio
 
 expression:
     op=(NEGATION | SUB) operand=expression # UnaryOp
+    | op=ABS '(' operand=expression ')' # UnaryOp
     | left=expression op=(MUL | DIV | MOD) right=expression # BinaryOp
     | left=expression op=(ADD | SUB) right=expression # BinaryOp
     | left=expression op=(LT | GT | LE | GE | EQ | NE) right=expression # BinaryOp
@@ -103,6 +104,7 @@ OR: '||';
 EQ: '==';
 NE: '!=';
 NEGATION: '!';
+ABS: 'Abs';
 DEVICE: 'Device';
 DEVICE_WITH_ID: 'DeviceWithId';
 

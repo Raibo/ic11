@@ -21,6 +21,7 @@ public class UnaryOperation : Instruction
             {
                 UnaryOperationType.Not => $"seqz {Destination.Register} {Operand.Render()}",
                 UnaryOperationType.Minus => $"mul {Destination.Register} {Operand.Render()} -1",
+                UnaryOperationType.Abs => $"abs {Destination.Register} {Operand.Render()}",
                 _ => throw new Exception("Unexpected binary operation type"),
             };
 }
