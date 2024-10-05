@@ -1,4 +1,5 @@
 ﻿using ic11.ControlFlow.Nodes;
+using System.Collections.Generic;
 
 namespace ic11.ControlFlow.Context;
 public class Scope
@@ -68,11 +69,28 @@ public class Scope
     }
 
     public List<string> GetUsedRegisters(int fromNodeIndex, int toNodeIndex) =>
-        Variables
+        GetVariablesForWholeMethodAndChildren()
             .Where(v => v.DeclareIndex <= toNodeIndex)
             .Where(v => v.LastReferencedIndex >= fromNodeIndex)
             .Select(v => v.Register)
             .ToList();
+
+    private HashSet<Variable> GetVariablesForWholeMethodAndChildren()
+    {
+        var variables = new HashSet<Variable>();
+        TraverseScope(this.Method!.InnerScope!);
+
+        void TraverseScope(Scope sc)
+        {
+            foreach (var item in sc.Variables)
+                variables.Add(item);
+
+            foreach (var child in sc.Children)
+                TraverseScope(child);
+        }
+
+        return variables;
+    }
 
     public void AddUserVariable(UserDefinedVariable variable)
     {

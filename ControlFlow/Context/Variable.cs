@@ -15,4 +15,9 @@ public class Variable
 
     //private string _reg;
     //public string Register { get => _reg is null ? null : $"var{Id}[{_reg}] dec[{DeclareIndex}] ref[{LastReferencedIndex}]"; set { _reg = value; } }
+
+    public override bool Equals(object? other) =>
+        other is Variable otherV && otherV.Id == Id;
+
+    public override int GetHashCode() => Id;
 }
