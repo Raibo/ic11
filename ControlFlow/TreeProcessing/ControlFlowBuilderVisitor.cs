@@ -158,7 +158,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
     public override Node? VisitMemberAssignment([NotNull] MemberAssignmentContext context)
     {
-        var expression = (IExpression)Visit(context.expression())!;
+        var valueExpr = (IExpression)Visit(context.valueExpr)!;
 
         var member = context.member.Text;
         var device = context.identifier.Text;
@@ -166,7 +166,24 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         if (context.identifier.Type == BASE_DEVICE)
             device = "db";
 
-        var newNode = new MemberAssignment(device, member, expression);
+        var newNode = new MemberAssignment(device, member, valueExpr);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitMemberSlotAssignment([NotNull] MemberSlotAssignmentContext context)
+    {
+        var valueExpr = (IExpression)Visit(context.valueExpr)!;
+        var slotIdxExpr = (IExpression)Visit(context.slotIdxExpr)!;
+
+        var member = context.member.Text;
+        var device = context.identifier.Text;
+
+        if (context.identifier.Type == BASE_DEVICE)
+            device = "db";
+
+        var newNode = new MemberAssignment(device, member, slotIdxExpr, valueExpr);
         AddToStatements(newNode);
 
         return null;
@@ -181,6 +198,21 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
             device = "db";
 
         var newNode = new MemberAccess(device, member);
+
+        return newNode;
+    }
+
+    public override Node? VisitSlotMemberAccess([NotNull] SlotMemberAccessContext context)
+    {
+        var slotIdxExpr = (IExpression)Visit(context.slotIdxExpr)!;
+
+        var member = context.member.Text;
+        var device = context.identifier.Text;
+
+        if (context.identifier.Type == BASE_DEVICE)
+            device = "db";
+
+        var newNode = new MemberAccess(device, slotIdxExpr, member);
 
         return newNode;
     }
@@ -278,7 +310,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
     public override Node? VisitDeviceWithIndexAssignment([NotNull] DeviceWithIndexAssignmentContext context)
     {
-        var index = (IExpression)Visit(context.indexExpr)!;
+        var index = (IExpression)Visit(context.pinIdxExpr)!;
         var value = (IExpression)Visit(context.valueExpr)!;
 
         var deviceProperty = context.member.Text;
@@ -289,12 +321,37 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
+    public override Node? VisitDeviceWithIndexSlotAssignment([NotNull] DeviceWithIndexSlotAssignmentContext context)
+    {
+        var pinIndexExpr = (IExpression)Visit(context.pinIdxExpr)!;
+        var slotIndexExpr = (IExpression)Visit(context.slotIdxExpr)!;
+        var valueExpr = (IExpression)Visit(context.valueExpr)!;
+
+        var deviceProperty = context.member.Text;
+
+        var newNode = new DeviceWithIndexAssignment(pinIndexExpr, slotIndexExpr, valueExpr, deviceProperty);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
     public override Node? VisitDeviceIndexAccess([NotNull] DeviceIndexAccessContext context)
     {
         var member = context.member.Text;
-        var indexValue = (IExpression)Visit(context.expression())!;
+        var indexValue = (IExpression)Visit(context.pinIdxExpr)!;
 
         var newNode = new DeviceWithIndexAccess(indexValue, member);
+
+        return newNode;
+    }
+
+    public override Node? VisitSlotDeviceIndexAccess([NotNull] SlotDeviceIndexAccessContext context)
+    {
+        var member = context.member.Text;
+        var pinIdxExpr = (IExpression)Visit(context.pinIdxExpr)!;
+        var slotIdxExpr = (IExpression)Visit(context.slotIdxExpr)!;
+
+        var newNode = new DeviceWithIndexAccess(pinIdxExpr, slotIdxExpr, member);
 
         return newNode;
     }
@@ -406,7 +463,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
     public override Node? VisitArrayElementAccess([NotNull] ArrayElementAccessContext context)
     {
-        var indexExpr = (IExpression)Visit(context.expression())!;
+        var indexExpr = (IExpression)Visit(context.indexExpr)!;
         var newNode = new ArrayAccess(context.IDENTIFIER().GetText(), indexExpr);
 
         return newNode;

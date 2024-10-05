@@ -17,7 +17,9 @@ statement: delimitedStatement | undelimitedStatement;
 
 delimitedStatement: (
         deviceWithIdAssignment
+        | deviceWithIndexSlotAssignment
         | deviceWithIndexAssignment
+        | memberSlotAssignment
         | memberAssignment
         | assignment
         | yieldStatement
@@ -46,8 +48,13 @@ whileStatement: WHILE '(' expression ')' (block | statement);
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
 deviceWithIdAssignment: DEVICE_WITH_ID '(' idExpr=expression ')' '.' IDENTIFIER '=' valueExpr=expression;
-deviceWithIndexAssignment: DEVICE '[' indexExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
-memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' expression;
+
+memberSlotAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' SLOTS '[' slotIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
+memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' valueExpr=expression;
+
+deviceWithIndexSlotAssignment: PINS '[' pinIdxExpr=expression ']' '.' SLOTS '[' slotIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
+deviceWithIndexAssignment: PINS '[' pinIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
+
 assignment: IDENTIFIER '=' expression;
 
 variableDeclaration: VAR IDENTIFIER '=' expression;
@@ -73,9 +80,11 @@ expression:
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
     | IDENTIFIER # Identifier
     | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
+    | identifier=(BASE_DEVICE | IDENTIFIER) '.' SLOTS '[' slotIdxExpr=expression ']' '.' member=IDENTIFIER # SlotMemberAccess
+    | PINS '[' pinIdxExpr=expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
+    | PINS '[' pinIdxExpr=expression ']' '.' SLOTS '[' slotIdxExpr=expression ']' '.' member=IDENTIFIER # SlotDeviceIndexAccess
     | DEVICE_WITH_ID '(' expression ')' '.' IDENTIFIER # DeviceIdAccess
-    | DEVICE '[' expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
-    | IDENTIFIER '[' expression ']' # ArrayElementAccess
+    | IDENTIFIER '[' indexExpr=expression ']' # ArrayElementAccess
     ;
 
 // Lexer rules
@@ -105,7 +114,8 @@ EQ: '==';
 NE: '!=';
 NEGATION: '!';
 ABS: 'Abs';
-DEVICE: 'Device';
+PINS: 'Pins';
+SLOTS: 'Slots';
 DEVICE_WITH_ID: 'DeviceWithId';
 
 BOOLEAN: 'true' | 'false';

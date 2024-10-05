@@ -5,23 +5,35 @@ namespace ic11.ControlFlow.Instructions;
 public class DeviceWithIndexAccess : Instruction
 {
     public Variable Destination;
-    public IExpression IndexExpression;
+    public IExpression PinIndexExpr;
+    public IExpression? SlotIndexExpr;
     public string Member;
 
     private const string PinSetProperty = "IsSet";
 
-    public DeviceWithIndexAccess(Variable destination, IExpression indexExpression, string member)
+    public DeviceWithIndexAccess(Variable destination, IExpression pinIndexExpr, string member)
     {
         Destination = destination;
-        IndexExpression = indexExpression;
+        PinIndexExpr = pinIndexExpr;
+        Member = member;
+    }
+
+    public DeviceWithIndexAccess(Variable destination, IExpression pinIndexExpr, IExpression slotIndexExpr, string member)
+    {
+        Destination = destination;
+        PinIndexExpr = pinIndexExpr;
+        SlotIndexExpr = slotIndexExpr;
         Member = member;
     }
 
     public override string Render()
     {
-        if (Member == PinSetProperty)
-            return $"sdse {Destination.Register} d{IndexExpression.Render()}";
-
-        return $"l {Destination.Register} d{IndexExpression.Render()} {Member}";
+        return (isPinSet: Member == PinSetProperty, isSlotDefined: SlotIndexExpr is not null) switch
+        {
+            (isPinSet: true, isSlotDefined: true) => throw new Exception($"IsSet property is not relevant for slot access"),
+            (isPinSet: true, isSlotDefined: false) => $"sdse {Destination.Register} d{PinIndexExpr.Render()}",
+            (isPinSet: false, isSlotDefined: true) => $"ls {Destination.Register} d{PinIndexExpr.Render()} {SlotIndexExpr!.Render()} {Member}",
+            (isPinSet: false, isSlotDefined: false) => $"l {Destination.Register} d{PinIndexExpr.Render()} {Member}",
+        };
     }
 }

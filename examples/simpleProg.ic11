@@ -19,51 +19,8 @@ const canVolume = 64;
 
 void Main()
 {
-    while(true)
-    {
-        yield;
-
-        var canMoles = CanStorage.Quantity;
-        Led.Setting = canMoles;
-
-        var pipeVolume = PaOutput.Volume;
-        var totalVolume = canVolume + pipeVolume;
-
-        var targetCanMoles = Dial.Setting;
-        var totalTargetMoles = targetCanMoles * totalVolume / canVolume;
-        var totalCurrentMoles = PaOutput.TotalMoles + canMoles;
-
-        var addMoles = totalTargetMoles - totalCurrentMoles;
-
-        if (CanStorage.)
-
-        // Good enough, exit
-        if (Abs(addMoles) <= Tolerance)
-        {
-            Pump.On = false;
-            Led.Color = 2;
-            continue;
-        }
-
-        Led.Color = 0;
-
-        if(addMoles > 0) // Add gas
-        {
-            var addMolesPerLiter = PaInput.TotalMoles / PaInput.Volume;
-            var pumpPower = addMoles / addMolesPerLiter;
-            
-            Pump.Mode = AddGasPumpMode;
-            Pump.Setting = pumpPower;
-            Pump.On = true;
-        }
-        else // Remove gas
-        {
-            var removeMolesPerLiter = PaOutput.TotalMoles / PaOutput.Volume;
-            var removePower = Abs(addMoles) / removeMolesPerLiter;
-
-            Pump.Mode = !AddGasPumpMode;
-            Pump.Setting = removePower;
-            Pump.On = true;
-        }
-    }
+    var a = 1;
+    var b = 2;
+    var c = 3;
+    c = Pins[a].Slots[b].Occupied;
 }

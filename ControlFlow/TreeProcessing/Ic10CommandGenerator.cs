@@ -254,8 +254,17 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.MemberAssignment node)
     {
-        Visit((Node)node.Expression);
-        Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName, node.Expression));
+        if (node.SlotIndexExpr is not null)
+            Visit((Node)node.SlotIndexExpr);
+
+        Visit((Node)node.ValueExpression);
+
+        if (node.SlotIndexExpr is null)
+            Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName, node.ValueExpression));
+        
+        if (node.SlotIndexExpr is not null)
+            Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName, node.SlotIndexExpr, node.ValueExpression));
+
         return null;
     }
 
@@ -286,7 +295,13 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.MemberAccess node)
     {
-        Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.MemberName));
+
+        if (node.SlotIndexExpr is null)
+            Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.MemberName));
+
+        if (node.SlotIndexExpr is not null)
+            Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.SlotIndexExpr, node.MemberName));
+
         return null;
     }
 
@@ -300,8 +315,13 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.DeviceWithIndexAccess node)
     {
-        Visit((Node)node.IndexExpr);
-        Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.IndexExpr, node.Member));
+        Visit((Node)node.DeviceIndexExpr);
+
+        if (node.SlotIndexExpr is null)
+            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.Member));
+
+        if (node.SlotIndexExpr is not null)
+            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.SlotIndexExpr, node.Member));
 
         return null;
     }
@@ -318,10 +338,18 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.DeviceWithIndexAssignment node)
     {
-        Visit((Node)node.IndexExpr);
+        Visit((Node)node.PinIndexExpr);
+
+        if (node.SlotIndexExpr is not null)
+            Visit((Node)node.SlotIndexExpr);
+
         Visit((Node)node.ValueExpr);
 
-        Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.IndexExpr, node.Member, node.ValueExpr));
+        if (node.SlotIndexExpr is null)
+            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.Member, node.ValueExpr));
+
+        if (node.SlotIndexExpr is not null)
+            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.SlotIndexExpr, node.Member, node.ValueExpr));
 
         return null;
     }

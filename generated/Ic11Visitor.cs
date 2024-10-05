@@ -128,17 +128,29 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
+	/// Visit a parse tree produced by <see cref="Ic11Parser.memberSlotAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context);
+	Result VisitMemberSlotAssignment([NotNull] Ic11Parser.MemberSlotAssignmentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexSlotAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceWithIndexSlotAssignment([NotNull] Ic11Parser.DeviceWithIndexSlotAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// </summary>
@@ -185,6 +197,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParenthesis([NotNull] Ic11Parser.ParenthesisContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>SlotDeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSlotDeviceIndexAccess([NotNull] Ic11Parser.SlotDeviceIndexAccessContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>UnaryOp</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -198,6 +217,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIdentifier([NotNull] Ic11Parser.IdentifierContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>SlotMemberAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSlotMemberAccess([NotNull] Ic11Parser.SlotMemberAccessContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>MemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
@@ -213,19 +239,19 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitLiteral([NotNull] Ic11Parser.LiteralContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>DeviceIdAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDeviceIdAccess([NotNull] Ic11Parser.DeviceIdAccessContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>DeviceIndexAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDeviceIndexAccess([NotNull] Ic11Parser.DeviceIndexAccessContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>DeviceIdAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceIdAccess([NotNull] Ic11Parser.DeviceIdAccessContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>ArrayElementAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

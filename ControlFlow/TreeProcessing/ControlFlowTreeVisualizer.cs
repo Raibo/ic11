@@ -169,7 +169,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Device assignment {node.Name}.{node.MemberName} = ?{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression);
+        Visit((Node)node.ValueExpression);
         _depth--;
         return null;
     }
@@ -260,7 +260,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Device with index access (member {node.Member}){Tags(node)}");
         _depth++;
-        Visit((Node)node.IndexExpr);
+        Visit((Node)node.DeviceIndexExpr);
         _depth--;
         return null;
     }

@@ -3,15 +3,27 @@
 namespace ic11.ControlFlow.Nodes;
 public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
 {
-    public IExpression IndexExpr;
+    public IExpression PinIndexExpr;
+    public IExpression? SlotIndexExpr;
     public IExpression ValueExpr;
     public string Member;
 
-    public DeviceWithIndexAssignment(IExpression indexExpr, IExpression valueExpr, string member)
+    public DeviceWithIndexAssignment(IExpression pinIndexExpr, IExpression valueExpr, string member)
     {
-        IndexExpr = indexExpr;
+        PinIndexExpr = pinIndexExpr;
         ValueExpr = valueExpr;
-        ((Node)indexExpr).Parent = this;
+        ((Node)pinIndexExpr).Parent = this;
+        ((Node)valueExpr).Parent = this;
+        Member = member;
+    }
+
+    public DeviceWithIndexAssignment(IExpression pinIndexExpr, IExpression slotIndexExpr, IExpression valueExpr, string member)
+    {
+        PinIndexExpr = pinIndexExpr;
+        SlotIndexExpr = slotIndexExpr;
+        ValueExpr = valueExpr;
+        ((Node)pinIndexExpr).Parent = this;
+        ((Node)slotIndexExpr).Parent = this;
         ((Node)valueExpr).Parent = this;
         Member = member;
     }
@@ -20,7 +32,11 @@ public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
     {
         get
         {
-            yield return IndexExpr;
+            yield return PinIndexExpr;
+
+            if (SlotIndexExpr is not null)
+                yield return SlotIndexExpr;
+
             yield return ValueExpr;
         }
     }
