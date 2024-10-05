@@ -113,4 +113,5 @@ INTEGER: [0-9]+;
 REAL: [0-9]* '.' [0-9]+;
 
 WS: [ \t\r\n]+ -> skip;
-COMMENT: '//' ~[\r\n]* -> skip;
+LINE_COMMENT: '//' ~[\r\n]* -> skip;
+MULTILINE_COMMENT : '/*' ( MULTILINE_COMMENT | . )*? '*/'  -> skip;

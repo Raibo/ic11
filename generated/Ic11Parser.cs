@@ -41,7 +41,7 @@ public partial class Ic11Parser : Parser {
 		YIELD=18, RETURN=19, CONTINUE=20, BREAK=21, BASE_DEVICE=22, VAR=23, CONST=24, 
 		ADD=25, SUB=26, MUL=27, DIV=28, MOD=29, LT=30, GT=31, LE=32, GE=33, AND=34, 
 		OR=35, EQ=36, NE=37, NEGATION=38, DEVICE=39, DEVICE_WITH_ID=40, BOOLEAN=41, 
-		IDENTIFIER=42, INTEGER=43, REAL=44, WS=45, COMMENT=46;
+		IDENTIFIER=42, INTEGER=43, REAL=44, WS=45, LINE_COMMENT=46, MULTILINE_COMMENT=47;
 	public const int
 		RULE_program = 0, RULE_declaration = 1, RULE_function = 2, RULE_block = 3, 
 		RULE_statement = 4, RULE_delimitedStatement = 5, RULE_yieldStatement = 6, 
@@ -72,7 +72,8 @@ public partial class Ic11Parser : Parser {
 		null, null, "PINID", "WHILE", "IF", "ELSE", "YIELD", "RETURN", "CONTINUE", 
 		"BREAK", "BASE_DEVICE", "VAR", "CONST", "ADD", "SUB", "MUL", "DIV", "MOD", 
 		"LT", "GT", "LE", "GE", "AND", "OR", "EQ", "NE", "NEGATION", "DEVICE", 
-		"DEVICE_WITH_ID", "BOOLEAN", "IDENTIFIER", "INTEGER", "REAL", "WS", "COMMENT"
+		"DEVICE_WITH_ID", "BOOLEAN", "IDENTIFIER", "INTEGER", "REAL", "WS", "LINE_COMMENT", 
+		"MULTILINE_COMMENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -2512,7 +2513,7 @@ public partial class Ic11Parser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,46,303,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,47,303,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,1,0,1,0,1,0,1,0,1,0,5,0,54,8,0,10,0,12,0,57,9,0,1,

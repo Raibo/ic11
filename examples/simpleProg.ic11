@@ -1,62 +1,54 @@
-pin FabElectro d0;
-pin DialElectro d3;
+pin Pump d0;
+pin PaInput d1;
+pin PaOutput d2;
+pin TankStorage d3;
+pin Dial d4;
+pin Led d5;
 
-pin FabLathe d1;
-pin DialLathe d4;
+// TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.314)
+// PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
 
-pin FabBender d2;
-pin DialBender d5;
+const GasConstant = 8.314;
+const TargetPressure = 9500;
+const Tolerance = 0.1;
+
+const MinPower = 0.05;
+
 
 void Main()
 {
-    var machineIds = [3];
-    var dialIds = [3];
-
-    var setCount = 0;
-    var i = 0;
-    while (i < 3)
-    {
-        if (Device[i].IsSet && Device[i + 3].IsSet)
-        {
-            machineIds[setCount] = Device[i].ReferenceId;
-            dialIds[setCount] =  Device[i + 3].ReferenceId;
-            setCount = setCount + 1;
-        }
-
-        i = i + 1;
-    }
-
     while(true)
     {
-        i = 0;
-        while(i < setCount)
-        {
-            ProcessMachine(machineIds[i], dialIds[i]);
-            i = i + 1;
-        }
-    }
-}
+        yield;
 
-void ProcessMachine(machineId, dialId)
-{
-    yield;
-    if (!DeviceWithId(machineId).Activate)
-    {
-        DeviceWithId(machineId).ClearMemory = true;
-        return;
-    }
-    
-    var craftsDone = DeviceWithId(machineId).ExportCount;
-    var craftsTarget = DeviceWithId(dialId).Setting;
-    
-    var craftsLeft = craftsTarget - craftsDone;
-    
-    DeviceWithId(dialId).Setting = craftsLeft;
-    DeviceWithId(machineId).ClearMemory = true;
-    
-    if (craftsLeft <= 0)
-    {
-        DeviceWithId(dialId).Setting = 1;
-        DeviceWithId(machineId).Activate = false;
+        if (Dial.Setting)
+
+
+        if (PaOutput.Pressure >= TargetPressure)
+        {
+            Pump.On = false;
+            continue;
+        }
+        
+        var transferMolesPerLiter = PaInput.TotalMoles / PaInput.Volume;
+
+        var targetMoles = 0;
+
+        if (PaOutput.Pressure > 0)
+            targetMoles = TargetPressure / PaOutput.Pressure * PaOutput.TotalMoles;
+        else
+            targetMoles = PaOutput.Volume * TargetPressure / PaInput.Temperature / GasConstant;
+        
+        var targAddMoles = targetMoles - PaOutput.TotalMoles;
+        var pumpPower = targAddMoles / transferMolesPerLiter;
+
+        if (pumpPower < MinPower)
+        {
+            Pump.On = false;
+            continue;
+        }
+
+        Pump.Setting = pumpPower;
+        Pump.On = true;
     }
 }
