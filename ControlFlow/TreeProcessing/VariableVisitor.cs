@@ -190,7 +190,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             var innerVariable = VisitNode(item);
 
             if (innerVariable is not null)
-                innerVariable.LastReferencedIndex = node.IndexInScope;
+                innerVariable.LastReferencedIndex = Math.Max(node.IndexInScope, innerVariable.DeclareIndex);
         }
 
         node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.If;
