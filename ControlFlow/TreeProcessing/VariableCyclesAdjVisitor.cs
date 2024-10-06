@@ -1,4 +1,5 @@
-﻿using ic11.ControlFlow.Nodes;
+﻿using ic11.ControlFlow.NodeInterfaces;
+using ic11.ControlFlow.Nodes;
 
 namespace ic11.ControlFlow.TreeProcessing;
 public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
@@ -38,5 +39,23 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private static int LastStatementIndex(While node) => ((Node)node.Statements.Last()).IndexInScope;
+    private static int LastStatementIndex(While node)
+    {
+        return GetLastIndex(node);
+
+        int GetLastIndex(IStatement statement)
+        {
+            if (statement is If ifStatement)
+            {
+                ifStatement.CurrentStatementsContainer = ifStatement.IfStatements.Any()
+                    ? DataHolders.IfStatementsContainer.If
+                    : DataHolders.IfStatementsContainer.Else;
+            }
+
+            if (statement is not IStatementsContainer sc || !sc.Statements.Any())
+                return ((Node)statement).IndexInScope;
+
+            return sc.Statements.Max(GetLastIndex);
+        }
+    }
 }
