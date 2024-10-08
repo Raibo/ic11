@@ -1,0 +1,52 @@
+pin PAOxy d0;
+pin LPAs2 d1;
+pin PAFreezerNew d2;
+pin PAFreezerOld d3;
+pin ValveFreezerNew d4;
+pin ValveFreezerOld d5;
+
+const OxyMinPressure = 3000;
+const TargetTemp = 273 + 25;
+const OldFreezerSafeTemp = 273 + 10;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        // protection
+        if (PAOxy.Pressure == -1 || PAFreezerNew.Pressure == -1 || PAFreezerOld.Pressure == -1)
+        {
+            LPAs2.On = false;
+            ValveFreezerNew.On = false;
+            ValveFreezerOld.On = false;
+            continue;
+        }
+        
+        // check oxy supply and shut off if necessary
+        LPAs2.On = PAOxy.Pressure > OxyMinPressure;
+
+        // cooling demand
+        var waterTemp = LPAs2.Temperature;
+        var coolingDemand = waterTemp > TargetTemp;
+
+        // new freezer
+        var enabled = false;
+        if (PAFreezerNew.Temperature < waterTemp - 10 && PAFreezerNew.Pressure > 1) {
+            ValveFreezerNew.On = coolingDemand;
+            ValveFreezerNew.Setting = 100;
+            enabled = true;
+        } else {
+            ValveFreezerNew.On = false;
+        }
+
+        // old freezer
+        if (!enabled && PAFreezerOld.Temperature < OldFreezerSafeTemp && PAFreezerOld.Pressure > 1) {
+            ValveFreezerOld.On = coolingDemand;
+            ValveFreezerOld.Setting = 100;
+        } else {
+            ValveFreezerOld.On = false;
+        }
+    }
+}

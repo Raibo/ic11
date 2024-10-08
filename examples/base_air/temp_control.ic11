@@ -1,0 +1,31 @@
+pin PA1 d0;
+pin Valve1 d1;
+pin PA2 d2;
+pin Valve2 d3;
+
+const TargetTemp1 = 297;
+const TargetTemp2 = 297;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        ControlTemp(0, 1, TargetTemp1);
+        ControlTemp(2, 3, TargetTemp2);
+    }
+}
+
+void ControlTemp(paIdx, valveIdx, targetTemp)
+{
+    var needCooling = Pins[paIdx].Temperature > targetTemp;
+    var delta = Abs(targetTemp - Pins[paIdx].Temperature);
+    var power = 10;
+    if (delta > 5){
+        power = 100;
+    }
+
+    Pins[valveIdx].On = needCooling;
+    Pins[valveIdx].Setting = power;
+}

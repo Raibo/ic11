@@ -1,0 +1,20 @@
+pin Lever d0;
+pin U1 d1;
+pin U2 d2;
+pin U3 d3;
+pin U4 d4;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        var set = Lever.Setting;
+
+        U1.Open = set;
+        U2.Open = set;
+        U3.Open = set;
+        U4.Open = set;
+    }
+}
