@@ -38,7 +38,7 @@ public class ScopeVisitor
 
         var node = (Node)statement;
         node.Scope = _currentScope;
-        node.IndexInScope = _currentScope.CurrentNodeOrder++;
+        node.SetIndex(ref _currentScope.CurrentNodeOrder);
 
         if (statement is If ifStatement)
         {
@@ -116,6 +116,6 @@ public class ScopeVisitor
 
         var node = (Node)expression;
         node.Scope = _currentScope;
-        node.IndexInScope = _currentScope.CurrentNodeOrder++;
+        node.SetIndex(ref _currentScope.CurrentNodeOrder);
     }
 }

@@ -1,26 +1,11 @@
-pin Pump d0;
-pin PaInput d1;
-pin PaOutput d2;
-pin CanStorage d3;
-pin Dial d4;
-pin Led d5;
-
-// TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.314)
-// PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
-
-// Set here pump direction that will pump gas inside the canister
-const AddGasPumpMode = 0;
-
-// Acceptable margin of error, in moles
-const Tolerance = 0.01;
-
-// Don't care about high volume canisters
-const canVolume = 64;
-
 void Main()
 {
-    var a = 1;
-    var b = 2;
-    var c = 3;
-    c = Pins[a].Slots[b].Occupied;
+    var a1 = 1;
+    var a2 = 2;
+    var a3 = 3;
+    var a4 = 4;
+    var a5 = 5;
+    var b = a1 + (a2 + 1) + a3 + (a4 + 2) + a5;
+    Base.Setting = b;
+    Base.Setting = a2;
 }

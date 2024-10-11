@@ -24,14 +24,11 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
 
         var relevantVariables = node.Scope!.Variables
             .Where(v => v.DeclareIndex < cycleStartIndex)
-            .Where(v => v.LastReferencedIndex <= cycleFinishIndex)
-            .Where(v => v.LastReferencedIndex >= cycleStartIndex)
+            .Where(v => cycleStartIndex <= v.LastReferencedIndex && v.LastReferencedIndex <= cycleFinishIndex)
             .ToList();
 
         foreach (var variable in relevantVariables)
-        {
-            variable.LastReferencedIndex = Math.Max(cycleFinishIndex, variable.LastReferencedIndex);
-        }
+            variable.LastReferencedIndex = Math.Max(cycleFinishIndex + 1, variable.LastReferencedIndex);
 
         foreach (Node item in node.Statements)
             Visit(item);

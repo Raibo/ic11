@@ -13,6 +13,13 @@ public class RegisterVisitor
 
     private object? VisitNode(Node node)
     {
+        // Method parameters must have registers, even if unused. At least to have somewhere to pop into from stack
+        if (node is MethodDeclaration md)
+        {
+            foreach (var pv in md.ParameterVariables)
+                pv.Register = md.InnerScope!.GetAvailableRegister(pv.DeclareIndex, pv.LastReferencedIndex);
+        }
+
         if (node is IExpressionContainer ec)
         {
             foreach (Node item in ec.Expressions)

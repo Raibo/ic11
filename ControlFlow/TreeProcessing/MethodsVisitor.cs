@@ -8,7 +8,6 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
     protected override Type VisitorType => typeof(MethodsVisitor);
 
     private readonly FlowContext _flowContext;
-    private readonly List<MethodCall> _methodCalls = new();
     private MethodDeclaration _currentMethod;
 
     public MethodsVisitor(FlowContext flowContext)
@@ -27,18 +26,6 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
 
         if (!_flowContext.DeclaredMethods.ContainsKey("Main"))
             throw new Exception($"Missing method 'void Main()'");
-
-        foreach (var item in _methodCalls)
-        {
-            if (!_flowContext.DeclaredMethods.TryGetValue(item.Name, out var declaredMethod))
-                throw new Exception($"Method '{item.Name}' is not defined");
-
-            if (item.Name == "Main")
-                throw new Exception($"Don't call Main");
-
-            if (item.ArgumentExpressions.Count != declaredMethod.Parameters.Count)
-                throw new Exception($"Wrong parameter count");
-        }
     }
 
     private bool Visit(Return node)

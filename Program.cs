@@ -39,6 +39,7 @@ class Program
 
         new RootStatementsSorter().SortStatements((Root)flowContext.Root);
         new MethodsVisitor(flowContext).Visit((Root)flowContext.Root);
+        new MethodCallsVisitor(flowContext).VisitRoot((Root)flowContext.Root);
         new ScopeVisitor(flowContext).Visit((Root)flowContext.Root);
         new VariableVisitor(flowContext).Visit((Root)flowContext.Root);
         new VariableCyclesAdjVisitor().VisitRoot((Root)flowContext.Root);

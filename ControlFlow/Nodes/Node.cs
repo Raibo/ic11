@@ -8,6 +8,8 @@ public abstract class Node
     public Scope? Scope;
     public int IndexInScope;
 
+    public virtual int IndexSize => 1;
+
     public bool IsUnreachableCode = false;
 
     private static int NextNodeId;
@@ -15,6 +17,12 @@ public abstract class Node
     public Node()
     {
         Id = NextNodeId++;
+    }
+
+    public void SetIndex(ref int index)
+    {
+        IndexInScope = index;
+        index += IndexSize;
     }
 
     public override bool Equals(object? obj) =>

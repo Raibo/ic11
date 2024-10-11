@@ -7,8 +7,16 @@ public class Variable
 
     public Scope DeclareScope;
     public int DeclareIndex;
-    public int LastReferencedIndex = -1;
+
     public int LastReassignedIndex = -1;
+
+    private int _lastReferencedIndex = -1;
+
+    public int LastReferencedIndex
+    { 
+        get => _lastReferencedIndex;
+        set => _lastReferencedIndex = Math.Max(_lastReferencedIndex, value); 
+    }
 
     public override string ToString() => $"{{Variable{Id} dec={DeclareIndex} ref={LastReferencedIndex} reg={Register} }}";
     public string Register;

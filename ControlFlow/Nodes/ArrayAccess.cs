@@ -8,7 +8,7 @@ public class ArrayAccess : Node, IExpression, IExpressionContainer
     public IExpression IndexExpression;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue => null;
-    public ArrayDeclaration Array;
+    public UserDefinedVariable? ArrayAddressVariable;
 
     public ArrayAccess(string name, IExpression indexExpression)
     {

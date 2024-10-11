@@ -46,12 +46,15 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         if (node is IExpressionContainer ec)
         {
+            // If node needs to hold multiple results at once, it has increased index size
+            var addedIndex = node.IndexSize <= 1 ? 0 : 1;
+
             foreach (Node item in ec.Expressions)
             {
                 var innerVariable = VisitNode(item);
 
                 if (innerVariable is not null)
-                    innerVariable.LastReferencedIndex = node.IndexInScope;
+                    innerVariable.LastReferencedIndex = node.IndexInScope + addedIndex;
             }
         }
 
@@ -210,9 +213,9 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
     {
         node.AddressVariable = node.Scope!.ClaimNewVariable(node.IndexInScope);
 
-        var newUserArray = new UserDefinedArray(node.Name, node, node.IndexInScope);
-        node.Scope!.AddUserArray(newUserArray);
-        _flowContext.AllUserDefinedArrays.Add(newUserArray);
+        var newUserArray = new UserDefinedVariable(node.Name, node.AddressVariable, node.IndexInScope, false);
+        node.Scope!.AddUserVariable(newUserArray);
+        _flowContext.AllUserDefinedVariables.Add(newUserArray);
 
         if (node.DeclarationType == DataHolders.ArrayDeclarationType.Size)
         {
@@ -237,36 +240,37 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
     private Variable? Visit(ArrayAssignment node)
     {
-        if (!node.Scope!.TryGetUserArray(node.Name, out var targetArray))
-            throw new Exception($"Array {node.Name} is not defined");
+        if (!node.Scope!.TryGetUserVariable(node.Name, out var addressVariable))
+            throw new Exception($"{node.Name} is not defined");
 
-        node.Array = targetArray.Array;
-
-        targetArray.LastReferencedIndex = node.IndexInScope;
-        targetArray.Array.AddressVariable!.LastReferencedIndex = node.IndexInScope;
+        node.ArrayAddressVariable = addressVariable;
+        addressVariable.LastReferencedIndex = node.IndexInScope;
+        addressVariable.Variable.LastReferencedIndex = node.IndexInScope;
 
         node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
         node.Variable.LastReferencedIndex = node.IndexInScope;
-
-        var indexExprVariable = VisitNode((Node)node.IndexExpression);
-
-        if (indexExprVariable is not null)
-            indexExprVariable.LastReferencedIndex = node.IndexInScope;
 
         var valueExprVariable = VisitNode((Node)node.ValueExpression);
 
         if (valueExprVariable is not null)
             valueExprVariable.LastReferencedIndex = node.IndexInScope;
 
+        var indexExprVariable = VisitNode((Node)node.IndexExpression);
+
+        if (indexExprVariable is not null)
+            indexExprVariable.LastReferencedIndex = node.IndexInScope + 1;
+
         return null;
     }
 
     private Variable? Visit(ArrayAccess node)
     {
-        if (!node.Scope!.TryGetUserArray(node.Name, out var userDefinedArray))
+        if (!node.Scope!.TryGetUserVariable(node.Name, out var addressVariable))
             throw new Exception($"Array '{node.Name}' is not defined");
 
-        node.Array = userDefinedArray.Array;
+        node.ArrayAddressVariable = addressVariable;
+        addressVariable.LastReferencedIndex = node.IndexInScope;
+        addressVariable.Variable.LastReferencedIndex = node.IndexInScope;
 
         var indexVariable = VisitNode((Node)node.IndexExpression);
 
@@ -275,9 +279,6 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
         node.Variable.LastReferencedIndex = node.IndexInScope;
-
-        userDefinedArray.LastReferencedIndex = node.IndexInScope;
-        userDefinedArray.Array.AddressVariable!.LastReferencedIndex = node.IndexInScope;
 
         return node.Variable;
     }

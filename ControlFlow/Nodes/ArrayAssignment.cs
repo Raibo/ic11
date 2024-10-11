@@ -8,7 +8,9 @@ public class ArrayAssignment : Node, IStatement, IExpressionContainer
     public IExpression IndexExpression;
     public IExpression ValueExpression;
     public Variable? Variable;
-    public ArrayDeclaration Array;
+    public UserDefinedVariable? ArrayAddressVariable;
+
+    public override int IndexSize => 2;
 
     public ArrayAssignment(string name, IExpression indexExpression, IExpression valueExpression)
     {

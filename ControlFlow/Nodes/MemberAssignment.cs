@@ -30,10 +30,10 @@ public class MemberAssignment : Node, IStatement, IExpressionContainer
     {
         get
         {
+            yield return ValueExpression;
+
             if (SlotIndexExpr is not null)
                 yield return SlotIndexExpr;
-
-            yield return ValueExpression;
         }
     }
 }

@@ -1,12 +1,19 @@
-alias Pump d0
-alias PaInput d1
-alias PaOutput d2
-alias CanStorage d3
-alias Dial d4
-alias Led d5
-move r0 1
-move r1 2
-move r0 3
-ls r2 dr0 r1 Occupied
-move r0 r2
+alias Sensor d0
+move r0 -1
+beqz 1 18
+yield
+add r1 r0 1
+move r0 r1
+l r1 Sensor SolarIrradiance
+sgt r2 r1 0
+beqz r2 10
+move r0 0
+move r1 1680
+move r2 2280
+sge r3 r0 r1
+slt r1 r0 r2
+and r2 r3 r1
+move r1 r2
+s db Setting r1
+j 2
 j 9999

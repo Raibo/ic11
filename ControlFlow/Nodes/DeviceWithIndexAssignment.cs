@@ -7,6 +7,7 @@ public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
     public IExpression? SlotIndexExpr;
     public IExpression ValueExpr;
     public string Member;
+    public override int IndexSize => 2;
 
     public DeviceWithIndexAssignment(IExpression pinIndexExpr, IExpression valueExpr, string member)
     {
@@ -32,12 +33,11 @@ public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
     {
         get
         {
+            yield return ValueExpr;
             yield return PinIndexExpr;
 
             if (SlotIndexExpr is not null)
                 yield return SlotIndexExpr;
-
-            yield return ValueExpr;
         }
     }
 }

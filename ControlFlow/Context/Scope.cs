@@ -16,7 +16,6 @@ public class Scope
 
     public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
     public Dictionary<string, UserDefinedConstant> UserDefinedConstants = new();
-    public Dictionary<string, UserDefinedArray> UserDefinedArrays = new();
 
     public Variable ClaimNewVariable(int declareIndex)
     {
@@ -57,6 +56,8 @@ public class Scope
 
     public string GetAvailableRegister(int fromNodeIndex, int toNodeIndex)
     {
+        toNodeIndex = Math.Max(fromNodeIndex, toNodeIndex);
+
         var usedRegisters = GetUsedRegisters(fromNodeIndex, toNodeIndex);
 
         var availableRegisters = Enumerable.Range(0, 15)
@@ -71,7 +72,7 @@ public class Scope
     public List<string> GetUsedRegisters(int fromNodeIndex, int toNodeIndex) =>
         GetVariablesForWholeMethodAndChildren()
             .Where(v => v.DeclareIndex <= toNodeIndex)
-            .Where(v => v.LastReferencedIndex >= fromNodeIndex)
+            .Where(v => fromNodeIndex < v.LastReferencedIndex)
             .Select(v => v.Register)
             .ToList();
 
@@ -120,22 +121,7 @@ public class Scope
     public bool TryGetUserConstant(string name, out UserDefinedConstant constant) =>
         UserDefinedConstants.TryGetValue(name, out constant!);
 
-    public void AddUserArray(UserDefinedArray array)
-    {
-        if (IsNameAlreadyTaken(array.Name))
-            throw new Exception($"'{array.Name}' already exists");
-
-        UserDefinedArrays[array.Name] = array;
-
-        foreach (var item in Children)
-            item.AddUserArray(array);
-    }
-
-    public bool TryGetUserArray(string name, out UserDefinedArray array) =>
-        UserDefinedArrays.TryGetValue(name, out array!);
-
     public bool IsNameAlreadyTaken(string name) =>
         UserDefinedConstants.ContainsKey(name)
-        || UserDefinedVariables.ContainsKey(name)
-        || UserDefinedArrays.ContainsKey(name);
+        || UserDefinedVariables.ContainsKey(name);
 }

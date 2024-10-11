@@ -5,9 +5,12 @@ namespace ic11.ControlFlow.Nodes;
 public class MethodCall : Node, IStatement, IExpression, IExpressionContainer
 {
     public string Name;
+    public MethodDeclaration? Method;
     public List<IExpression> ArgumentExpressions;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue => null;
+
+    public override int IndexSize => 2;
 
     public MethodCall(string name, List<IExpression> argumentExpressions)
     {
