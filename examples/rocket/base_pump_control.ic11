@@ -1,0 +1,72 @@
+pin Pump1 d0;
+pin PaInput1 d1;
+pin PaOutput1 d2;
+pin Pump2 d3;
+pin PaInput2 d4;
+pin PaOutput2 d5;
+
+// TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.314)
+// PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
+
+const GasConstant = 8.314;
+const TargetRatio1 = 95;
+const TargetRatio2 = 190;
+
+const MinPower = 0.05;
+
+const DialRefId = 358430; // DeviceWithId(DialRefId).Setting
+
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        var set = DeviceWithId(DialRefId).Setting;
+        Base.Setting = set;
+
+        var tp1 = set * TargetRatio1;
+        var tp2 = set * TargetRatio2;
+
+        ControlPump(0, 1, 2, tp1);
+        ControlPump(3, 4, 5, tp2);
+    }
+}
+
+void ControlPump(pumpIdx, paInpIdx, paOutpIdx, targetPressure)
+{
+    var delta = targetPressure - Pins[paOutpIdx].Pressure;
+    var reverse = delta < 0;
+    Pins[pumpIdx].Mode = reverse;
+
+    var pumpPower = 0;
+    if (reverse) {
+        var transferMolesPerLiter = Pins[paOutpIdx].TotalMoles / Pins[paOutpIdx].Volume;
+        var targetMoles = targetPressure / Pins[paOutpIdx].Pressure * Pins[paOutpIdx].TotalMoles;
+        var targSubMoles = Pins[paOutpIdx].TotalMoles - targetMoles;
+
+        pumpPower = targSubMoles / transferMolesPerLiter;
+    } else {
+        var transferMolesPerLiter = Pins[paInpIdx].TotalMoles / Pins[paInpIdx].Volume;
+
+        var targetMoles = 0;
+
+        if (Pins[paOutpIdx].Pressure > 0)
+            targetMoles = targetPressure / Pins[paOutpIdx].Pressure * Pins[paOutpIdx].TotalMoles;
+        else
+            targetMoles = Pins[paOutpIdx].Volume * targetPressure / Pins[paInpIdx].Temperature / GasConstant;
+        
+        var targAddMoles = targetMoles - Pins[paOutpIdx].TotalMoles;    
+
+        pumpPower = targAddMoles / transferMolesPerLiter;
+    }
+
+    if (pumpPower < MinPower)
+    {
+        Pins[pumpIdx].On = false;
+        return;
+    }
+
+    Pins[pumpIdx].Setting = pumpPower;
+    Pins[pumpIdx].On = true;
+}

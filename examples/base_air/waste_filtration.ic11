@@ -1,0 +1,11 @@
+pin Filter d0;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        Filter.On = Filter.PressureInput > 0 && Filter.PressureOutput < 55000;
+    }
+}

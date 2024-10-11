@@ -1,0 +1,51 @@
+pin Mixer d0;
+pin Combustor d1;
+pin Filter d2;
+pin LPAs1 d3;
+pin Pump d4;
+pin LPAs2 d5;
+
+const MixedGasMaxPressure = 5000;
+const CombustionMaxPressure = 4000;
+const FilterMaxPressure = 4000;
+
+const Stage1MaxTemp = 200 + 273;
+const Stage1WaterMaxOccupancy = 0.05;
+
+const Stage2MaxTemp = 27 + 273;
+const Stage2WaterMaxOccupancy = 0.8;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        // protection
+        if (LPAs1.Pressure == -1 || LPAs2.Pressure == -1)
+        {
+            Mixer.On = false;
+            Combustor.On = false;
+            Filter.On = false;
+            Pump.On = false;
+            continue;
+        }
+        
+        // mix
+        Mixer.On = Combustor.PressureInput < MixedGasMaxPressure;
+
+        // combust
+        Combustor.On = Combustor.PressureOutput < CombustionMaxPressure 
+                     && Combustor.PressureInput > 0;
+
+        // filter
+        Filter.On = Filter.PressureInput > 0
+                  && Filter.PressureOutput < FilterMaxPressure 
+                  && LPAs1.VolumeOfLiquid / LPAs1.Volume < Stage1WaterMaxOccupancy;
+
+        // wait for cooling
+        Pump.On = LPAs1.Temperature < Stage1MaxTemp 
+                && LPAs2.Temperature < Stage2MaxTemp 
+                && LPAs2.VolumeOfLiquid / LPAs2.Volume < Stage2WaterMaxOccupancy;
+    }
+}

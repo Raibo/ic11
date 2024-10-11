@@ -1,0 +1,20 @@
+pin Pa1 d0;
+pin Pa2 d1;
+pin G1Pressure d2;
+pin G1Temp d3;
+pin G2Pressure d4;
+pin G2Temp d5;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        G1Pressure.Setting = Pa1.Pressure;
+        G1Temp.Setting = Pa1.Temperature;
+        G2Pressure.Setting = Pa2.Pressure;
+        G2Temp.Setting = Pa2.Temperature;
+
+    }
+}
