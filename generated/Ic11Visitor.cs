@@ -62,6 +62,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] Ic11Parser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -183,12 +189,6 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

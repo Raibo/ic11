@@ -96,6 +96,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStatement([NotNull] Ic11Parser.StatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -339,18 +351,6 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

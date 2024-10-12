@@ -12,3 +12,8 @@ void Main()
 
     var b = abs(a2);
 }
+
+void sin()
+{
+    
+}
