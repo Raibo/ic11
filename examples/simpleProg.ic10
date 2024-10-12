@@ -1,19 +1,28 @@
 alias Sensor d0
+alias TickShowMem d1
 move r0 -1
-beqz 1 18
+move r1 0
+beqz 1 27
 yield
-add r1 r0 1
-move r0 r1
-l r1 Sensor SolarIrradiance
-sgt r2 r1 0
-beqz r2 10
+add r2 r0 1
+move r0 r2
+l r2 Sensor SolarIrradiance
+sgt r2 r2 0
+seq r3 r1 0
+and r2 r2 r3
+beqz r2 14
 move r0 0
-move r1 1680
-move r2 2280
-sge r3 r0 r1
-slt r1 r0 r2
-and r2 r3 r1
+move r2 1680
+move r3 2280
+sle r2 r2 r0
+slt r3 r0 r3
+and r2 r2 r3
+seqz r2 r2
+s db Setting r2
+l r2 Sensor SolarIrradiance
 move r1 r2
-s db Setting r1
-j 2
+sdse r2 TickShowMem
+beqz r2 26
+s TickShowMem Setting r0
+j 4
 j 9999

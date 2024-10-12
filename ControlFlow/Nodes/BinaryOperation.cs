@@ -1,14 +1,15 @@
 ﻿using ic11.ControlFlow.Context;
-using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
+using ic11.ControlFlow.TreeProcessing;
 
 namespace ic11.ControlFlow.Nodes;
 public class BinaryOperation : Node, IExpression, IExpressionContainer
 {
     public IExpression Left;
     public IExpression Right;
-    public BinaryOperationType Type;
+    public string Operation;
     public Variable? Variable { get; set; }
+
     public decimal? CtKnownValue
     {
         get
@@ -20,11 +21,11 @@ public class BinaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
-    public BinaryOperation(IExpression left, IExpression right, BinaryOperationType type)
+    public BinaryOperation(IExpression left, IExpression right, string operation)
     {
         Left = left;
         Right = right;
-        Type = type;
+        Operation = GetOperation(operation ?? throw new ArgumentNullException(nameof(operation)));
         ((Node)left).Parent = this;
         ((Node)right).Parent = this;
     }
@@ -38,24 +39,31 @@ public class BinaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
+    private string GetOperation(string input)
+    {
+        return OperationHelper.SymbolsBinaryOpMap.TryGetValue(input, out var symbolOp)
+            ? symbolOp
+            : input;
+    }
+
     private decimal CtCalculate(decimal left, decimal right)
     {
-        return Type switch
+        return Operation switch
         {
-            BinaryOperationType.Add => left + right,
-            BinaryOperationType.Sub => left - right,
-            BinaryOperationType.Mul => left * right,
-            BinaryOperationType.Div when right != 0m => left / right,
-            BinaryOperationType.Div when right == 0m => throw new DivideByZeroException(),
-            BinaryOperationType.Mod => Modulo(left, right),
-            BinaryOperationType.Lt => left < right ? 1 : 0,
-            BinaryOperationType.GT => left > right ? 1 : 0,
-            BinaryOperationType.Le => left <= right ? 1 : 0,
-            BinaryOperationType.Ge => left >= right ? 1 : 0,
-            BinaryOperationType.Eq => left == right ? 1 : 0,
-            BinaryOperationType.Ne => left != right ? 1 : 0,
-            BinaryOperationType.And => (long)decimal.Truncate(left) & (long)decimal.Truncate(right),
-            BinaryOperationType.Or => (long)decimal.Truncate(left) | (long)decimal.Truncate(right),
+            "add" => left + right,
+            "sub" => left - right,
+            "mul" => left * right,
+            "div" when right != 0m => left / right,
+            "div" when right == 0m => throw new DivideByZeroException(),
+            "mod" => Modulo(left, right),
+            "lt" => left < right ? 1 : 0,
+            "gt" => left > right ? 1 : 0,
+            "le" => left <= right ? 1 : 0,
+            "ge" => left >= right ? 1 : 0,
+            "eq" => left == right ? 1 : 0,
+            "ne" => left != right ? 1 : 0,
+            "and" => (long)decimal.Truncate(left) & (long)decimal.Truncate(right),
+            "or" => (long)decimal.Truncate(left) | (long)decimal.Truncate(right),
             _ => throw new Exception("Unexpected binary operation type"),
         };
     }

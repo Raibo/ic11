@@ -77,7 +77,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
             var spExpr = new DirectExpression("sp");
 
             // Clear arrays from stack
-            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, BinaryOperationType.Sub));
+            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, "sub"));
         }
 
         Instructions.Add(new StackPop("ra"));
@@ -147,7 +147,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
                 var spExpr = new DirectExpression("sp");
 
                 // Clear arrays from stack
-                Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, BinaryOperationType.Sub));
+                Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, "sub"));
             }
 
             Visit((Node)node.Expression!);
@@ -285,7 +285,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.Left);
         Visit((Node)node.Right);
 
-        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, node.Left, node.Right, node.Type));
+        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, node.Left, node.Right, node.Operation));
 
         return null;
     }
@@ -297,7 +297,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
         Visit((Node)node.Operand);
 
-        Instructions.Add(new Instructions.UnaryOperation(node.Variable!, node.Operand, node.Type));
+        Instructions.Add(new Instructions.UnaryOperation(node.Variable!, node.Operand, node.Operation));
 
         return null;
     }
@@ -379,10 +379,10 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
             var spExpr = new DirectExpression("sp");
             Instructions.Add(new Move(node.AddressVariable!, spExpr));
-            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, BinaryOperationType.Add));
+            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, "add"));
 
             var r15Expr = new DirectExpression("r15");
-            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, node.SizeExpression, BinaryOperationType.Add));
+            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, node.SizeExpression, "add"));
 
             return null;
         }
@@ -401,7 +401,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
             }
 
             var r15Expr = new DirectExpression("r15");
-            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, new Literal(size), BinaryOperationType.Add));
+            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, new Literal(size), "add"));
 
             return null;
         }
@@ -415,7 +415,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.ValueExpression);
 
         var arrayAddr = new DirectExpression(node.ArrayAddressVariable!.Variable);
-        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, BinaryOperationType.Add));
+        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, "add"));
 
         var elementAddr = new DirectExpression(node.Variable!);
         Instructions.Add(new StackPut("db", elementAddr, node.ValueExpression));
@@ -428,7 +428,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.IndexExpression);
 
         var arrayAddr = new DirectExpression(node.ArrayAddressVariable!.Variable);
-        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, BinaryOperationType.Add));
+        Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, "add"));
 
         var elementAddr = new DirectExpression(node.Variable!);
         Instructions.Add(new StackGet("db", node.Variable!, elementAddr));

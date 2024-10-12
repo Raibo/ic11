@@ -176,7 +176,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(BinaryOperation node)
     {
-        WriteLine($"Binary operation {node.Type}{Tags(node)}");
+        WriteLine($"Binary operation {node.Operation}{Tags(node)}");
         _depth++;
         Visit((Node)node.Left);
         Visit((Node)node.Right);
@@ -203,7 +203,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(UnaryOperation node)
     {
-        WriteLine($"Unary operation {node.Type}{Tags(node)}");
+        WriteLine($"Unary operation {node.Operation}{Tags(node)}");
         _depth++;
         Visit((Node)node.Operand);
         _depth--;

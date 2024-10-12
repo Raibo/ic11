@@ -1,12 +1,12 @@
 ﻿using ic11.ControlFlow.Context;
-using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
+using ic11.ControlFlow.TreeProcessing;
 
 namespace ic11.ControlFlow.Nodes;
 public class UnaryOperation : Node, IExpression, IExpressionContainer
 {
     public IExpression Operand;
-    public UnaryOperationType Type;
+    public string Operation;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue
     {
@@ -19,11 +19,11 @@ public class UnaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
-    public UnaryOperation(IExpression operand, UnaryOperationType type)
+    public UnaryOperation(IExpression operand, string operation)
     {
         Operand = operand;
         ((Node)operand).Parent = this;
-        Type = type;
+        Operation = GetOperation(operation ?? throw new ArgumentNullException(nameof(operation)));
     }
 
     public IEnumerable<IExpression> Expressions
@@ -34,13 +34,21 @@ public class UnaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
+    private string GetOperation(string input)
+    {
+        return OperationHelper.SymbolsUnaryOpMap.TryGetValue(input, out var symbolOp)
+            ? symbolOp
+            : input;
+    }
+
     private decimal CtCalculate(decimal value)
     {
-        return Type switch
+        return Operation switch
         {
-            UnaryOperationType.Not => value == 0m ? 1m : 0m,
-            UnaryOperationType.Minus => value * -1m,
-            UnaryOperationType.Abs => Math.Abs(value),
+            "_not" => value == 0m ? 1m : 0m,
+            "_neg" => value * -1m,
+            "abs" => Math.Abs(value),
+            "not" => ~((long)value),
             _ => throw new Exception("Unexpected unary operation type"),
         };
     }

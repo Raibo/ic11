@@ -247,25 +247,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         var operand1 = (IExpression)Visit(context.left)!;
         var operand2 = (IExpression)Visit(context.right)!;
 
-        var type = context.op.Type switch
-        {
-            ADD => BinaryOperationType.Add,
-            SUB => BinaryOperationType.Sub,
-            MUL => BinaryOperationType.Mul,
-            DIV => BinaryOperationType.Div,
-            AND => BinaryOperationType.And,
-            OR => BinaryOperationType.Or,
-            EQ => BinaryOperationType.Eq,
-            NE => BinaryOperationType.Ne,
-            LE => BinaryOperationType.Le,
-            LT => BinaryOperationType.Lt,
-            GE => BinaryOperationType.Ge,
-            GT => BinaryOperationType.GT,
-
-            _ => throw new NotImplementedException(),
-        };
-
-        var newNode = new BinaryOperation(operand1, operand2, type);
+        var newNode = new BinaryOperation(operand1, operand2, context.op.Text);
 
         return newNode;
     }
@@ -274,15 +256,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     {
         var operand = (IExpression)Visit(context.operand)!;
 
-        var type = context.op.Type switch
-        {
-            NEGATION => UnaryOperationType.Not,
-            SUB => UnaryOperationType.Minus,
-            ABS => UnaryOperationType.Abs,
-            _ => throw new NotImplementedException(),
-        };
-
-        var newNode = new UnaryOperation(operand, type);
+        var newNode = new UnaryOperation(operand, context.op.Text);
         return newNode;
     }
 

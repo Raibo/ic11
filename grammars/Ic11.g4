@@ -68,13 +68,15 @@ arrayDeclaration:
 arrayAssignment: IDENTIFIER '[' indexExpr=expression ']' '=' valueExpr=expression;
 
 expression:
-    op=(NEGATION | SUB) operand=expression # UnaryOp
-    | op=ABS '(' operand=expression ')' # UnaryOp
+    op=DIRECT_UNARY_OPERATOR '(' operand=expression ')' # UnaryOp
+    | op=DIRECT_BINARY_OPERATOR '(' left=expression ',' right=expression ')' # BinaryOp
+    | op=(NEGATION | SUB | BITWISE_NOT) operand=expression # UnaryOp
+    | left=expression op=(SHIFTL | SHIFTR) right=expression # BinaryOp
     | left=expression op=(MUL | DIV | MOD) right=expression # BinaryOp
     | left=expression op=(ADD | SUB) right=expression # BinaryOp
     | left=expression op=(LT | GT | LE | GE | EQ | NE) right=expression # BinaryOp
     | left=expression op=AND right=expression # BinaryOp
-    | left=expression op=OR right=expression # BinaryOp
+    | left=expression op=(OR | XOR) right=expression # BinaryOp
     | '(' expression ')' # Parenthesis
     | type=(INTEGER | BOOLEAN | REAL) # Literal
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
@@ -104,19 +106,75 @@ SUB: '-';
 MUL: '*';
 DIV: '/';
 MOD: '%';
+BITWISE_NOT: '~';
+SHIFTL: '<<';
+SHIFTR: '>>';
 LT: '<';
 GT: '>';
 LE: '<=';
 GE: '>=';
-AND: '&&';
-OR: '||';
+AND: '&';
+OR: '|';
+XOR: '^';
 EQ: '==';
 NE: '!=';
 NEGATION: '!';
-ABS: 'Abs';
 PINS: 'Pins';
 SLOTS: 'Slots';
 DEVICE_WITH_ID: 'DeviceWithId';
+
+DIRECT_UNARY_OPERATOR:
+    'not'
+    | 'round'
+    | 'ceil'
+    | 'floor'
+    | 'trunc'
+    | 'abs'
+    | 'sqrt'
+    | 'exp'
+    | 'log'
+    | 'sin'
+    | 'asin'
+    | 'cos'
+    | 'acos'
+    | 'tan'
+    | 'atan'
+    | 'seqz'
+    | 'snez'
+    | 'sapz'
+    | 'snaz'
+    | 'sgez'
+    | 'sgtz'
+    | 'slez'
+    | 'sltz'
+    | 'snan'
+    | 'snanz';
+
+DIRECT_BINARY_OPERATOR:
+    'add'
+    | 'sub'
+    | 'mul'
+    | 'div'
+    | 'mod'
+    | 'max'
+    | 'min'
+    | 'atan2'
+    | 'and'
+    | 'or'
+    | 'xor'
+    | 'sll'
+    | 'srl'
+    | 'sla'
+    | 'sra'
+    | 'nor'
+    | 'seq'
+    | 'sne'
+    | 'sap'
+    | 'sna'
+    | 'sgt'
+    | 'sge'
+    | 'slt'
+    | 'sle';
 
 BOOLEAN: 'true' | 'false';
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;

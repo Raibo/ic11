@@ -81,16 +81,6 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement([NotNull] Ic11Parser.StatementContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.yieldStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -294,6 +284,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArrayAssignment([NotNull] Ic11Parser.ArrayAssignmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDelimitedStatement([NotNull] Ic11Parser.DelimitedStatementContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>Parenthesis</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
