@@ -4,31 +4,34 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Nodes;
 public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
 {
-    public IExpression PinIndexExpr;
+    public IExpression DeviceIndexExpr;
+    public DeviceIndexType IndexType;
     public IExpression? TargetIndexExpr;
     public IExpression ValueExpr;
     public DeviceTarget Target;
     public string? MemberName;
     public override int IndexSize => 2;
 
-    public DeviceWithIndexAssignment(IExpression pinIndexExpr, IExpression valueExpr, string memberName)
+    public DeviceWithIndexAssignment(IExpression deviceIndexExpr, DeviceIndexType indexType, IExpression valueExpr, string memberName)
     {
-        PinIndexExpr = pinIndexExpr;
+        DeviceIndexExpr = deviceIndexExpr;
+        IndexType = indexType;
         ValueExpr = valueExpr;
-        ((Node)pinIndexExpr).Parent = this;
+        ((Node)deviceIndexExpr).Parent = this;
         ((Node)valueExpr).Parent = this;
         Target = DeviceTarget.Device;
         MemberName = memberName;
         Validate();
     }
 
-    public DeviceWithIndexAssignment(IExpression pinIndexExpr, IExpression slotIndexExpr, IExpression valueExpr,
+    public DeviceWithIndexAssignment(IExpression deviceIndexExpr, DeviceIndexType indexType, IExpression slotIndexExpr, IExpression valueExpr,
         DeviceTarget target, string? memberName)
     {
-        PinIndexExpr = pinIndexExpr;
+        DeviceIndexExpr = deviceIndexExpr;
+        IndexType = indexType;
         TargetIndexExpr = slotIndexExpr;
         ValueExpr = valueExpr;
-        ((Node)pinIndexExpr).Parent = this;
+        ((Node)deviceIndexExpr).Parent = this;
         ((Node)slotIndexExpr).Parent = this;
         ((Node)valueExpr).Parent = this;
         Target = target;
@@ -41,7 +44,7 @@ public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
         get
         {
             yield return ValueExpr;
-            yield return PinIndexExpr;
+            yield return DeviceIndexExpr;
 
             if (TargetIndexExpr is not null)
                 yield return TargetIndexExpr;

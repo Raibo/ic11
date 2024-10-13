@@ -210,25 +210,6 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private object? Visit(DeviceWithIdAccess node)
-    {
-        WriteLine($"Device with id access (member {node.Member}){Tags(node)}");
-        _depth++;
-        Visit((Node)node.RefIdExpr);
-        _depth--;
-        return null;
-    }
-
-    private object? Visit(DeviceWithIdAssignment node)
-    {
-        WriteLine($"Device with id assignment (member {node.Member}){Tags(node)}");
-        _depth++;
-        Visit((Node)node.RefIdExpr);
-        Visit((Node)node.ValueExpr);
-        _depth--;
-        return null;
-    }
-
     private object? Visit(Return node)
     {
         if (!node.HasValue)

@@ -320,14 +320,6 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private object? Visit(Nodes.DeviceWithIdAccess node)
-    {
-        Visit((Node)node.RefIdExpr);
-        Instructions.Add(new Instructions.DeviceWithIdAccess(node.Variable!, node.RefIdExpr, node.Member));
-
-        return null;
-    }
-
     private object? Visit(Nodes.DeviceWithIndexAccess node)
     {
         Visit((Node)node.DeviceIndexExpr);
@@ -337,30 +329,20 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
         if (node.Target == DeviceTarget.Device)
         {
-            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.MemberName!));
+            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.IndexType, node.MemberName!));
         }
         else
         {
-            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.TargetIndexExpr!,
+            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.IndexType, node.TargetIndexExpr!,
                 node.Target, node.MemberName));
         }
 
         return null;
     }
 
-    private object? Visit(Nodes.DeviceWithIdAssignment node)
-    {
-        Visit((Node)node.RefIdExpr);
-        Visit((Node)node.ValueExpr);
-
-        Instructions.Add(new Instructions.DeviceWithIdAssignment(node.RefIdExpr, node.Member, node.ValueExpr));
-
-        return null;
-    }
-
     private object? Visit(Nodes.DeviceWithIndexAssignment node)
     {
-        Visit((Node)node.PinIndexExpr);
+        Visit((Node)node.DeviceIndexExpr);
 
         if (node.TargetIndexExpr is not null)
             Visit((Node)node.TargetIndexExpr);
@@ -369,11 +351,11 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
         if (node.Target == DeviceTarget.Device)
         {
-            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.MemberName!, node.ValueExpr));
+            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.DeviceIndexExpr, node.IndexType, node.MemberName!, node.ValueExpr));
         }
         else
         {
-            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.TargetIndexExpr!, node.Target,
+            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.DeviceIndexExpr, node.IndexType, node.TargetIndexExpr!, node.Target,
                 node.MemberName, node.ValueExpr));
         }
 

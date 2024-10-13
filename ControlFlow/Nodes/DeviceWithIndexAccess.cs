@@ -6,6 +6,7 @@ namespace ic11.ControlFlow.Nodes;
 public class DeviceWithIndexAccess : Node, IExpression, IExpressionContainer
 {
     public IExpression DeviceIndexExpr;
+    public DeviceIndexType IndexType;
     public IExpression? TargetIndexExpr;
     public DeviceTarget Target;
     public string? MemberName;
@@ -14,21 +15,24 @@ public class DeviceWithIndexAccess : Node, IExpression, IExpressionContainer
     public decimal? CtKnownValue => null;
     public override int IndexSize => 2;
 
-    public DeviceWithIndexAccess(IExpression deviceIndexExpr, string memberName)
+    public DeviceWithIndexAccess(IExpression deviceIndexExpr, DeviceIndexType indexType, string memberName)
     {
         DeviceIndexExpr = deviceIndexExpr;
         ((Node)deviceIndexExpr).Parent = this;
+        IndexType = indexType;
         Target = DeviceTarget.Device;
         MemberName = memberName;
         Validate();
     }
 
-    public DeviceWithIndexAccess(IExpression deviceIndexExpr, IExpression targetIndexExpr, DeviceTarget target, string? memberName)
+    public DeviceWithIndexAccess(IExpression deviceIndexExpr, DeviceIndexType indexType, IExpression targetIndexExpr,
+        DeviceTarget target, string? memberName)
     {
         DeviceIndexExpr = deviceIndexExpr;
         TargetIndexExpr = targetIndexExpr;
         ((Node)deviceIndexExpr).Parent = this;
         ((Node)targetIndexExpr).Parent = this;
+        IndexType = indexType;
         Target = target;
         MemberName = memberName;
         Validate();

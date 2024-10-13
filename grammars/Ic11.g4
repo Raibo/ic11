@@ -16,7 +16,8 @@ block: '{' statement* '}';
 statement: delimitedStatement | undelimitedStatement;
 
 delimitedStatement: (
-        deviceWithIdAssignment
+        deviceWithIdExtendedAssignment
+        | deviceWithIdAssignment
         | deviceWithIndexExtendedAssignment
         | deviceWithIndexAssignment
         | memberExtendedAssignment
@@ -47,13 +48,14 @@ whileStatement: WHILE '(' expression ')' (block | statement);
 
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
-deviceWithIdAssignment: DEVICE_WITH_ID '(' idExpr=expression ')' '.' IDENTIFIER '=' valueExpr=expression;
+deviceWithIdAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER '=' valueExpr=expression;
+deviceWithIdExtendedAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
 
-memberExtendedAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' slotIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
+memberExtendedAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
 memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' valueExpr=expression;
 
-deviceWithIndexExtendedAssignment: PINS '[' pinIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' slotIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
-deviceWithIndexAssignment: PINS '[' pinIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
+deviceWithIndexExtendedAssignment: PINS '[' deviceIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
+deviceWithIndexAssignment: PINS '[' deviceIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
 
 assignment: IDENTIFIER '=' expression;
 
@@ -82,10 +84,11 @@ expression:
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
     | IDENTIFIER # Identifier
     | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
-    | identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' slotIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedMemberAccess
-    | PINS '[' pinIdxExpr=expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
-    | PINS '[' pinIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' slotIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIndexAccess
-    | DEVICE_WITH_ID '(' expression ')' '.' IDENTIFIER # DeviceIdAccess
+    | identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedMemberAccess
+    | PINS '[' deviceIdxExpr=expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
+    | PINS '[' deviceIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIndexAccess
+    | DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER # DeviceIdAccess
+    | DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIdAccess
     | IDENTIFIER '[' indexExpr=expression ']' # ArrayElementAccess
     ;
 

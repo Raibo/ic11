@@ -1,4 +1,4 @@
 void Main()
 {
-    Pins[3].Slots[1234567].Recipe = 555;
+    var a = Pins[1].Stack[555];
 }
