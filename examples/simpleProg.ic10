@@ -1,28 +1,29 @@
-alias Sensor d0
-alias TickShowMem d1
-move r0 -1
-move r1 0
-beqz 1 27
+alias IntakeLiqPump d0
+alias ExhActVent d1
+alias ExhPressurant d2
+alias ExhPipePa d3
+alias SensorCham d4
+beqz 1 28
 yield
-add r2 r0 1
-move r0 r2
-l r2 Sensor SolarIrradiance
-sgt r2 r2 0
-seq r3 r1 0
-and r2 r2 r3
-beqz r2 14
-move r0 0
-move r2 1680
-move r3 2280
-sle r2 r2 r0
-slt r3 r0 r3
-and r2 r2 r3
-seqz r2 r2
+l r0 SensorCham Temperature
+l r1 SensorCham Pressure
+l r2 SensorCham RatioLiquidPollutant
 s db Setting r2
-l r2 Sensor SolarIrradiance
-move r1 r2
-sdse r2 TickShowMem
-beqz r2 26
-s TickShowMem Setting r0
-j 4
+slt r3 r1 1400
+slt r2 r2 0.2
+and r2 r3 r2
+sgt r3 r0 177
+and r2 r2 r3
+s IntakeLiqPump On r2
+sgt r0 r0 177
+sgt r1 r1 1300
+and r0 r0 r1
+l r1 ExhPipePa Pressure
+slt r1 r1 10000
+and r0 r0 r1
+s ExhActVent On r0
+l r0 ExhPipePa Pressure
+sgt r0 r0 1000
+s ExhPressurant On r0
+j 5
 j 9999

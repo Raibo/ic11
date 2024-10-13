@@ -195,7 +195,7 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.memberSlotAssignment"/>.
+	/// Visit a parse tree produced by <see cref="Ic11Parser.memberExtendedAssignment"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -203,7 +203,7 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMemberSlotAssignment([NotNull] Ic11Parser.MemberSlotAssignmentContext context) { return VisitChildren(context); }
+	public virtual Result VisitMemberExtendedAssignment([NotNull] Ic11Parser.MemberExtendedAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
 	/// <para>
@@ -215,7 +215,7 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexSlotAssignment"/>.
+	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexExtendedAssignment"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -223,7 +223,7 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDeviceWithIndexSlotAssignment([NotNull] Ic11Parser.DeviceWithIndexSlotAssignmentContext context) { return VisitChildren(context); }
+	public virtual Result VisitDeviceWithIndexExtendedAssignment([NotNull] Ic11Parser.DeviceWithIndexExtendedAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
 	/// <para>
@@ -308,17 +308,6 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitParenthesis([NotNull] Ic11Parser.ParenthesisContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>SlotDeviceIndexAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitSlotDeviceIndexAccess([NotNull] Ic11Parser.SlotDeviceIndexAccessContext context) { return VisitChildren(context); }
-	/// <summary>
 	/// Visit a parse tree produced by the <c>UnaryOp</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// <para>
@@ -340,17 +329,6 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitIdentifier([NotNull] Ic11Parser.IdentifierContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>SlotMemberAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitSlotMemberAccess([NotNull] Ic11Parser.SlotMemberAccessContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>MemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
@@ -418,6 +396,17 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <return>The visitor result.</return>
 	public virtual Result VisitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ExtendedDeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitExtendedDeviceIndexAccess([NotNull] Ic11Parser.ExtendedDeviceIndexAccessContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>BinaryOp</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// <para>
@@ -428,4 +417,15 @@ public partial class Ic11BaseVisitor<Result> : AbstractParseTreeVisitor<Result>,
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitBinaryOp([NotNull] Ic11Parser.BinaryOpContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ExtendedMemberAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitExtendedMemberAccess([NotNull] Ic11Parser.ExtendedMemberAccessContext context) { return VisitChildren(context); }
 }

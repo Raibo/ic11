@@ -1,38 +1,40 @@
-﻿using ic11.ControlFlow.NodeInterfaces;
+﻿using ic11.ControlFlow.DataHolders;
+using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Instructions;
 public class MemberAssignment : Instruction
 {
     public string Device;
-    public string Member;
-    public IExpression? SlotIndexExpr;
+    public DeviceTarget Target;
+    public string? MemberName;
+    public IExpression? TargetIndexExpr;
     public IExpression ValueExpr;
 
-    private const string PinSetProperty = "IsSet";
-
-    public MemberAssignment(string device, string member, IExpression valueExpr)
+    public MemberAssignment(string device, string memberName, IExpression valueExpr)
     {
         Device = device;
-        Member = member;
+        Target = DeviceTarget.Device;
+        MemberName = memberName;
         ValueExpr = valueExpr;
     }
 
-    public MemberAssignment(string device, string member, IExpression slotIndexExpr, IExpression valueExpr)
+    public MemberAssignment(string device, DeviceTarget target, string? memberName, IExpression slotIndexExpr, IExpression valueExpr)
     {
         Device = device;
-        Member = member;
-        SlotIndexExpr = slotIndexExpr;
+        Target = target;
+        MemberName = memberName;
+        TargetIndexExpr = slotIndexExpr;
         ValueExpr = valueExpr;
     }
 
     public override string Render()
     {
-        return (isPinSet: Member == PinSetProperty, isSlotDefined: SlotIndexExpr is not null) switch
+        return Target switch
         {
-            (isPinSet: true, isSlotDefined: true) => throw new Exception($"IsSet property is not relevant for slot access"),
-            (isPinSet: true, isSlotDefined: false) => throw new Exception($"IsSet property cannot be written to"),
-            (isPinSet: false, isSlotDefined: true) => $"ss {Device} {SlotIndexExpr!.Render()} {Member} {ValueExpr.Render()}",
-            (isPinSet: false, isSlotDefined: false) => $"s {Device} {Member} {ValueExpr.Render()}",
+            DeviceTarget.Device => $"s {Device} {MemberName} {ValueExpr.Render()}",
+            DeviceTarget.Slots => $"ss {Device} {TargetIndexExpr!.Render()} {MemberName} {ValueExpr.Render()}",
+            DeviceTarget.Stack => $"put {Device} {TargetIndexExpr!.Render()} {ValueExpr.Render()}",
+            _ => throw new Exception($"Unexpected device target"),
         };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ic11.ControlFlow.Context;
+using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Instructions;
@@ -6,34 +7,63 @@ public class DeviceWithIndexAccess : Instruction
 {
     public Variable Destination;
     public IExpression PinIndexExpr;
-    public IExpression? SlotIndexExpr;
-    public string Member;
+    public IExpression? TargetIndexExpr;
+    public DeviceTarget Target;
+    public string? MemberName;
 
-    private const string PinSetProperty = "IsSet";
-
-    public DeviceWithIndexAccess(Variable destination, IExpression pinIndexExpr, string member)
+    public DeviceWithIndexAccess(Variable destination, IExpression pinIndexExpr, string memberName)
     {
         Destination = destination;
+        Target = DeviceTarget.Device;
         PinIndexExpr = pinIndexExpr;
-        Member = member;
+        MemberName = memberName;
     }
 
-    public DeviceWithIndexAccess(Variable destination, IExpression pinIndexExpr, IExpression slotIndexExpr, string member)
+    public DeviceWithIndexAccess(Variable destination, IExpression pinIndexExpr, IExpression slotIndexExpr,
+        DeviceTarget target, string? memberName)
     {
         Destination = destination;
         PinIndexExpr = pinIndexExpr;
-        SlotIndexExpr = slotIndexExpr;
-        Member = member;
+        TargetIndexExpr = slotIndexExpr;
+        Target = target;
+        MemberName = memberName;
     }
 
     public override string Render()
     {
-        return (isPinSet: Member == PinSetProperty, isSlotDefined: SlotIndexExpr is not null) switch
+        return Target switch
         {
-            (isPinSet: true, isSlotDefined: true) => throw new Exception($"IsSet property is not relevant for slot access"),
-            (isPinSet: true, isSlotDefined: false) => $"sdse {Destination.Register} d{PinIndexExpr.Render()}",
-            (isPinSet: false, isSlotDefined: true) => $"ls {Destination.Register} d{PinIndexExpr.Render()} {SlotIndexExpr!.Render()} {Member}",
-            (isPinSet: false, isSlotDefined: false) => $"l {Destination.Register} d{PinIndexExpr.Render()} {Member}",
+            DeviceTarget.Device => RenderDevice(),
+            DeviceTarget.Slots => RenderSlot(),
+            DeviceTarget.Reagents => RenderReagent(),
+            DeviceTarget.Stack => RenderStack(),
+            _ => throw new Exception($"Unexpected device target"),
         };
+    }
+
+    private string RenderDevice()
+    {
+        if (MemberName == Consts.PinSetProperty)
+            return $"sdse {Destination.Register} d{PinIndexExpr.Render()}";
+
+        return $"l {Destination.Register} d{PinIndexExpr.Render()} {MemberName}";
+    }
+
+    private string RenderSlot()
+    {
+        return $"ls {Destination.Register} d{PinIndexExpr.Render()} {TargetIndexExpr!.Render()} {MemberName}";
+    }
+
+    private string RenderReagent()
+    {
+        if (MemberName == Consts.RmapProperty)
+            return $"rmap {Destination.Register} d{PinIndexExpr.Render()} {TargetIndexExpr!.Render()}";
+
+        return $"lr {Destination.Register} d{PinIndexExpr.Render()} {MemberName} {TargetIndexExpr!.Render()}";
+    }
+
+    private string RenderStack()
+    {
+        return $"get {Destination.Register} d{PinIndexExpr.Render()} {TargetIndexExpr!.Render()}";
     }
 }

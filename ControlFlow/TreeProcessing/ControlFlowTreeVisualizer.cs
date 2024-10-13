@@ -258,7 +258,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(DeviceWithIndexAccess node)
     {
-        WriteLine($"Device with index access (member {node.Member}){Tags(node)}");
+        WriteLine($"Device with index access (member {node.MemberName}){Tags(node)}");
         _depth++;
         Visit((Node)node.DeviceIndexExpr);
         _depth--;

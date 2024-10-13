@@ -263,16 +263,19 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.MemberAssignment node)
     {
-        if (node.SlotIndexExpr is not null)
-            Visit((Node)node.SlotIndexExpr);
+        if (node.TargetIndexExpr is not null)
+            Visit((Node)node.TargetIndexExpr);
 
         Visit((Node)node.ValueExpression);
 
-        if (node.SlotIndexExpr is null)
-            Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName, node.ValueExpression));
-        
-        if (node.SlotIndexExpr is not null)
-            Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName, node.SlotIndexExpr, node.ValueExpression));
+        if (node.Target == DeviceTarget.Device)
+        {
+            Instructions.Add(new Instructions.MemberAssignment(node.Name, node.MemberName!, node.ValueExpression));
+        }
+        else
+        {
+            Instructions.Add(new Instructions.MemberAssignment(node.Name, node.Target, node.MemberName, node.TargetIndexExpr!, node.ValueExpression));
+        }
 
         return null;
     }
@@ -305,11 +308,14 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     private object? Visit(Nodes.MemberAccess node)
     {
 
-        if (node.SlotIndexExpr is null)
-            Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.MemberName));
-
-        if (node.SlotIndexExpr is not null)
-            Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.SlotIndexExpr, node.MemberName));
+        if (node.Target == DeviceTarget.Device)
+        {
+            Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.MemberName!));
+        }
+        else
+        {
+            Instructions.Add(new Instructions.MemberAccess(node.Variable!, node.Name, node.TargetIndexExpr!, node.Target, node.MemberName));
+        }
 
         return null;
     }
@@ -326,14 +332,18 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     {
         Visit((Node)node.DeviceIndexExpr);
 
-        if (node.SlotIndexExpr is not null)
-            Visit((Node)node.SlotIndexExpr);
+        if (node.TargetIndexExpr is not null)
+            Visit((Node)node.TargetIndexExpr);
 
-        if (node.SlotIndexExpr is null)
-            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.Member));
-
-        if (node.SlotIndexExpr is not null)
-            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.SlotIndexExpr, node.Member));
+        if (node.Target == DeviceTarget.Device)
+        {
+            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.MemberName!));
+        }
+        else
+        {
+            Instructions.Add(new Instructions.DeviceWithIndexAccess(node.Variable!, node.DeviceIndexExpr, node.TargetIndexExpr!,
+                node.Target, node.MemberName));
+        }
 
         return null;
     }
@@ -352,16 +362,20 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     {
         Visit((Node)node.PinIndexExpr);
 
-        if (node.SlotIndexExpr is not null)
-            Visit((Node)node.SlotIndexExpr);
+        if (node.TargetIndexExpr is not null)
+            Visit((Node)node.TargetIndexExpr);
 
         Visit((Node)node.ValueExpr);
 
-        if (node.SlotIndexExpr is null)
-            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.Member, node.ValueExpr));
-
-        if (node.SlotIndexExpr is not null)
-            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.SlotIndexExpr, node.Member, node.ValueExpr));
+        if (node.Target == DeviceTarget.Device)
+        {
+            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.MemberName!, node.ValueExpr));
+        }
+        else
+        {
+            Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.PinIndexExpr, node.TargetIndexExpr!, node.Target,
+                node.MemberName, node.ValueExpr));
+        }
 
         return null;
     }

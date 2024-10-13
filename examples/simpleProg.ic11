@@ -1,19 +1,4 @@
-pin Sensor d0;
-pin TickShowMem d1;
-
-const DarknessTicks = 5 * 60 * 2;
-const BeforeDawnTicks = 60 * 2;
-const DayLengthTicks = 20 * 60 * 2;
-
 void Main()
 {
-    var a1 = DayLengthTicks;
-    var a2 = 3;
-
-    var b = abs(a2);
-}
-
-void sin()
-{
-    
+    Pins[3].Slots[1234567].Recipe = 555;
 }

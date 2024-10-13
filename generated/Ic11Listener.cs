@@ -191,15 +191,15 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDeviceWithIdAssignment([NotNull] Ic11Parser.DeviceWithIdAssignmentContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.memberSlotAssignment"/>.
+	/// Enter a parse tree produced by <see cref="Ic11Parser.memberExtendedAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterMemberSlotAssignment([NotNull] Ic11Parser.MemberSlotAssignmentContext context);
+	void EnterMemberExtendedAssignment([NotNull] Ic11Parser.MemberExtendedAssignmentContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.memberSlotAssignment"/>.
+	/// Exit a parse tree produced by <see cref="Ic11Parser.memberExtendedAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitMemberSlotAssignment([NotNull] Ic11Parser.MemberSlotAssignmentContext context);
+	void ExitMemberExtendedAssignment([NotNull] Ic11Parser.MemberExtendedAssignmentContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.memberAssignment"/>.
 	/// </summary>
@@ -211,15 +211,15 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitMemberAssignment([NotNull] Ic11Parser.MemberAssignmentContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIndexSlotAssignment"/>.
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIndexExtendedAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterDeviceWithIndexSlotAssignment([NotNull] Ic11Parser.DeviceWithIndexSlotAssignmentContext context);
+	void EnterDeviceWithIndexExtendedAssignment([NotNull] Ic11Parser.DeviceWithIndexExtendedAssignmentContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexSlotAssignment"/>.
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceWithIndexExtendedAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitDeviceWithIndexSlotAssignment([NotNull] Ic11Parser.DeviceWithIndexSlotAssignmentContext context);
+	void ExitDeviceWithIndexExtendedAssignment([NotNull] Ic11Parser.DeviceWithIndexExtendedAssignmentContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIndexAssignment"/>.
 	/// </summary>
@@ -307,18 +307,6 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitParenthesis([NotNull] Ic11Parser.ParenthesisContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>SlotDeviceIndexAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSlotDeviceIndexAccess([NotNull] Ic11Parser.SlotDeviceIndexAccessContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>SlotDeviceIndexAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSlotDeviceIndexAccess([NotNull] Ic11Parser.SlotDeviceIndexAccessContext context);
-	/// <summary>
 	/// Enter a parse tree produced by the <c>UnaryOp</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -342,18 +330,6 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitIdentifier([NotNull] Ic11Parser.IdentifierContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>SlotMemberAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSlotMemberAccess([NotNull] Ic11Parser.SlotMemberAccessContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>SlotMemberAccess</c>
-	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSlotMemberAccess([NotNull] Ic11Parser.SlotMemberAccessContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>MemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
@@ -427,6 +403,18 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>ExtendedDeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExtendedDeviceIndexAccess([NotNull] Ic11Parser.ExtendedDeviceIndexAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ExtendedDeviceIndexAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExtendedDeviceIndexAccess([NotNull] Ic11Parser.ExtendedDeviceIndexAccessContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>BinaryOp</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -438,4 +426,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBinaryOp([NotNull] Ic11Parser.BinaryOpContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ExtendedMemberAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExtendedMemberAccess([NotNull] Ic11Parser.ExtendedMemberAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ExtendedMemberAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExtendedMemberAccess([NotNull] Ic11Parser.ExtendedMemberAccessContext context);
 }

@@ -172,18 +172,18 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitMemberSlotAssignment([NotNull] MemberSlotAssignmentContext context)
+    public override Node? VisitMemberExtendedAssignment([NotNull] MemberExtendedAssignmentContext context)
     {
         var valueExpr = (IExpression)Visit(context.valueExpr)!;
         var slotIdxExpr = (IExpression)Visit(context.slotIdxExpr)!;
 
-        var member = context.member.Text;
+        var member = context.member?.Text;
         var device = context.identifier.Text;
 
         if (context.identifier.Type == BASE_DEVICE)
             device = "db";
 
-        var newNode = new MemberAssignment(device, member, slotIdxExpr, valueExpr);
+        var newNode = new MemberAssignment(device, GetDeviceTarget(context.prop.Type), member, slotIdxExpr, valueExpr);
         AddToStatements(newNode);
 
         return null;
@@ -202,17 +202,19 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitSlotMemberAccess([NotNull] SlotMemberAccessContext context)
+    public override Node? VisitExtendedMemberAccess([NotNull] ExtendedMemberAccessContext context)
     {
         var slotIdxExpr = (IExpression)Visit(context.slotIdxExpr)!;
 
-        var member = context.member.Text;
+        var member = context.member?.Text;
         var device = context.identifier.Text;
 
         if (context.identifier.Type == BASE_DEVICE)
             device = "db";
 
-        var newNode = new MemberAccess(device, slotIdxExpr, member);
+        var target = GetDeviceTarget(context.prop.Type);
+
+        var newNode = new MemberAccess(device, target, slotIdxExpr, member);
 
         return newNode;
     }
@@ -226,7 +228,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         AddToStatements(newNode);
         CurrentNode = newNode;
         Visit(innerCode);
-        CurrentNode = newNode.Parent;
+        CurrentNode = newNode.Parent!;
 
         return null;
     }
@@ -295,15 +297,15 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceWithIndexSlotAssignment([NotNull] DeviceWithIndexSlotAssignmentContext context)
+    public override Node? VisitDeviceWithIndexExtendedAssignment([NotNull] DeviceWithIndexExtendedAssignmentContext context)
     {
         var pinIndexExpr = (IExpression)Visit(context.pinIdxExpr)!;
         var slotIndexExpr = (IExpression)Visit(context.slotIdxExpr)!;
         var valueExpr = (IExpression)Visit(context.valueExpr)!;
 
-        var deviceProperty = context.member.Text;
+        var deviceProperty = context.member?.Text;
 
-        var newNode = new DeviceWithIndexAssignment(pinIndexExpr, slotIndexExpr, valueExpr, deviceProperty);
+        var newNode = new DeviceWithIndexAssignment(pinIndexExpr, slotIndexExpr, valueExpr, GetDeviceTarget(context.prop.Type), deviceProperty);
         AddToStatements(newNode);
 
         return null;
@@ -319,13 +321,13 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitSlotDeviceIndexAccess([NotNull] SlotDeviceIndexAccessContext context)
+    public override Node? VisitExtendedDeviceIndexAccess([NotNull] ExtendedDeviceIndexAccessContext context)
     {
-        var member = context.member.Text;
+        var member = context.member?.Text;
         var pinIdxExpr = (IExpression)Visit(context.pinIdxExpr)!;
         var slotIdxExpr = (IExpression)Visit(context.slotIdxExpr)!;
 
-        var newNode = new DeviceWithIndexAccess(pinIdxExpr, slotIdxExpr, member);
+        var newNode = new DeviceWithIndexAccess(pinIdxExpr, slotIdxExpr, GetDeviceTarget(context.prop.Type), member);
 
         return newNode;
     }
@@ -454,4 +456,12 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     public override Node? VisitBlock([NotNull] BlockContext context) => base.VisitBlock(context);
     protected override Node? AggregateResult(Node? aggregate, Node? nextResult) => base.AggregateResult(aggregate, nextResult);
 
+    private static DeviceTarget GetDeviceTarget(int propType) =>
+        propType switch
+        {
+            SLOTS => DeviceTarget.Slots,
+            REAGENTS => DeviceTarget.Reagents,
+            STACK => DeviceTarget.Stack,
+            _ => throw new Exception("Unecpected device target"),
+        };
 }
