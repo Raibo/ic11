@@ -10,6 +10,8 @@ public class MemberAssignment : Node, IStatement, IExpressionContainer
     public IExpression? TargetIndexExpr;
     public IExpression ValueExpression;
 
+    public override int IndexSize => 2;
+
     public MemberAssignment(string name, string memberName, IExpression valueExpression)
     {
         Name = name;
