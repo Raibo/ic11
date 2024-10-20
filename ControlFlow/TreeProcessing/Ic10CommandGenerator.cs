@@ -308,6 +308,8 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.MemberAccess node)
     {
+        if (node.TargetIndexExpr is not null)
+            Visit((Node)node.TargetIndexExpr);
 
         if (node.Target == DeviceTarget.Device)
         {
