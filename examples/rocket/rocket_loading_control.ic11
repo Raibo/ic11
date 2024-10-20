@@ -9,8 +9,8 @@ pin PaOutput2 d5;
 // PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
 
 const GasConstant = 8.314;
-const TargetRatio1 = 95;
-const TargetRatio2 = 190;
+const TargetRatio1 = 550;
+const TargetRatio2 = 550;
 
 const MinPower = 0.05;
 

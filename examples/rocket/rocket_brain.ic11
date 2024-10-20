@@ -1,0 +1,45 @@
+pin Engine d0;
+pin Controller d1;
+pin Avionics d2;
+pin Storage d3;
+pin Battery d4;
+pin Miner d5;
+
+const StartPressureRatio = 30650 / 50000;
+
+void Main()
+{
+    var currentPressureRatio = StartPressureRatio;
+    var p = 0;
+    var i = 0;
+    var d = 0;
+    var prevError = 0;
+
+    while(true)
+    {
+        yield;
+
+        var targetPressureOxy = 0;
+        var targetPressureVol = 0;
+
+        if (Engine.On) {
+            var ro = Engine.RatioOxygen;
+            var rv = Engine.RatioVolatiles;
+            
+            if (ro == 0 | rv == 0) {
+                currentPressureRatio = StartPressureRatio;
+            } else {
+                // PID control, dt = 1
+                var currentMixRatio = ro / rv;
+                p = 0.5 - currentMixRatio;
+                i = i + p;
+                d = p - prevError;
+                prevError = p;
+                
+                currentPressureRatio = StartPressureRatio + p * 0.021 + i * 0.0015 + d * 0.0015;
+            }
+            Controller.Setting = currentPressureRatio;
+        } 
+    }
+}
+

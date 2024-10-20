@@ -1,7 +1,7 @@
-pin Pump1 d0;
+pin Pump1 d0; // oxygen
 pin PaInput1 d1;
 pin PaOutput1 d2;
-pin Pump2 d3;
+pin Pump2 d3; // volatiles
 pin PaInput2 d4;
 pin PaOutput2 d5;
 
@@ -9,11 +9,10 @@ pin PaOutput2 d5;
 // PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
 
 const GasConstant = 8.314;
-const TargetPressure1 = 25000;
-const TargetPressure2 = 50000;
-
+const MaxPressure = 55000;
 const MinPower = 0.05;
-
+const Engine = 360735; // DeviceWithId(Engine).Setting
+const StartPressureRatio = 30650 / 50000;
 
 void Main()
 {
@@ -21,14 +20,35 @@ void Main()
     {
         yield;
 
-        ControlPump(0, 1, 2, 0);
-        ControlPump(3, 4, 5, 0);
+        var targetPressureOxy = 0;
+        var targetPressureVol = 0;
+
+        if (DeviceWithId(Engine).On) {
+            var currentPressureRatio = Base.Setting;
+            if (currentPressureRatio == 0){
+                currentPressureRatio = StartPressureRatio;
+            }
+
+            if (currentPressureRatio < 1) {
+                targetPressureOxy = currentPressureRatio * MaxPressure;
+                targetPressureVol = MaxPressure;
+            } else {
+                targetPressureOxy = MaxPressure;
+                targetPressureVol = MaxPressure / currentPressureRatio;
+            }
+        }
+
+        ControlPump(0, 1, 2, targetPressureOxy);
+        ControlPump(3, 4, 5, targetPressureVol);
     }
 }
 
 
 void ControlPump(pumpIdx, paInpIdx, paOutpIdx, targetPressure)
 {
+    Pins[paInpIdx].On = true;
+    Pins[paOutpIdx].On = true;
+
     var delta = targetPressure - Pins[paOutpIdx].Pressure;
     var reverse = delta < 0;
     Pins[pumpIdx].Mode = reverse;

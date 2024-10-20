@@ -1,0 +1,42 @@
+pin Sensor d0;
+pin Tank d1;
+
+const Vent1 = 644957;
+const Vent2 = 644966;
+const Vent3 = 645023;
+const Vent4 = 645320;
+
+const In = 1;
+const Out = 0;
+
+const MaxTankPressure = 45000;
+
+void Main()
+{
+    DeviceWithId(Vent1).Lock = true;
+    DeviceWithId(Vent2).Lock = true;
+    DeviceWithId(Vent3).Lock = true;
+    DeviceWithId(Vent4).Lock = true;
+
+    DeviceWithId(Vent1).Mode = In;
+    DeviceWithId(Vent2).Mode = In;
+    DeviceWithId(Vent3).Mode = In;
+    DeviceWithId(Vent4).Mode = In;
+
+    while(true)
+    {
+        yield;
+        
+        var dirty = Sensor.RatioVolatiles > 0 | Sensor.RatioPollutant > 0;
+        
+        var on = Sensor.Pressure > 0
+                & Tank.Pressure < MaxTankPressure 
+                & !dirty;
+        
+        DeviceWithId(Vent1).On = on;
+        DeviceWithId(Vent2).On = on;
+        DeviceWithId(Vent3).On = on;
+        DeviceWithId(Vent4).On = on;
+
+    }
+}

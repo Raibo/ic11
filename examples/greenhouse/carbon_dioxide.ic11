@@ -1,0 +1,20 @@
+pin Filter d0;
+pin CoolingValve d1;
+
+const RoomTemperature = 273 + 23;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        Filter.On = Filter.PressureInput > 0 && Filter.PressureOutput < 5000;
+
+        CoolingValve.On = Filter.TemperatureOutput > RoomTemperature;
+        CoolingValve.Setting = 100;
+        if (Filter.TemperatureOutput < RoomTemperature + 5){
+            CoolingValve.Setting = 10;
+        }
+    }
+}

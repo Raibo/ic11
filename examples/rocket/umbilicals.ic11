@@ -6,6 +6,12 @@ pin U4 d4;
 
 void Main()
 {
+
+    U1.On = true;
+    U2.On = true;
+    U3.On = true;
+    U4.On = true;
+
     while(true)
     {
         yield;

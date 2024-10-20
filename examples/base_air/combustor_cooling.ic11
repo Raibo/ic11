@@ -6,7 +6,7 @@ pin ValveFreezerNew d4;
 pin ValveFreezerOld d5;
 
 const OxyMinPressure = 3000;
-const TargetTemp = 273 + 25;
+const TargetTemp = 273 + 20;
 const OldFreezerSafeTemp = 273 + 10;
 
 void Main()

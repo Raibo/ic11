@@ -1,0 +1,38 @@
+pin Pump1 d0;
+pin Dial1 d1;
+pin PaOutput1 d2;
+pin Pump2 d3;
+pin Dial2 d4;
+pin PaOutput2 d5;
+
+const MaxPressure = 55000;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        ControlPump(0, 1, 2);
+        ControlPump(3, 4, 5);
+    }
+}
+
+void ControlPump(pumpIdx, dialIdx, paOutpIdx)
+{
+    var mode = Pins[dialIdx].Setting;
+
+    var isOn = false;
+    var isReverse = false;
+    if (mode == 0){
+        isOn = Pins[paOutpIdx].Pressure > 0;
+        isReverse = true;
+    }
+    if (mode == 2){
+        isOn = Pins[paOutpIdx].Pressure < MaxPressure & Pins[paOutpIdx].Pressure != -1;
+    }
+    
+    Pins[pumpIdx].Setting = 100;
+    Pins[pumpIdx].On = isOn;
+    Pins[pumpIdx].Mode = isReverse;
+}

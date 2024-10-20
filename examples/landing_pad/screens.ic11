@@ -1,0 +1,26 @@
+pin Dish d0;
+pin Idle d1;
+pin SigStr d2;
+pin WatReach d3;
+pin Interrog d4;
+pin ContactType d5;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        Idle.On = 1;
+        SigStr.On = 1;
+        WatReach.On = 1;
+        Interrog.On = 1;
+        ContactType.On = 1;
+
+        Idle.Setting = Dish.Idle;
+        SigStr.Setting = Dish.SignalStrength;
+        WatReach.Setting = Dish.WattsReachingContact;
+        Interrog.Setting = Dish.InterrogationProgress;
+        ContactType.Setting = Dish.ContactTypeId;
+    }
+}
