@@ -3,6 +3,7 @@ using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.Instructions;
 using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
+using System.Globalization;
 
 namespace ic11.ControlFlow.TreeProcessing;
 public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
@@ -114,7 +115,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         // saving parameters to stack
         foreach (var item in node.Expressions.Reverse())
         {
-            var value = item.CtKnownValue?.ToString() ?? item.Variable!.Register;
+            var value = item.CtKnownValue?.ToString(CultureInfo.InvariantCulture) ?? item.Variable!.Register;
             Instructions.Add(new StackPush(value));
         }
 
