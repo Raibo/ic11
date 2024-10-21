@@ -345,12 +345,12 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.DeviceWithIndexAssignment node)
     {
-        Visit((Node)node.DeviceIndexExpr);
+        Visit((Node)node.ValueExpr);
 
         if (node.TargetIndexExpr is not null)
             Visit((Node)node.TargetIndexExpr);
 
-        Visit((Node)node.ValueExpr);
+        Visit((Node)node.DeviceIndexExpr);
 
         if (node.Target == DeviceTarget.Device)
         {
@@ -360,6 +360,33 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         {
             Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.DeviceIndexExpr, node.IndexType, node.TargetIndexExpr!, node.Target,
                 node.MemberName, node.ValueExpr));
+        }
+
+        return null;
+    }
+
+    private object? Visit(Nodes.BatchAssignment node)
+    {
+        Visit((Node)node.ValueExpr);
+        
+        Visit((Node)node.DeviceTypeHashExpr);
+
+        if (node.NameHashExpr is not null)
+            Visit((Node)node.NameHashExpr);
+
+        if (node.TargetIndexExpr is not null)
+            Visit((Node)node.TargetIndexExpr);
+
+
+        if (node.Target == DeviceTarget.Device)
+        {
+            Instructions.Add(new Instructions.BatchAssignment(node.DeviceTypeHashExpr, node.NameHashExpr, node.TargetIndexExpr, node.ValueExpr, node.MemberName, node.Target));
+        }
+        else
+        {
+            // Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.DeviceIndexExpr, node.IndexType, node.TargetIndexExpr!, node.Target,
+            //     node.MemberName, node.ValueExpr));
+            throw new NotImplementedException();
         }
 
         return null;

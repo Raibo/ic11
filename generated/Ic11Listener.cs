@@ -201,6 +201,26 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDeviceWithIdExtendedAssignment([NotNull] Ic11Parser.DeviceWithIdExtendedAssignmentContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.batchAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBatchAssignment([NotNull] Ic11Parser.BatchAssignmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.batchAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBatchAssignment([NotNull] Ic11Parser.BatchAssignmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.batchFilteredAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBatchFilteredAssignment([NotNull] Ic11Parser.BatchFilteredAssignmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.batchFilteredAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBatchFilteredAssignment([NotNull] Ic11Parser.BatchFilteredAssignmentContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.memberExtendedAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

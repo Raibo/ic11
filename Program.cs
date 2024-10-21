@@ -9,7 +9,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        var path = "examples/simpleProg.ic11";
+        var path = "examples/simpleBatch.ic11";
         if (args.Length > 0)
             path = args[0];
 

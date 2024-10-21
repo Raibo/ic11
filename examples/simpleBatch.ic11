@@ -1,0 +1,7 @@
+void Main()
+{
+    var jopa = 1253;
+    var idx = 123 + jopa;
+    Batch(idx + 123).On = 1;
+    Batch(idx / 2, 123123 + jopa << 1).Lock = true;
+}

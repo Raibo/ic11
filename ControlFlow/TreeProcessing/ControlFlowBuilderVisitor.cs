@@ -300,6 +300,33 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
+    public override Node? VisitBatchAssignment([NotNull] BatchAssignmentContext context)
+    {
+        var deviceTypeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
+        var deviceProperty = context.member?.Text;
+        var value = (IExpression)Visit(context.valueExpr)!;
+
+        var newNode = new BatchAssignment(deviceTypeHash, null, null, value, deviceProperty!, DeviceTarget.Device);
+
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitBatchFilteredAssignment([NotNull] BatchFilteredAssignmentContext context)
+    {   
+        var deviceTypeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
+        var deviceNameHash = (IExpression)Visit(context.deviceNameHashExpr)!;
+        var deviceProperty = context.member?.Text;
+        var value = (IExpression)Visit(context.valueExpr)!;
+
+        var newNode = new BatchAssignment(deviceTypeHash, deviceNameHash, null, value, deviceProperty!, DeviceTarget.Device);
+
+        AddToStatements(newNode);
+
+        return null;
+    }
+
     public override Node? VisitDeviceWithIndexAssignment([NotNull] DeviceWithIndexAssignmentContext context)
     {
         var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
