@@ -1,8 +1,5 @@
 void Main()
 {
-    var a = 1;
-    var b = 2;
-    var c = 3;
-
-    DevicesOfType(a + 1).WithName[b + 2].Property = DevicesOfType(c + 3).WithName(a + 4).Slots[b + 5].Property.Average;
+    var a = "ItemKitPoweredVent";
+    Base.Setting = a;
 }

@@ -1,4 +1,7 @@
-﻿namespace ic11.ControlFlow.TreeProcessing;
+﻿using System.IO.Hashing;
+using System.Text;
+
+namespace ic11.ControlFlow.TreeProcessing;
 public static class OperationHelper
 {
     public static Dictionary<string, string> SymbolsBinaryOpMap = new()
@@ -30,4 +33,7 @@ public static class OperationHelper
         ["-"] = "_neg",
         ["~"] = "not",
     };
+
+    public static decimal Hash(string input) =>
+        (int)Crc32.HashToUInt32(Encoding.ASCII.GetBytes(input));
 }

@@ -86,7 +86,7 @@ expression:
     | left=expression op=AND right=expression # BinaryOp
     | left=expression op=(OR | XOR) right=expression # BinaryOp
     | '(' expression ')' # Parenthesis
-    | type=(INTEGER | BOOLEAN | REAL) # Literal
+    | type=(INTEGER | BOOLEAN | REAL | STRING_LITERAL) # Literal
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
     | IDENTIFIER # Identifier
     | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
@@ -193,6 +193,7 @@ DIRECT_BINARY_OPERATOR:
 BOOLEAN: 'true' | 'false';
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;
 INTEGER: [0-9]+;
+STRING_LITERAL: '"' ~[\r\n"]* '"';
 
 REAL: [0-9]* '.' [0-9]+;
 

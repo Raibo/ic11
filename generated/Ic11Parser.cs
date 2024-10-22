@@ -43,7 +43,8 @@ public partial class Ic11Parser : Parser {
 		LT=33, GT=34, LE=35, GE=36, AND=37, OR=38, XOR=39, EQ=40, NE=41, NEGATION=42, 
 		PINS=43, SLOTS=44, REAGENTS=45, STACK=46, DEVICE_WITH_ID=47, DEVICES_OF_TYPE=48, 
 		WITH_NAME=49, DIRECT_UNARY_OPERATOR=50, DIRECT_BINARY_OPERATOR=51, BOOLEAN=52, 
-		IDENTIFIER=53, INTEGER=54, REAL=55, WS=56, LINE_COMMENT=57, MULTILINE_COMMENT=58;
+		IDENTIFIER=53, INTEGER=54, STRING_LITERAL=55, REAL=56, WS=57, LINE_COMMENT=58, 
+		MULTILINE_COMMENT=59;
 	public const int
 		RULE_program = 0, RULE_declaration = 1, RULE_function = 2, RULE_block = 3, 
 		RULE_statement = 4, RULE_delimitedStatement = 5, RULE_yieldStatement = 6, 
@@ -81,7 +82,8 @@ public partial class Ic11Parser : Parser {
 		"BITWISE_NOT", "SHIFTL", "SHIFTR", "LT", "GT", "LE", "GE", "AND", "OR", 
 		"XOR", "EQ", "NE", "NEGATION", "PINS", "SLOTS", "REAGENTS", "STACK", "DEVICE_WITH_ID", 
 		"DEVICES_OF_TYPE", "WITH_NAME", "DIRECT_UNARY_OPERATOR", "DIRECT_BINARY_OPERATOR", 
-		"BOOLEAN", "IDENTIFIER", "INTEGER", "REAL", "WS", "LINE_COMMENT", "MULTILINE_COMMENT"
+		"BOOLEAN", "IDENTIFIER", "INTEGER", "STRING_LITERAL", "REAL", "WS", "LINE_COMMENT", 
+		"MULTILINE_COMMENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -1016,7 +1018,7 @@ public partial class Ic11Parser : Parser {
 			State = 145;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 71367101880729632L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 143424695918657568L) != 0)) {
 				{
 				State = 137;
 				expression(0);
@@ -2281,7 +2283,7 @@ public partial class Ic11Parser : Parser {
 				State = 303;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 71367101880729632L) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 143424695918657568L) != 0)) {
 					{
 					State = 295;
 					expression(0);
@@ -2619,6 +2621,7 @@ public partial class Ic11Parser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER() { return GetToken(Ic11Parser.INTEGER, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOOLEAN() { return GetToken(Ic11Parser.BOOLEAN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL() { return GetToken(Ic11Parser.REAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_LITERAL() { return GetToken(Ic11Parser.STRING_LITERAL, 0); }
 		public LiteralContext(ExpressionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
@@ -2914,7 +2917,7 @@ public partial class Ic11Parser : Parser {
 				State = 337;
 				((LiteralContext)_localctx).type = TokenStream.LT(1);
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 58546795155816448L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 130604389193744384L) != 0)) ) {
 					((LiteralContext)_localctx).type = ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -2935,7 +2938,7 @@ public partial class Ic11Parser : Parser {
 				State = 348;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 71367101880729632L) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 143424695918657568L) != 0)) {
 					{
 					State = 340;
 					expression(0);
@@ -3420,7 +3423,7 @@ public partial class Ic11Parser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,58,461,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,59,461,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,1,0,1,0,1,
@@ -3455,7 +3458,7 @@ public partial class Ic11Parser : Parser {
 		1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,1,27,
 		5,27,456,8,27,10,27,12,27,459,9,27,1,27,0,1,54,28,0,2,4,6,8,10,12,14,16,
 		18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,0,10,1,0,3,4,
-		1,0,44,46,2,0,22,22,53,53,3,0,26,26,30,30,42,42,2,0,52,52,54,55,1,0,31,
+		1,0,44,46,2,0,22,22,53,53,3,0,26,26,30,30,42,42,2,0,52,52,54,56,1,0,31,
 		32,1,0,27,29,1,0,25,26,2,0,33,36,40,41,1,0,38,39,499,0,63,1,0,0,0,2,68,
 		1,0,0,0,4,73,1,0,0,0,6,89,1,0,0,0,8,100,1,0,0,0,10,120,1,0,0,0,12,124,
 		1,0,0,0,14,126,1,0,0,0,16,128,1,0,0,0,18,131,1,0,0,0,20,133,1,0,0,0,22,

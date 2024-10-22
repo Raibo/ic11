@@ -111,6 +111,9 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     {
         var value = context.GetText();
 
+        if (context.type.Type == STRING_LITERAL)
+            return new Literal(OperationHelper.Hash(value.Trim('"')));
+
         if (value == "true")
             value = "1";
 
