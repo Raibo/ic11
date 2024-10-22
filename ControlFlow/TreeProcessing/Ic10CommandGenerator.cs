@@ -377,17 +377,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.TargetIndexExpr is not null)
             Visit((Node)node.TargetIndexExpr);
 
-
-        if (node.Target == DeviceTarget.Device)
-        {
-            Instructions.Add(new Instructions.BatchAssignment(node.DeviceTypeHashExpr, node.NameHashExpr, node.TargetIndexExpr, node.ValueExpr, node.MemberName, node.Target));
-        }
-        else
-        {
-            // Instructions.Add(new Instructions.DeviceWithIndexAssignment(node.DeviceIndexExpr, node.IndexType, node.TargetIndexExpr!, node.Target,
-            //     node.MemberName, node.ValueExpr));
-            throw new NotImplementedException();
-        }
+        Instructions.Add(new Instructions.BatchAssignment(node.DeviceTypeHashExpr, node.NameHashExpr, node.TargetIndexExpr, node.ValueExpr, node.MemberName, node.Target));
 
         return null;
     }

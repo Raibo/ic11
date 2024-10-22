@@ -252,18 +252,6 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBatchAssignment([NotNull] Ic11Parser.BatchAssignmentContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="Ic11Parser.batchFilteredAssignment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBatchFilteredAssignment([NotNull] Ic11Parser.BatchFilteredAssignmentContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="Ic11Parser.batchFilteredAssignment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBatchFilteredAssignment([NotNull] Ic11Parser.BatchFilteredAssignmentContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.memberExtendedAssignment"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

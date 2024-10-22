@@ -1,4 +1,4 @@
 void Main()
 {
-    var a = Pins[1].Stack[555];
+    DevicesOfType(1).Property = 4;
 }

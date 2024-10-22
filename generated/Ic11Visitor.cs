@@ -140,12 +140,6 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBatchAssignment([NotNull] Ic11Parser.BatchAssignmentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="Ic11Parser.batchFilteredAssignment"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBatchFilteredAssignment([NotNull] Ic11Parser.BatchFilteredAssignmentContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.memberExtendedAssignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

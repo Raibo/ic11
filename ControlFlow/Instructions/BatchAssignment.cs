@@ -11,7 +11,8 @@ public class BatchAssignment : Instruction
     public string MemberName;
     public IExpression ValueExpr;
 
-    public BatchAssignment(IExpression deviceTypeHashExpr, IExpression? nameHashExpr, IExpression? targetIndexExpression, IExpression valueExpr, string memberName, DeviceTarget target)
+    public BatchAssignment(IExpression deviceTypeHashExpr, IExpression? nameHashExpr, IExpression? targetIndexExpression,
+        IExpression valueExpr, string memberName, DeviceTarget target)
     {
         DeviceTypeHashExpr = deviceTypeHashExpr;
         TargetIndexExpr = targetIndexExpression;
@@ -28,7 +29,9 @@ public class BatchAssignment : Instruction
             (DeviceTarget.Device, null) => $"sb {DeviceTypeHashExpr.Render()} {MemberName} {ValueExpr.Render()}",
             (DeviceTarget.Device, not null) => $"sbn {DeviceTypeHashExpr.Render()} {NameHashExpr!.Render()} {MemberName} {ValueExpr.Render()}",
 
-            _ => throw new Exception($"Write operation for device with target {Target} and name hash is not supported"),
+            (DeviceTarget.Slots, null) => $"sbs {DeviceTypeHashExpr.Render()} {TargetIndexExpr!.Render()} {MemberName} {ValueExpr.Render()}",
+
+            _ => throw new Exception($"Batch write operation to devices of type{(NameHashExpr is null ? "" : " and name")} targeting {Target} is not supported"),
         };
     }
 }

@@ -303,24 +303,24 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     public override Node? VisitBatchAssignment([NotNull] BatchAssignmentContext context)
     {
         var deviceTypeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
-        var deviceProperty = context.member?.Text;
+
+        var deviceNameHash = context.deviceNameHashExpr is null
+            ? null
+            : (IExpression)Visit(context.deviceNameHashExpr)!;
+
+        var targetIdx = context.targetIdxExpr is null
+            ? null
+            : (IExpression)Visit(context.targetIdxExpr)!;
+
         var value = (IExpression)Visit(context.valueExpr)!;
 
-        var newNode = new BatchAssignment(deviceTypeHash, null, null, value, deviceProperty!, DeviceTarget.Device);
+        var deviceProperty = context.member.Text;
 
-        AddToStatements(newNode);
+        var target = context.prop is null
+            ? DeviceTarget.Device
+            : GetDeviceTarget(context.prop.Type);
 
-        return null;
-    }
-
-    public override Node? VisitBatchFilteredAssignment([NotNull] BatchFilteredAssignmentContext context)
-    {   
-        var deviceTypeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
-        var deviceNameHash = (IExpression)Visit(context.deviceNameHashExpr)!;
-        var deviceProperty = context.member?.Text;
-        var value = (IExpression)Visit(context.valueExpr)!;
-
-        var newNode = new BatchAssignment(deviceTypeHash, deviceNameHash, null, value, deviceProperty!, DeviceTarget.Device);
+        var newNode = new BatchAssignment(deviceTypeHash, deviceNameHash, targetIdx, value, deviceProperty, target);
 
         AddToStatements(newNode);
 

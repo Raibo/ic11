@@ -19,7 +19,6 @@ delimitedStatement: (
         deviceWithIdExtendedAssignment
         | deviceWithIdAssignment
         | batchAssignment
-        | batchFilteredAssignment
         | deviceWithIndexExtendedAssignment
         | deviceWithIndexAssignment
         | memberExtendedAssignment
@@ -52,8 +51,11 @@ ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement
 
 deviceWithIdAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER '=' valueExpr=expression;
 deviceWithIdExtendedAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
-batchAssignment: BATCH '(' deviceTypeHashExpr=expression ')' '.' member=IDENTIFIER '=' valueExpr=expression;
-batchFilteredAssignment: BATCH '(' deviceTypeHashExpr=expression ',' deviceNameHashExpr=expression ')' '.' member=IDENTIFIER '=' valueExpr=expression;
+
+batchAssignment: DEVICES_OF_TYPE '(' deviceTypeHashExpr=expression ')'
+    ('.' WITH_NAME '(' deviceNameHashExpr=expression ')')?
+    ('.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']')?
+    '.' member=IDENTIFIER '=' valueExpr=expression;
 
 memberExtendedAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
 memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' valueExpr=expression;
@@ -131,7 +133,8 @@ SLOTS: 'Slots';
 REAGENTS: 'Reagents';
 STACK: 'Stack';
 DEVICE_WITH_ID: 'DeviceWithId';
-BATCH: 'Batch';
+DEVICES_OF_TYPE: 'DevicesOfType';
+WITH_NAME: 'WithName';
 
 DIRECT_UNARY_OPERATOR:
     'not'
