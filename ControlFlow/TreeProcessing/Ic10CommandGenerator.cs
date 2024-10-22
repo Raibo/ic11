@@ -343,6 +343,22 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
+    private object? Visit(Nodes.BatchAccess node)
+    {
+        Visit((Node)node.DeviceTypeHashExpr);
+
+        if (node.NameHashExpr is not null)
+            Visit((Node)node.NameHashExpr);
+
+        if (node.TargetIndexExpr is not null)
+            Visit((Node)node.TargetIndexExpr);
+
+        Instructions.Add(new Instructions.BatchAccess(node.Variable!, node.DeviceTypeHashExpr, node.NameHashExpr, node.TargetIndexExpr,
+            node.Target, node.MemberName, node.BatchMode));
+
+        return null;
+    }
+
     private object? Visit(Nodes.DeviceWithIndexAssignment node)
     {
         Visit((Node)node.ValueExpr);

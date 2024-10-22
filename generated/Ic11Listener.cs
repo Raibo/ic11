@@ -327,6 +327,18 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitUnaryOp([NotNull] Ic11Parser.UnaryOpContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>BatchAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBatchAccess([NotNull] Ic11Parser.BatchAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BatchAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBatchAccess([NotNull] Ic11Parser.BatchAccessContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>ExtendedMemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>

@@ -95,6 +95,7 @@ expression:
     | PINS '[' deviceIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIndexAccess
     | DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER # DeviceIdAccess
     | DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIdAccess
+    | DEVICES_OF_TYPE '(' deviceTypeHashExpr=expression ')' ('.' WITH_NAME '(' deviceNameHashExpr=expression ')')? ('.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']')? '.' member=IDENTIFIER '.' batchMode=IDENTIFIER # BatchAccess
     | IDENTIFIER '[' indexExpr=expression ']' # ArrayElementAccess
     ;
 

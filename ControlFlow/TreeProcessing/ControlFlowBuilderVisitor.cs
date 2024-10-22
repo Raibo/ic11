@@ -219,6 +219,30 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
+    public override Node? VisitBatchAccess([NotNull] BatchAccessContext context)
+    {
+        var typeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
+
+        var nameHash = context.deviceNameHashExpr is null
+            ? null
+            : (IExpression)Visit(context.deviceNameHashExpr)!;
+
+        var targetIdx = context.targetIdxExpr is null
+            ? null
+            : (IExpression)Visit(context.targetIdxExpr)!;
+
+        var deviceProperty = context.member.Text;
+        var batchMode = context.batchMode.Text;
+
+        var target = context.prop is null
+            ? DeviceTarget.Device
+            : GetDeviceTarget(context.prop.Type);
+
+        var newNode = new BatchAccess(typeHash, nameHash, targetIdx, target, deviceProperty, batchMode);
+
+        return newNode;
+    }
+
     public override Node? VisitWhileStatement([NotNull] WhileStatementContext context)
     {
         var innerCode = (IParseTree)context.block() ?? context.statement();

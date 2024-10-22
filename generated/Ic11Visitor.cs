@@ -209,6 +209,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitUnaryOp([NotNull] Ic11Parser.UnaryOpContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>BatchAccess</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBatchAccess([NotNull] Ic11Parser.BatchAccessContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>ExtendedMemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
