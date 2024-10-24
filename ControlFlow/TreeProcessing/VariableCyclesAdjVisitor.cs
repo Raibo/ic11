@@ -36,7 +36,32 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private static int LastStatementIndex(While node)
+    protected override object? Visit(For node)
+    {
+        var cycleStartIndex = node.HasStatement1
+            ? ((Node)node.Statements.First()).IndexInScope
+            : node.Expression.FirstIndexInTree;
+
+        var cycleFinishIndex = LastStatementIndex(node);
+
+        var relevantVariables = node.Scope!.Variables
+            .Where(v => v.DeclareIndex < cycleStartIndex)
+            .Where(v => cycleStartIndex <= v.LastReferencedIndex && v.LastReferencedIndex <= cycleFinishIndex)
+            .ToList();
+
+        if (node.HasStatement1 && node.Statements.First() is VariableDeclaration dec)
+            relevantVariables.Add(dec.Variable!);
+
+        foreach (var variable in relevantVariables)
+            variable.LastReferencedIndex = Math.Max(cycleFinishIndex + 1, variable.LastReferencedIndex);
+
+        foreach (Node item in node.Statements)
+            Visit(item);
+
+        return null;
+    }
+
+    private static int LastStatementIndex(IStatement node)
     {
         return GetLastIndex(node);
 

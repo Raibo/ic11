@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Ic11.g4 by ANTLR 4.13.2
+// Generated from ./grammars/Ic11.g4 by ANTLR 4.13.2
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -80,6 +80,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStatement([NotNull] Ic11Parser.StatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.delimetedStatmentWithDelimiter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDelimetedStatmentWithDelimiter([NotNull] Ic11Parser.DelimetedStatmentWithDelimiterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.delimetedStatmentWithDelimiter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDelimetedStatmentWithDelimiter([NotNull] Ic11Parser.DelimetedStatmentWithDelimiterContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
 	/// </summary>
@@ -170,6 +180,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitWhileStatement([NotNull] Ic11Parser.WhileStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.forStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForStatement([NotNull] Ic11Parser.ForStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.forStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForStatement([NotNull] Ic11Parser.ForStatementContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.ifStatement"/>.
 	/// </summary>

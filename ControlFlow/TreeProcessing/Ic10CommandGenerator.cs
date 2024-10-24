@@ -180,6 +180,49 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
+    protected override object? Visit(For node)
+    {
+        var labelEnterInstruction = new Label($"For{node.Id}Enter");
+        var labelContinueInstruction = new Label($"For{node.Id}Continue");
+        var labelExitInstruction = new Label($"For{node.Id}Exit");
+
+        IEnumerable<IStatement> innerStatements = node.Statements;
+
+        // First header statement goes before cycle enter label, as it is executed just once before the whole cycle
+        if (node.HasStatement1)
+        {
+            innerStatements = innerStatements.Skip(1);
+            Visit((Node)node.Statements.First());
+        }
+
+        Instructions.Add(labelEnterInstruction);
+
+        if (node.HasStatement2)
+            innerStatements = innerStatements.SkipLast(1);
+
+        Visit((Node)node.Expression);
+        Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
+
+        _continueLabels.Push(labelContinueInstruction.Name);
+        _breakLabels.Push(labelExitInstruction.Name);
+
+        VisitStatements(innerStatements.ToList());
+
+        Instructions.Add(labelContinueInstruction);
+
+        // Last statement is executed after every iteration, so continue label goes before it
+        if (node.HasStatement2)
+            Visit((Node)node.Statements.Last());
+
+        _breakLabels.Pop();
+        _continueLabels.Pop();
+
+        Instructions.Add(new Jump(JumpType.J, labelEnterInstruction.Name));
+        Instructions.Add(labelExitInstruction);
+
+        return null;
+    }
+
     private object? Visit(Continue node)
     {
         if (!_continueLabels.Any())

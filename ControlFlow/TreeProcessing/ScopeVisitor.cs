@@ -32,7 +32,7 @@ public class ScopeVisitor
 
     private void VisitStatement(IStatement statement)
     {
-        if (statement is IExpressionContainer ec)
+        if (statement is IExpressionContainer ec && statement is not For) // For must have it's expression inside it's scope
             foreach (var item in ec.Expressions)
                 VisitExpression(item);
 
@@ -57,6 +57,9 @@ public class ScopeVisitor
                 md.InnerScope = _currentScope;
                 AddParameterVariables(md);
             }
+
+            if (statement is For forStatement)
+                VisitExpression(forStatement.Expression);
 
             VisitStatementList(st.Statements);
             _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;

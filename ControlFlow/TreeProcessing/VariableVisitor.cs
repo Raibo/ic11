@@ -17,6 +17,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         typeof(UserDefinedValueAccess),
         typeof(PinDeclaration),
         typeof(If),
+        typeof(For),
         typeof(MethodDeclaration),
         typeof(ArrayDeclaration),
         typeof(ArrayAssignment),
@@ -204,6 +205,27 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.Else;
 
         foreach (Node item in node.Statements)
+            VisitNode(item);
+
+        return null;
+    }
+
+    private Variable? Visit(For node)
+    {
+        IEnumerable<IStatement> innerStatements = node.Statements;
+
+        if (node.HasStatement1)
+        {
+            VisitNode((Node)node.Statements.First());
+            innerStatements = innerStatements.Skip(1);
+        }
+
+        var innerVariable = VisitNode((Node)node.Expression);
+
+        if (innerVariable is not null)
+            innerVariable.LastReferencedIndex = Math.Max(node.IndexInScope, innerVariable.DeclareIndex);
+
+        foreach (Node item in innerStatements)
             VisitNode(item);
 
         return null;

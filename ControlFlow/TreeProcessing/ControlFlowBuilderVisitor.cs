@@ -23,7 +23,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         if (CurrentNode is not IStatementsContainer statementsContainer)
             throw new Exception($"Unexpected statement {node?.GetType().Name}");
 
-        ((IStatementsContainer)CurrentNode).AddToStatements(node);
+        statementsContainer.AddToStatements(node);
     }
 
     public ControlFlowBuilderVisitor(FlowContext flowContext)
@@ -255,6 +255,44 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         AddToStatements(newNode);
         CurrentNode = newNode;
         Visit(innerCode);
+        CurrentNode = newNode.Parent!;
+
+        return null;
+    }
+
+    public override Node? VisitForStatement([NotNull] ForStatementContext context)
+    {
+        var newNode = new For();
+        AddToStatements(newNode);
+
+        CurrentNode = newNode;
+
+        var innerCode = (IParseTree)context.block() ?? context.innerStatement;
+
+        if (context.statement1 is not null)
+        {
+            Visit(context.statement1);
+            newNode.HasStatement1 = true;
+        }
+
+        if (context.expression() is not null)
+        {
+            var expression = (IExpression)Visit(context.expression())!;
+            newNode.Expression = expression;
+        }
+        else
+        {
+            newNode.Expression = new Literal(1);
+        }
+
+        Visit(innerCode);
+
+        if (context.statement2 is not null)
+        {
+            Visit(context.statement2);
+            newNode.HasStatement2 = true;
+        }
+
         CurrentNode = newNode.Parent!;
 
         return null;

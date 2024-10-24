@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Ic11.g4 by ANTLR 4.13.2
+// Generated from ./grammars/Ic11.g4 by ANTLR 4.13.2
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -95,6 +95,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStatement([NotNull] Ic11Parser.StatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.delimetedStatmentWithDelimiter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDelimetedStatmentWithDelimiter([NotNull] Ic11Parser.DelimetedStatmentWithDelimiterContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.delimetedStatmentWithDelimiter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDelimetedStatmentWithDelimiter([NotNull] Ic11Parser.DelimetedStatmentWithDelimiterContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -203,6 +215,18 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWhileStatement([NotNull] Ic11Parser.WhileStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.forStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterForStatement([NotNull] Ic11Parser.ForStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.forStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitForStatement([NotNull] Ic11Parser.ForStatementContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.ifStatement"/>.
 	/// <para>The default implementation does nothing.</para>

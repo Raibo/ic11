@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Ic11.g4 by ANTLR 4.13.2
+// Generated from ./grammars/Ic11.g4 by ANTLR 4.13.2
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -61,6 +61,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] Ic11Parser.StatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.delimetedStatmentWithDelimiter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDelimetedStatmentWithDelimiter([NotNull] Ic11Parser.DelimetedStatmentWithDelimiterContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.delimitedStatement"/>.
 	/// </summary>
@@ -115,6 +121,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWhileStatement([NotNull] Ic11Parser.WhileStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.forStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForStatement([NotNull] Ic11Parser.ForStatementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.ifStatement"/>.
 	/// </summary>

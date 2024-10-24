@@ -1,5 +1,9 @@
 void Main()
 {
-    var a = "ItemKitPoweredVent";
-    Base.Setting = a;
+    for(var i = 0; i < 10; i = i + 1)
+    {
+        Base.Setting = 1;
+        continue;
+        Base.Setting = 2;
+    }
 }

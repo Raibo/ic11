@@ -84,6 +84,14 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
         return default!;
     }
 
+    protected virtual TResult Visit(For node)
+    {
+        foreach (Node item in ((IStatementsContainer)node).Statements)
+            Visit(item);
+
+        return default!;
+    }
+
     protected virtual TResult Visit(If node)
     {
         node.CurrentStatementsContainer = IfStatementsContainer.If;

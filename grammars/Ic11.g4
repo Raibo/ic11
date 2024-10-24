@@ -13,7 +13,9 @@ function: retType=('void' | 'real') IDENTIFIER '(' (IDENTIFIER (',' IDENTIFIER)*
 
 block: '{' statement* '}';
 
-statement: delimitedStatement | undelimitedStatement;
+statement: delimetedStatmentWithDelimiter | undelimitedStatement;
+
+delimetedStatmentWithDelimiter: delimitedStatement ';';
 
 delimitedStatement: (
         deviceWithIdExtendedAssignment
@@ -34,7 +36,7 @@ delimitedStatement: (
         | functionCallStatement
         | arrayDeclaration
         | arrayAssignment
-    ) ';';
+    );
 
 yieldStatement: YIELD;
 returnStatement: RETURN;
@@ -43,9 +45,10 @@ continueStatement: CONTINUE;
 breakStatement: BREAK;
 functionCallStatement: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
-undelimitedStatement: whileStatement | ifStatement;
+undelimitedStatement: whileStatement | forStatement | ifStatement;
 
 whileStatement: WHILE '(' expression ')' (block | statement);
+forStatement: FOR '(' statement1=delimitedStatement? ';' expression? ';' statement2=delimitedStatement? ')' (block | innerStatement=statement);
 
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
@@ -102,6 +105,7 @@ expression:
 // Lexer rules
 PINID: 'db' | 'd0' | 'd1' | 'd2' | 'd3' | 'd4' | 'd5';
 WHILE: 'while';
+FOR: 'for';
 IF: 'if';
 ELSE: 'else';
 YIELD: 'yield';
