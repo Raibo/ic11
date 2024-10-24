@@ -45,7 +45,7 @@ public class MethodCallsVisitor : ControlFlowTreeVisitorBase<object?>
             statements = ifn.Statements;
 
             ifn.CurrentStatementsContainer = DataHolders.IfStatementsContainer.Else;
-            statements.Concat(ifn.Statements);
+            statements = statements.Concat(ifn.Statements);
         }
         else
         {
