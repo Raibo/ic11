@@ -24,11 +24,11 @@
       "patterns": [
         {
           "name": "keyword.control.ic11",
-          "match": "\\b(pin|void|real|yield|return|continue|var|while|if|else)\\b"
+          "match": "\\b(pin|void|real|yield|return|continue|var|while|if|else|for)\\b"
         },
         {
           "name": "support.type.device.ic11",
-          "match": "\\b(Base|DeviceWithId)\\b"
+          "match": "\\b(Base|DeviceWithId|DevicesOfType|WithName)\\b"
         },
         {
           "name": "constant.language.pin.ic11",
@@ -73,6 +73,10 @@
         {
           "name": "constant.language.boolean.ic11",
           "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "string.quoted.double.ic11",
+          "match": "\"(?:[^\"\\\\]|\\\\.)*\""
         }
       ]
     },
