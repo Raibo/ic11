@@ -32,19 +32,25 @@ public class ScopeVisitor
 
     private void VisitStatement(IStatement statement)
     {
-        if (statement is IExpressionContainer ec && statement is not For) // For must have it's expression inside it's scope
+        if (statement is If ifStatement)
+        {
+            Visit(ifStatement);
+            return;
+        }
+
+        if (statement is For forStatement)
+        {
+            Visit(forStatement);
+            return;
+        }
+
+        if (statement is IExpressionContainer ec)
             foreach (var item in ec.Expressions)
                 VisitExpression(item);
 
         var node = (Node)statement;
         node.Scope = _currentScope;
         node.SetIndex(ref _currentScope.CurrentNodeOrder);
-
-        if (statement is If ifStatement)
-        {
-            Visit(ifStatement);
-            return;
-        }
 
         if (statement is IStatementsContainer st)
         {
@@ -57,9 +63,6 @@ public class ScopeVisitor
                 md.InnerScope = _currentScope;
                 AddParameterVariables(md);
             }
-
-            if (statement is For forStatement)
-                VisitExpression(forStatement.Expression);
 
             VisitStatementList(st.Statements);
             _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;
@@ -83,6 +86,9 @@ public class ScopeVisitor
 
     protected object? Visit(If node)
     {
+        node.Scope = _currentScope;
+        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+
         VisitExpression(node.Expression);
 
         node.CurrentStatementsContainer = IfStatementsContainer.If;
@@ -107,6 +113,31 @@ public class ScopeVisitor
         }
 
         return default!;
+    }
+
+    protected object? Visit(For node)
+    {
+        node.Scope = _currentScope;
+        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+
+        _currentScope = _currentScope.CreateChildScope();
+
+        IEnumerable<IStatement> innerStatements = node.Statements;
+
+        if (node.HasStatement1)
+        {
+            innerStatements = innerStatements.Skip(1);
+            VisitStatement(node.Statements.First());
+        }
+
+        VisitExpression(node.Expression);
+
+        VisitStatementList(innerStatements);
+
+        _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;
+        _currentScope = _currentScope.Parent!;
+
+        return null;
     }
 
     private void VisitExpression(IExpression expression)
