@@ -1,4 +1,4 @@
-const targetPressure = 1
+const targetPressure = 10000; // 10 MPa
 
 void Main()
 {
