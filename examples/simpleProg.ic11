@@ -1,9 +1,18 @@
+/*
+    Example of controlling satellite dish position with dials
+*/
+
+pin SatelliteDish d0;
+pin DialHor d1;
+pin DialVer d2;
+
 void Main()
 {
-    for(var i = 0; i < 10; i = i + 1)
+    // endless cycle
+    while(true)
     {
-        Base.Setting = 1;
-        continue;
-        Base.Setting = 2;
+        yield;
+        SatelliteDish.Horizontal = DialHor.Setting;
+        SatelliteDish.Vertical = DialVer.Setting;
     }
 }
