@@ -135,7 +135,7 @@ NE: '!=';
 NEGATION: '!';
 PINS: 'Pins';
 SLOTS: 'Slots';
-REAGENTS: 'Reagents';
+REAGENTS: 'Reagent';
 STACK: 'Stack';
 DEVICE_WITH_ID: 'DeviceWithId';
 DEVICES_OF_TYPE: 'DevicesOfType';

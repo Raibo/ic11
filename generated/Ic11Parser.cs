@@ -73,7 +73,7 @@ public partial class Ic11Parser : Parser {
 		"'yield'", "'return'", "'continue'", "'break'", "'Base'", "'var'", "'const'", 
 		"'+'", "'-'", "'*'", "'/'", "'%'", "'~'", "'<<'", "'>>'", "'<'", "'>'", 
 		"'<='", "'>='", "'&'", "'|'", "'^'", "'=='", "'!='", "'!'", "'Pins'", 
-		"'Slots'", "'Reagents'", "'Stack'", "'DeviceWithId'", "'DevicesOfType'", 
+		"'Slots'", "'Reagent'", "'Stack'", "'DeviceWithId'", "'DevicesOfType'", 
 		"'WithName'"
 	};
 	private static readonly string[] _SymbolicNames = {

@@ -1,0 +1,93 @@
+// TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.314)
+// PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
+
+const GasConstant = 8.314;
+const targetPressure = 9500;
+
+const MinPower = 0.05;
+
+const wastePressure = 1;
+const minInputPressure = 1;
+
+const typePa = "StructurePipeAnalysizer";
+const typePump = "StructureTurboVolumePump";
+const typeCanister = "StructureGasTankStorage";
+
+const namePaInp = "Pa oxygen inp";
+const namePaOut = "Pa oxygen out";
+const namePump = "Pump oxygen";
+const nameCanister = "Waste storage";
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        // Filter control
+        if (DevicesOfType(typeCanister).WithName(nameCanister).Slots[0].Occupied.Minimum)
+            Base.Mode = DevicesOfType(typeCanister).WithName(nameCanister).Slots[0].Pressure.Minimum > wastePressure;
+        else
+            Base.Mode = false;
+
+        // Pump control
+        if (DevicesOfType(typePa).WithName(namePaOut).Pressure.Minimum == -1 | DevicesOfType(typePa).WithName(namePaInp).Pressure.Minimum == -1)
+        {
+            DevicesOfType(typePump).WithName(namePump).On = false;
+            continue;
+        }
+        
+        var delta = targetPressure - DevicesOfType(typePa).WithName(namePaOut).Pressure.Minimum;
+        var reverse = delta < 0;
+        DevicesOfType(typePump).WithName(namePump).Mode = reverse;
+
+        var pumpPower = 0;
+
+        var outMoles = DevicesOfType(typePa).WithName(namePaOut).TotalMoles.Minimum;
+        var outVolume = DevicesOfType(typePa).WithName(namePaOut).Volume.Minimum;
+        var outPressure = DevicesOfType(typePa).WithName(namePaOut).Pressure.Minimum;
+
+        if (reverse)
+        {
+            var transferMolesPerLiter = outMoles / outVolume;
+            var targetMoles = targetPressure / outPressure * outMoles;
+            var targSubMoles = outMoles - targetMoles;
+
+            pumpPower = targSubMoles / transferMolesPerLiter;
+        }
+        else
+        {
+            if (DevicesOfType(typePa).WithName(namePaInp).Pressure.Minimum <= minInputPressure)
+            {
+                DevicesOfType(typePump).WithName(namePump).On = false;
+                continue;
+            }
+
+            var inpMoles = DevicesOfType(typePa).WithName(namePaInp).TotalMoles.Minimum;
+            var inpVolume = DevicesOfType(typePa).WithName(namePaInp).Volume.Minimum;
+            var inpTemp = DevicesOfType(typePa).WithName(namePaInp).Temperature.Minimum;
+
+            var transferMolesPerLiter = inpMoles / inpVolume;
+
+            var targetMoles = 0;
+
+            if (outPressure > 0)
+                targetMoles = targetPressure / outPressure * outMoles;
+            else
+                targetMoles = outVolume * targetPressure / inpTemp / GasConstant;
+            
+            var targAddMoles = targetMoles - outMoles;    
+
+            pumpPower = targAddMoles / transferMolesPerLiter;
+        }
+
+        if (pumpPower < MinPower)
+        {
+            DevicesOfType(typePump).WithName(namePump).On = false;
+            continue;
+        }
+
+        DevicesOfType(typePump).WithName(namePump).Setting = pumpPower;
+        DevicesOfType(typePump).WithName(namePump).On = true;
+    }
+}
