@@ -174,12 +174,38 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
+    private object? Visit(NullaryOperation node)
+    {
+        WriteLine($"Nullary operation {node.Operation}{Tags(node)}");
+        return null;
+    }
+
+    private object? Visit(UnaryOperation node)
+    {
+        WriteLine($"Unary operation {node.Operation}{Tags(node)}");
+        _depth++;
+        Visit((Node)node.Operand);
+        _depth--;
+        return null;
+    }
+
     private object? Visit(BinaryOperation node)
     {
         WriteLine($"Binary operation {node.Operation}{Tags(node)}");
         _depth++;
         Visit((Node)node.Left);
         Visit((Node)node.Right);
+        _depth--;
+        return null;
+    }
+
+    private object? Visit(TernaryOperation node)
+    {
+        WriteLine($"Binary operation {node.Operation}{Tags(node)}");
+        _depth++;
+        Visit((Node)node.OperandA);
+        Visit((Node)node.OperandB);
+        Visit((Node)node.OperandC);
         _depth--;
         return null;
     }
@@ -197,15 +223,6 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         _depth++;
         foreach (var item in node.ArgumentExpressions)
             Visit((Node)item);
-        _depth--;
-        return null;
-    }
-
-    private object? Visit(UnaryOperation node)
-    {
-        WriteLine($"Unary operation {node.Operation}{Tags(node)}");
-        _depth++;
-        Visit((Node)node.Operand);
         _depth--;
         return null;
     }

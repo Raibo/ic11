@@ -4,6 +4,13 @@ using System.Text;
 namespace ic11.ControlFlow.TreeProcessing;
 public static class OperationHelper
 {
+    public static Dictionary<string, string> SymbolsUnaryOpMap = new()
+    {
+        ["!"] = "_not",
+        ["-"] = "_neg",
+        ["~"] = "not",
+    };
+
     public static Dictionary<string, string> SymbolsBinaryOpMap = new()
     {
         ["+"] = "add",
@@ -25,13 +32,18 @@ public static class OperationHelper
 
         ["<<"] = "sll",
         [">>"] = "srl",
+        ["<<l"] = "sll",
+        [">>l"] = "srl",
+        ["<<a"] = "sla",
+        [">>a"] = "sra",
     };
 
-    public static Dictionary<string, string> SymbolsUnaryOpMap = new()
+    public static Dictionary<string, string> SymbolsTernaryOpMap = new()
     {
-        ["!"] = "_not",
-        ["-"] = "_neg",
-        ["~"] = "not",
+        ["?"] = "select",
+        ["~="] = "sap",
+        ["~=="] = "sap",
+        ["~!="] = "sna",
     };
 
     public static decimal Hash(string input) =>

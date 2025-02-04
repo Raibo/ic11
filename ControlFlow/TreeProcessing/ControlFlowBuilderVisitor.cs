@@ -309,6 +309,19 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
+    public override Node VisitNullaryOp([NotNull] NullaryOpContext context)
+    {
+        return new NullaryOperation(context.op.Text);
+    }
+
+    public override Node VisitUnaryOp([NotNull] UnaryOpContext context)
+    {
+        var operand = (IExpression)Visit(context.operand)!;
+
+        var newNode = new UnaryOperation(operand, context.op.Text);
+        return newNode;
+    }
+
     public override Node VisitBinaryOp([NotNull] BinaryOpContext context)
     {
         var operand1 = (IExpression)Visit(context.left)!;
@@ -319,11 +332,14 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node VisitUnaryOp([NotNull] UnaryOpContext context)
+    public override Node VisitTernaryOp([NotNull] TernaryOpContext context)
     {
-        var operand = (IExpression)Visit(context.operand)!;
+        var operandA = (IExpression)Visit(context.a)!;
+        var operandB = (IExpression)Visit(context.b)!;
+        var operandC = (IExpression)Visit(context.c)!;
 
-        var newNode = new UnaryOperation(operand, context.op.Text);
+        var newNode = new TernaryOperation(operandA, operandB, operandC, context.op.Text);
+
         return newNode;
     }
 

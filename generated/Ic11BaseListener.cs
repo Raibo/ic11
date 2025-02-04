@@ -428,6 +428,20 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBatchAccess([NotNull] Ic11Parser.BatchAccessContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>TernaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTernaryOp([NotNull] Ic11Parser.TernaryOpContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TernaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTernaryOp([NotNull] Ic11Parser.TernaryOpContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>ExtendedMemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -567,6 +581,20 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NullaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNullaryOp([NotNull] Ic11Parser.NullaryOpContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NullaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNullaryOp([NotNull] Ic11Parser.NullaryOpContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ExtendedDeviceIndexAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

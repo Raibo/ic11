@@ -228,6 +228,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBatchAccess([NotNull] Ic11Parser.BatchAccessContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>TernaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTernaryOp([NotNull] Ic11Parser.TernaryOpContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>ExtendedMemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -297,6 +304,13 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>NullaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNullaryOp([NotNull] Ic11Parser.NullaryOpContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>ExtendedDeviceIndexAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

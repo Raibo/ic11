@@ -324,6 +324,28 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
+    private object? Visit(Nodes.NullaryOperation node)
+    {
+        if (node.CtKnownValue.HasValue)
+            return null;
+
+        Instructions.Add(new Instructions.NullaryOperation(node.Variable!, node.Operation));
+
+        return null;
+    }
+
+    private object? Visit(Nodes.UnaryOperation node)
+    {
+        if (node.CtKnownValue.HasValue)
+            return null;
+
+        Visit((Node)node.Operand);
+
+        Instructions.Add(new Instructions.UnaryOperation(node.Variable!, node.Operand, node.Operation));
+
+        return null;
+    }
+
     private object? Visit(Nodes.BinaryOperation node)
     {
         if (node.CtKnownValue.HasValue)
@@ -337,14 +359,16 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private object? Visit(Nodes.UnaryOperation node)
+    private object? Visit(Nodes.TernaryOperation node)
     {
         if (node.CtKnownValue.HasValue)
             return null;
 
-        Visit((Node)node.Operand);
+        Visit((Node)node.OperandA);
+        Visit((Node)node.OperandB);
+        Visit((Node)node.OperandC);
 
-        Instructions.Add(new Instructions.UnaryOperation(node.Variable!, node.Operand, node.Operation));
+        Instructions.Add(new Instructions.TernaryOperation(node.Variable!, node.OperandA, node.OperandB, node.OperandC, node.Operation));
 
         return null;
     }

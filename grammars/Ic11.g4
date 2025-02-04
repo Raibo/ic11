@@ -79,15 +79,18 @@ arrayDeclaration:
 arrayAssignment: IDENTIFIER '[' indexExpr=expression ']' '=' valueExpr=expression;
 
 expression:
-    op=DIRECT_UNARY_OPERATOR '(' operand=expression ')' # UnaryOp
+    op=DIRECT_NULLARY_OPERATOR '(' ')' #NullaryOp
+    | op=DIRECT_UNARY_OPERATOR '(' operand=expression ')' # UnaryOp
     | op=DIRECT_BINARY_OPERATOR '(' left=expression ',' right=expression ')' # BinaryOp
+    | op=DIRECT_TERNARY_OPERATOR '(' a=expression ',' b=expression ',' c=expression ')' # TernaryOp
     | op=(NEGATION | SUB | BITWISE_NOT) operand=expression # UnaryOp
-    | left=expression op=(SHIFTL | SHIFTR) right=expression # BinaryOp
+    | left=expression op=(SHIFTL | SHIFTR | SHIFTLA | SHIFTRA) right=expression # BinaryOp
     | left=expression op=(MUL | DIV | MOD) right=expression # BinaryOp
     | left=expression op=(ADD | SUB) right=expression # BinaryOp
     | left=expression op=(LT | GT | LE | GE | EQ | NE) right=expression # BinaryOp
     | left=expression op=AND right=expression # BinaryOp
     | left=expression op=(OR | XOR) right=expression # BinaryOp
+    | a=expression op=(AEQ | ANE | SEL) b=expression ':' c=expression # TernaryOp
     | '(' expression ')' # Parenthesis
     | type=(INTEGER | BOOLEAN | REAL | STRING_LITERAL) # Literal
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
@@ -121,8 +124,10 @@ MUL: '*';
 DIV: '/';
 MOD: '%';
 BITWISE_NOT: '~';
-SHIFTL: '<<';
-SHIFTR: '>>';
+SHIFTL: '<<' | '<<l';
+SHIFTR: '>>' | '>>l';
+SHIFTLA: '<<a';
+SHIFTRA: '>>a';
 LT: '<';
 GT: '>';
 LE: '<=';
@@ -132,6 +137,9 @@ OR: '|';
 XOR: '^';
 EQ: '==';
 NE: '!=';
+AEQ: '~=' | '~==';
+ANE: '~!=';
+SEL: '?';
 NEGATION: '!';
 PINS: 'Pins';
 SLOTS: 'Slots';
@@ -140,6 +148,9 @@ STACK: 'Stack';
 DEVICE_WITH_ID: 'DeviceWithId';
 DEVICES_OF_TYPE: 'DevicesOfType';
 WITH_NAME: 'WithName';
+
+DIRECT_NULLARY_OPERATOR:
+    'rand';
 
 DIRECT_UNARY_OPERATOR:
     'not'
@@ -159,8 +170,6 @@ DIRECT_UNARY_OPERATOR:
     | 'atan'
     | 'seqz'
     | 'snez'
-    | 'sapz'
-    | 'snaz'
     | 'sgez'
     | 'sgtz'
     | 'slez'
@@ -187,12 +196,17 @@ DIRECT_BINARY_OPERATOR:
     | 'nor'
     | 'seq'
     | 'sne'
-    | 'sap'
-    | 'sna'
     | 'sgt'
     | 'sge'
     | 'slt'
-    | 'sle';
+    | 'sle'
+    | 'sapz'
+    | 'snaz';
+
+DIRECT_TERNARY_OPERATOR:
+    'select'
+    | 'sap'
+    | 'sna';
 
 BOOLEAN: 'true' | 'false';
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;

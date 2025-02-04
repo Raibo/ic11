@@ -1,5 +1,11 @@
 
 void Main()
 {
-    Obj.InnerObj.Maker.Make();
+    var a = 1;
+    var b = 2;
+    var c = 3;
+
+    var d = select(a, b, c);
+
+    var e = a << b;
 }

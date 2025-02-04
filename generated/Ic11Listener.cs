@@ -359,6 +359,18 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBatchAccess([NotNull] Ic11Parser.BatchAccessContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>TernaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTernaryOp([NotNull] Ic11Parser.TernaryOpContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TernaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTernaryOp([NotNull] Ic11Parser.TernaryOpContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>ExtendedMemberAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
 	/// </summary>
@@ -478,6 +490,18 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionCall([NotNull] Ic11Parser.FunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NullaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNullaryOp([NotNull] Ic11Parser.NullaryOpContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NullaryOp</c>
+	/// labeled alternative in <see cref="Ic11Parser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNullaryOp([NotNull] Ic11Parser.NullaryOpContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ExtendedDeviceIndexAccess</c>
 	/// labeled alternative in <see cref="Ic11Parser.expression"/>.

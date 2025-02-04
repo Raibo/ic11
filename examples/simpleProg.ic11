@@ -1,18 +1,9 @@
-/*
-    Example of controlling satellite dish position with dials
-*/
-
-pin SatelliteDish d0;
-pin DialHor d1;
-pin DialVer d2;
 
 void Main()
 {
-    // endless cycle
-    while(true)
-    {
-        yield;
-        SatelliteDish.Horizontal = DialHor.Setting;
-        SatelliteDish.Vertical = DialVer.Setting;
-    }
+    var a = rand();
+    var b = rand();
+    var c = rand();
+
+    var d = a ~= b : c;
 }
