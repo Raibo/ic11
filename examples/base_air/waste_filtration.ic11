@@ -6,6 +6,6 @@ void Main()
     {
         yield;
         
-        Filter.On = Filter.PressureInput > 0 && Filter.PressureOutput < 55000;
+        Filter.On = Filter.PressureInput > 0 & Filter.PressureOutput < 55000;
     }
 }

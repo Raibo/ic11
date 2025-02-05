@@ -22,7 +22,7 @@ void Main()
         yield;
 
         // protection
-        if (LPAs1.Pressure == -1 || LPAs2.Pressure == -1)
+        if (LPAs1.Pressure == -1 | LPAs2.Pressure == -1)
         {
             Mixer.On = false;
             Combustor.On = false;

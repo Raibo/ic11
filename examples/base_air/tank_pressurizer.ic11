@@ -23,7 +23,7 @@ void Main()
 
 void ControlPump(pumpIdx, paInpIdx, paOutpIdx, targetPressure)
 {
-    if (Pins[paOutpIdx].Pressure == -1 || Pins[paInpIdx].Pressure == -1)
+    if (Pins[paOutpIdx].Pressure == -1 | Pins[paInpIdx].Pressure == -1)
     {
         Pins[pumpIdx].On = false;
         return;

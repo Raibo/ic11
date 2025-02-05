@@ -24,7 +24,7 @@ const StateRemoveAtmosphere = 5;
 const StateError = 6;
 
 void Main()
-{   
+{
     // init
     DevicesOfType(VentType).WithName(ExternalVentName).Lock = true;
     DevicesOfType(VentType).WithName(AtmosphereVentName).Lock = true;

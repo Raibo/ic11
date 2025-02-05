@@ -10,6 +10,6 @@ void Main()
         var pressure = Sensor.Pressure;
         var oxygenPressure = pressure * Sensor.RatioOxygen;
 
-        OxygenFilter.On = oxygenPressure > 30 && OxygenFilter.PressureOutput < 55000;
+        OxygenFilter.On = oxygenPressure > 30 & OxygenFilter.PressureOutput < 55000;
     }
 }

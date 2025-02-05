@@ -9,7 +9,7 @@ void Main()
     {
         yield;
         
-        Filter.On = Filter.PressureInput > 0 && Filter.PressureOutput < 5000;
+        Filter.On = Filter.PressureInput > 0 & Filter.PressureOutput < 5000;
 
         CoolingValve.On = Filter.TemperatureOutput > RoomTemperature;
         CoolingValve.Setting = 100;

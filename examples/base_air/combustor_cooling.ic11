@@ -16,7 +16,7 @@ void Main()
         yield;
 
         // protection
-        if (PAOxy.Pressure == -1 || PAFreezerNew.Pressure == -1 || PAFreezerOld.Pressure == -1)
+        if (PAOxy.Pressure == -1 | PAFreezerNew.Pressure == -1 | PAFreezerOld.Pressure == -1)
         {
             LPAs2.On = false;
             ValveFreezerNew.On = false;

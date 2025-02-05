@@ -12,6 +12,6 @@ void Main()
         var oxygenPressure = pressure * Sensor.RatioOxygen;
 
         OxygenFilter.On = oxygenPressure > 30 && OxygenFilter.PressureOutput < 55000;
-        PollutantFilter.On = Sensor.RatioVolatiles > 0 || Sensor.RatioPollutant > 0;
+        PollutantFilter.On = Sensor.RatioVolatiles > 0 | Sensor.RatioPollutant > 0;
     }
 }
