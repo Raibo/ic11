@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ic11": {
+      "commandName": "Project",
+      "commandLineArgs": "./examples/simpleProg.ic11 -w"
+    }
+  }
+}
