@@ -1,0 +1,95 @@
+const typeActiveVent = "StructureActiveVent";
+const nameActiveVent = "Vent airlock 1";
+
+const typeDoor = "StructureCompositeDoor";
+const nameDoorVac = "Airlock vac 1";
+const nameDoorAtm = "Airlock atm 1";
+
+const typeSensor = "StructureGasSensor";
+const nameSensor = "Sensor airlock 1";
+
+const typeButton = "StructurePressurePlateSmall";
+const nameVacButton = "Plate vac airlock 1";
+const nameAtmButton = "Plate atm airlock 1";
+
+const typeOccSensor = "StructureOccupancySensor";
+const nameChamButton = "Sensor occupancy cham airlock 1";
+
+const requestVac = 0;
+const requestAtm = 1;
+
+void Main()
+{
+    var request = requestAtm;
+
+    if (DevicesOfType(typeSensor).WithName(nameSensor).Pressure.Minimum == 0)
+        request = requestVac;
+
+    var lastCycledRequest = request;
+    var lastPressed = false;
+
+    while(true)
+    {
+        yield;
+
+        // Devices lock
+        DevicesOfType(typeDoor).WithName(nameDoorVac).Lock = 1;
+        DevicesOfType(typeDoor).WithName(nameDoorAtm).Lock = 1;
+        DevicesOfType(typeActiveVent).WithName(nameActiveVent).Lock = 1;
+
+        var chamPressure = DevicesOfType(typeSensor).WithName(nameSensor).Pressure.Minimum;
+
+        // Chamber control
+        var isChamPressed = DevicesOfType(typeOccSensor).WithName(nameChamButton).Activate.Maximum;
+        var isRecentlyPressed = isChamPressed & !lastPressed;
+        lastPressed = isChamPressed;
+
+        if (isRecentlyPressed)
+            request = !request;
+
+        // Exterior control
+        var isVacPressed = DevicesOfType(typeButton).WithName(nameVacButton).Setting.Sum;
+        var isAtmPressed = DevicesOfType(typeButton).WithName(nameAtmButton).Setting.Sum;
+
+        if (isVacPressed)
+            request = requestVac;
+
+        if (isAtmPressed)
+            request = requestAtm;
+
+        // if cycle has been already completed, do nothing
+        if (lastCycledRequest == request)
+        {
+            DevicesOfType(typeActiveVent).WithName(nameActiveVent).On = false;
+            continue;
+        }
+        
+        // Cycle
+        if (request == requestVac)
+        {
+            DevicesOfType(typeDoor).WithName(nameDoorAtm).Open = false;
+            DevicesOfType(typeDoor).WithName(nameDoorVac).Open = false;
+
+            while (chamPressure > 0)
+            {
+                DevicesOfType(typeActiveVent).WithName(nameActiveVent).Mode = 1;
+                DevicesOfType(typeActiveVent).WithName(nameActiveVent).On = chamPressure > 0;
+                chamPressure = DevicesOfType(typeSensor).WithName(nameSensor).Pressure.Minimum;
+                yield;
+            }
+
+            yield;
+
+            DevicesOfType(typeDoor).WithName(nameDoorVac).Open = true;
+            lastCycledRequest = requestVac;
+        }
+
+        if (request == requestAtm)
+        {
+            DevicesOfType(typeDoor).WithName(nameDoorVac).Open = false;
+            yield;
+            DevicesOfType(typeDoor).WithName(nameDoorAtm).Open = true;
+            lastCycledRequest = requestAtm;
+        }
+    }
+}

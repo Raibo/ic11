@@ -1,0 +1,111 @@
+const typeActiveVent = "StructureActiveVent";
+const nameActiveVentIn = "Vent in airlock 5";
+const nameActiveVentOut = "Vent out airlock 5";
+
+const typeDoor = "StructureCompositeDoor";
+const nameDoorIn = "Airlock in 5";
+const nameDoorOut = "Airlock out 5";
+
+const typeSensor = "StructureGasSensor";
+const nameSensor = "Sensor airlock 5";
+
+const typeButton = "StructurePressurePlateSmall";
+const nameInButton = "Plate in airlock 5";
+const nameOutButton = "Plate out airlock 5";
+
+const typeOccSensor = "StructureOccupancySensor";
+const nameChamButton = "Sensor occupancy cham airlock 5";
+
+const requestOut = 0;
+const requestIn = 1;
+
+void Main()
+{
+    var request = requestIn;
+
+    if (DevicesOfType(typeDoor).WithName(nameDoorIn).Open.Minimum == 0)
+        request = requestOut;
+
+    var lastCycledRequest = request;
+    var lastPressed = false;
+
+    while(true)
+    {
+        yield;
+
+        // Devices lock
+        DevicesOfType(typeDoor).WithName(nameDoorOut).Lock = 1;
+        DevicesOfType(typeDoor).WithName(nameDoorIn).Lock = 1;
+        DevicesOfType(typeActiveVent).WithName(nameActiveVentIn).Lock = 1;
+        DevicesOfType(typeActiveVent).WithName(nameActiveVentOut).Lock = 1;
+
+        var chamPressure = DevicesOfType(typeSensor).WithName(nameSensor).Pressure.Minimum;
+
+        // Chamber control
+        var isChamPressed = DevicesOfType(typeOccSensor).WithName(nameChamButton).Activate.Maximum;
+        var isRecentlyPressed = isChamPressed & !lastPressed;
+        lastPressed = isChamPressed;
+
+        if (isRecentlyPressed)
+            request = !request;
+
+        // Exterior control
+        var isOutPressed = DevicesOfType(typeButton).WithName(nameOutButton).Setting.Sum;
+        var isInPressed = DevicesOfType(typeButton).WithName(nameInButton).Setting.Sum;
+
+        if (isOutPressed)
+            request = requestOut;
+
+        if (isInPressed)
+            request = requestIn;
+
+        // if cycle has been already completed, do nothing
+        if (lastCycledRequest == request)
+        {
+            DevicesOfType(typeActiveVent).WithName(nameActiveVentIn).On = false;
+            DevicesOfType(typeActiveVent).WithName(nameActiveVentOut).On = false;
+            continue;
+        }
+        
+        // Cycle
+        if (request == requestOut)
+        {
+            DevicesOfType(typeDoor).WithName(nameDoorIn).Open = false;
+            DevicesOfType(typeDoor).WithName(nameDoorOut).Open = false;
+
+            while (chamPressure > 0)
+            {
+                DevicesOfType(typeActiveVent).WithName(nameActiveVentIn).Mode = 1;
+                DevicesOfType(typeActiveVent).WithName(nameActiveVentIn).On = true;
+                chamPressure = DevicesOfType(typeSensor).WithName(nameSensor).Pressure.Minimum;
+                yield;
+            }
+
+            DevicesOfType(typeActiveVent).WithName(nameActiveVentIn).On = false;
+            yield;
+
+            DevicesOfType(typeDoor).WithName(nameDoorOut).Open = true;
+            lastCycledRequest = requestOut;
+        }
+
+        if (request == requestIn)
+        {
+            DevicesOfType(typeDoor).WithName(nameDoorIn).Open = false;
+            DevicesOfType(typeDoor).WithName(nameDoorOut).Open = false;
+
+            while (chamPressure > 0)
+            {
+                DevicesOfType(typeActiveVent).WithName(nameActiveVentOut).Mode = 1;
+                DevicesOfType(typeActiveVent).WithName(nameActiveVentOut).On = true;
+                chamPressure = DevicesOfType(typeSensor).WithName(nameSensor).Pressure.Minimum;
+                yield;
+            }
+
+            DevicesOfType(typeActiveVent).WithName(nameActiveVentOut).On = false;
+            yield;
+
+            DevicesOfType(typeDoor).WithName(nameDoorIn).Open = true;
+            lastCycledRequest = requestIn;
+        }
+    }
+}
