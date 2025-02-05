@@ -80,6 +80,18 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.hcfStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHcfStatement([NotNull] Ic11Parser.HcfStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.sleepStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSleepStatement([NotNull] Ic11Parser.SleepStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -175,6 +187,18 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceStackClear"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceStackClear([NotNull] Ic11Parser.DeviceStackClearContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.deviceWithIdStackClear"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeviceWithIdStackClear([NotNull] Ic11Parser.DeviceWithIdStackClearContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// </summary>

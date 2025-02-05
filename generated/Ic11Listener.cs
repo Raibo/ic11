@@ -111,6 +111,26 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.hcfStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterHcfStatement([NotNull] Ic11Parser.HcfStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.hcfStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitHcfStatement([NotNull] Ic11Parser.HcfStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.sleepStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSleepStatement([NotNull] Ic11Parser.SleepStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.sleepStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSleepStatement([NotNull] Ic11Parser.SleepStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -270,6 +290,26 @@ public interface IIc11Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceStackClear"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeviceStackClear([NotNull] Ic11Parser.DeviceStackClearContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceStackClear"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeviceStackClear([NotNull] Ic11Parser.DeviceStackClearContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIdStackClear"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDeviceWithIdStackClear([NotNull] Ic11Parser.DeviceWithIdStackClearContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceWithIdStackClear"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDeviceWithIdStackClear([NotNull] Ic11Parser.DeviceWithIdStackClearContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// </summary>

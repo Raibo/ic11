@@ -78,8 +78,46 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
     public override Node? VisitYieldStatement([NotNull] YieldStatementContext context)
     {
-        var newNode = new Yield();
+        var newNode = new StatementParam0("yield");
+        AddToStatements(newNode);
 
+        return null;
+    }
+
+    public override Node? VisitHcfStatement([NotNull] HcfStatementContext context)
+    {
+        var newNode = new StatementParam0("hcf");
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitDeviceStackClear([NotNull] DeviceStackClearContext context)
+    {
+        var device = context.identifier.Text;
+
+        if (context.identifier.Type == BASE_DEVICE)
+            device = "db";
+
+        var newNode = new StatementParam0($"clr {device}");
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitDeviceWithIdStackClear([NotNull] DeviceWithIdStackClearContext context)
+    {
+        var expression = (IExpression)Visit(context.deviceIdxExpr)!;
+        var newNode = new StatementParam1("clrd", expression);
+        AddToStatements(newNode);
+
+        return null;
+    }
+
+    public override Node? VisitSleepStatement([NotNull] SleepStatementContext context)
+    {
+        var expression = (IExpression)Visit(context.expression())!;
+        var newNode = new StatementParam1("sleep", expression);
         AddToStatements(newNode);
 
         return null;

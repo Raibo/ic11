@@ -18,27 +18,33 @@ statement: delimetedStatmentWithDelimiter | undelimitedStatement;
 delimetedStatmentWithDelimiter: delimitedStatement ';';
 
 delimitedStatement: (
-        deviceWithIdExtendedAssignment
-        | deviceWithIdAssignment
-        | batchAssignment
-        | deviceWithIndexExtendedAssignment
-        | deviceWithIndexAssignment
-        | memberExtendedAssignment
-        | memberAssignment
-        | assignment
-        | yieldStatement
-        | returnValueStatement
-        | returnStatement
-        | continueStatement
-        | breakStatement
-        | variableDeclaration
-        | constantDeclaration
-        | functionCallStatement
-        | arrayDeclaration
-        | arrayAssignment
-    );
+    deviceStackClear
+    | deviceWithIdStackClear
+    | deviceWithIdExtendedAssignment
+    | deviceWithIdAssignment
+    | batchAssignment
+    | deviceWithIndexExtendedAssignment
+    | deviceWithIndexAssignment
+    | memberExtendedAssignment
+    | memberAssignment
+    | assignment
+    | yieldStatement
+    | hcfStatement
+    | sleepStatement
+    | returnValueStatement
+    | returnStatement
+    | continueStatement
+    | breakStatement
+    | variableDeclaration
+    | constantDeclaration
+    | functionCallStatement
+    | arrayDeclaration
+    | arrayAssignment
+);
 
 yieldStatement: YIELD;
+hcfStatement: HCF;
+sleepStatement: SLEEP '(' expression ')';
 returnStatement: RETURN;
 returnValueStatement: RETURN expression;
 continueStatement: CONTINUE;
@@ -65,6 +71,9 @@ memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=
 
 deviceWithIndexExtendedAssignment: PINS '[' deviceIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
 deviceWithIndexAssignment: PINS '[' deviceIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
+
+deviceStackClear: identifier=(BASE_DEVICE | IDENTIFIER) '.' STACK '.' CLEAR '(' ')';
+deviceWithIdStackClear: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' STACK '.' CLEAR '(' ')';
 
 assignment: IDENTIFIER '=' expression;
 
@@ -112,6 +121,8 @@ FOR: 'for';
 IF: 'if';
 ELSE: 'else';
 YIELD: 'yield';
+HCF: 'hcf';
+SLEEP: 'sleep';
 RETURN: 'return';
 CONTINUE: 'continue';
 BREAK: 'break';
@@ -145,6 +156,7 @@ PINS: 'Pins';
 SLOTS: 'Slots';
 REAGENTS: 'Reagent';
 STACK: 'Stack';
+CLEAR: 'Clear';
 DEVICE_WITH_ID: 'DeviceWithId';
 DEVICES_OF_TYPE: 'DevicesOfType';
 WITH_NAME: 'WithName';

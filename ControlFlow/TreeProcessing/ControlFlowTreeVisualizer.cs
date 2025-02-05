@@ -120,9 +120,18 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private object? Visit(Yield node)
+    private object? Visit(StatementParam0 node)
     {
-        WriteLine($"Yield{Tags(node)}");
+        WriteLine($"{node.Operation}{Tags(node)}");
+        return null;
+    }
+
+    private object? Visit(StatementParam1 node)
+    {
+        WriteLine($"{node.Operation}{Tags(node)}");
+        _depth++;
+        Visit((Node)node.Parameter);
+        _depth--;
         return null;
     }
 

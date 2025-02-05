@@ -275,9 +275,16 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
-    private object? Visit(Nodes.Yield node)
+    private object? Visit(Nodes.StatementParam0 node)
     {
-        Instructions.Add(new Instructions.Yield());
+        Instructions.Add(new Instructions.StatementParam0(node.Operation));
+        return null;
+    }
+
+    private object? Visit(Nodes.StatementParam1 node)
+    {
+        Visit((Node)node.Parameter);
+        Instructions.Add(new Instructions.StatementParam1(node.Operation, node.Parameter));
         return null;
     }
 

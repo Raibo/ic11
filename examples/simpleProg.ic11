@@ -1,9 +1,6 @@
+pin Pump d0;
 
 void Main()
 {
-    var a = rand();
-    var b = rand();
-    var c = rand();
-
-    var d = a ~= b : c;
+    sleep(select(rand(), rand(), rand()));
 }

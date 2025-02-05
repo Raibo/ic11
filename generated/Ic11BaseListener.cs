@@ -132,6 +132,30 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitYieldStatement([NotNull] Ic11Parser.YieldStatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.hcfStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHcfStatement([NotNull] Ic11Parser.HcfStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.hcfStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHcfStatement([NotNull] Ic11Parser.HcfStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.sleepStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSleepStatement([NotNull] Ic11Parser.SleepStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.sleepStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSleepStatement([NotNull] Ic11Parser.SleepStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.returnStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -323,6 +347,30 @@ public partial class Ic11BaseListener : IIc11Listener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDeviceWithIndexAssignment([NotNull] Ic11Parser.DeviceWithIndexAssignmentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceStackClear"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeviceStackClear([NotNull] Ic11Parser.DeviceStackClearContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceStackClear"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeviceStackClear([NotNull] Ic11Parser.DeviceStackClearContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.deviceWithIdStackClear"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDeviceWithIdStackClear([NotNull] Ic11Parser.DeviceWithIdStackClearContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.deviceWithIdStackClear"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDeviceWithIdStackClear([NotNull] Ic11Parser.DeviceWithIdStackClearContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.assignment"/>.
 	/// <para>The default implementation does nothing.</para>
