@@ -4,6 +4,8 @@ A tool that translates (compiles) a high-level language program to an IC10 assem
 
 The language has a C-like syntax and supports basic instructions like if/then/else, while, function calls and return values.
 
+Use the [Wiki](https://github.com/Raibo/ic11/wiki) for the ic11 language reference.
+
 # Usage
 
 `ic11.exe <path> [-w]`  
