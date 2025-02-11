@@ -10,7 +10,7 @@ public class ArrayDeclaration : Node, IStatement, IExpressionContainer
     public Variable? AddressVariable;
     public ArrayDeclarationType DeclarationType;
 
-    public List<IExpression> InitialElementExpressions = new();
+    public List<IExpression>? InitialElementExpressions;
 
     public ArrayDeclaration(string name, IExpression sizeExpression)
     {
@@ -36,7 +36,7 @@ public class ArrayDeclaration : Node, IStatement, IExpressionContainer
     public IEnumerable<IExpression> Expressions => DeclarationType switch
     {
         ArrayDeclarationType.Size => Enumerable.Repeat(SizeExpression, 1),
-        ArrayDeclarationType.List => InitialElementExpressions,
+        ArrayDeclarationType.List => InitialElementExpressions!,
         _ => throw new Exception($"Unexpected array declaration type {DeclarationType}"),
     };
 }

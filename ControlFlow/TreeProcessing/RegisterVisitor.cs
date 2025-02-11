@@ -20,6 +20,10 @@ public class RegisterVisitor
                 pv.Register = md.InnerScope!.GetAvailableRegister(pv.DeclareIndex, pv.LastReferencedIndex);
         }
 
+        // Arrays need their reference value be saved before elements or size, because later sp register may change
+        if (node is ArrayDeclaration ad && ad.AddressVariable is not null && ad.AddressVariable.Register is null)
+            ad.AddressVariable.Register = node.Scope!.GetAvailableRegister(ad.AddressVariable.DeclareIndex, ad.AddressVariable.LastReferencedIndex);
+
         if (node is IExpressionContainer ec)
         {
             foreach (Node item in ec.Expressions)
@@ -31,9 +35,6 @@ public class RegisterVisitor
 
         if (node is VariableDeclaration d && d.Variable is not null && d.Variable.Register is null)
             d.Variable.Register = node.Scope!.GetAvailableRegister(d.Variable.DeclareIndex, d.Variable.LastReferencedIndex);
-
-        if (node is ArrayDeclaration ad && ad.AddressVariable is not null && ad.AddressVariable.Register is null)
-            ad.AddressVariable.Register = node.Scope!.GetAvailableRegister(ad.AddressVariable.DeclareIndex, ad.AddressVariable.LastReferencedIndex);
 
         if (node is ArrayAssignment ass && ass.Variable is not null && ass.Variable.Register is null)
             ass.Variable.Register = node.Scope!.GetAvailableRegister(ass.Variable.DeclareIndex, ass.Variable.LastReferencedIndex);

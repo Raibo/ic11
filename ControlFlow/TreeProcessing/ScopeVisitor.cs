@@ -44,6 +44,12 @@ public class ScopeVisitor
             return;
         }
 
+        if (statement is ArrayDeclaration arrayDecStatement)
+        {
+            Visit(arrayDecStatement);
+            return;
+        }
+
         if (statement is IExpressionContainer ec)
             foreach (var item in ec.Expressions)
                 VisitExpression(item);
@@ -136,6 +142,18 @@ public class ScopeVisitor
 
         _currentScope.Parent!.CurrentNodeOrder = _currentScope.CurrentNodeOrder;
         _currentScope = _currentScope.Parent!;
+
+        return null;
+    }
+
+    protected object? Visit(ArrayDeclaration node)
+    {
+        // Array declarations need their expressions only *after* the address is assigned, so the order is reversed
+        node.Scope = _currentScope;
+        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+
+        foreach (var item in node.Expressions)
+            VisitExpression(item);
 
         return null;
     }

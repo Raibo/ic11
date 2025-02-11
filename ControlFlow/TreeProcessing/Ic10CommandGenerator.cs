@@ -481,13 +481,14 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     {
         if (node.DeclarationType == ArrayDeclarationType.Size)
         {
-            Visit((Node)node.SizeExpression);
-
             var spExpr = new DirectExpression("sp");
-            Instructions.Add(new Move(node.AddressVariable!, spExpr));
-            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, "add"));
-
             var r15Expr = new DirectExpression("r15");
+
+            Instructions.Add(new Move(node.AddressVariable!, spExpr));
+
+            Visit((Node)node.SizeExpression);
+            
+            Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, "add"));
             Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, node.SizeExpression, "add"));
 
             return null;
@@ -495,19 +496,19 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
         if (node.DeclarationType == ArrayDeclarationType.List)
         {
-            var size = node.InitialElementExpressions.Count;
+            var size = node.InitialElementExpressions!.Count;
 
             var spExpr = new DirectExpression("sp");
-            Instructions.Add(new Move(node.AddressVariable!, spExpr));
+            var r15Expr = new DirectExpression("r15");
 
-            foreach (var item in node.InitialElementExpressions)
+            Instructions.Add(new Move(node.AddressVariable!, spExpr));
+            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, new Literal(size), "add"));
+
+            foreach (var item in node.InitialElementExpressions!)
             {
                 Visit((Node)item);
                 Instructions.Add(new StackPush(item));
             }
-
-            var r15Expr = new DirectExpression("r15");
-            Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, new Literal(size), "add"));
 
             return null;
         }

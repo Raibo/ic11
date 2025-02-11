@@ -244,16 +244,17 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             var sizeVariable = VisitNode((Node)node.SizeExpression);
 
             if (sizeVariable is not null)
-                sizeVariable.LastReferencedIndex = node.IndexInScope;
+                sizeVariable.LastReferencedIndex = sizeVariable.DeclareIndex; // Gets used immediately after calculated
         }
-        else
+
+        if (node.DeclarationType == DataHolders.ArrayDeclarationType.List)
         {
-            foreach (Node item in node.InitialElementExpressions)
+            foreach (Node item in node.InitialElementExpressions!)
             {
                 var innerVariable = VisitNode(item);
 
                 if (innerVariable is not null)
-                    innerVariable.LastReferencedIndex = node.IndexInScope;
+                    innerVariable.LastReferencedIndex = innerVariable.DeclareIndex; // Gets used immediately after calculated
             }
         }
 
