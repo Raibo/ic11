@@ -131,6 +131,10 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         targetVariable.LastReassignedIndex = node.IndexInScope;
         targetVariable.LastReferencedIndex = node.IndexInScope;
+
+        targetVariable.Variable.LastReassignedIndex = node.IndexInScope;
+        targetVariable.Variable.LastReferencedIndex = node.IndexInScope;
+
         node.Variable = targetVariable.Variable;
 
         var expressionVariable = VisitNode((Node)node.Expression);

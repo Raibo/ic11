@@ -81,6 +81,8 @@ public class Scope
         var variables = new HashSet<Variable>();
         TraverseScope(this.Method!.InnerScope!);
 
+        return variables;
+
         void TraverseScope(Scope sc)
         {
             foreach (var item in sc.Variables)
@@ -89,8 +91,6 @@ public class Scope
             foreach (var child in sc.Children)
                 TraverseScope(child);
         }
-
-        return variables;
     }
 
     public void AddUserVariable(UserDefinedVariable variable)
