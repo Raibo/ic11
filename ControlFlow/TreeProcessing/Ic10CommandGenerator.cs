@@ -6,6 +6,7 @@ using ic11.ControlFlow.Nodes;
 using System.Globalization;
 
 namespace ic11.ControlFlow.TreeProcessing;
+
 public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 {
     protected override Type VisitorType => typeof(Ic10CommandGenerator);
@@ -54,7 +55,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         }
 
         // Pop parameters
-        foreach(string paramName in node.Parameters)
+        foreach (string paramName in node.Parameters)
         {
             var variable = node.InnerScope!.UserDefinedVariables[paramName].Variable;
             Instructions.Add(new StackPop(variable));
@@ -109,8 +110,15 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
         var declaredMethod = _flowContext.DeclaredMethods[node.Name];
 
+        List<string> myPushedRegisters = new();
         foreach (var register in ((IEnumerable<string>)usedRegisters).Reverse())
-        Instructions.Add(new StackPush(register));
+        {
+            if (node.Scope.Method!.Name != "Main" || Scope.IsCallerSavedRegister(register))
+            {
+                Instructions.Add(new StackPush(register));
+                myPushedRegisters.Insert(0, register);
+            }
+        }
 
         // saving parameters to stack
         foreach (var item in node.Expressions.Reverse())
@@ -125,8 +133,9 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
             Instructions.Add(new StackPop(node.Variable!.Register));
 
         // retrieve vars from stack
-        foreach (var register in usedRegisters)
-            Instructions.Add(new StackPop(register));
+        if (myPushedRegisters != null)
+            foreach (string register in myPushedRegisters)
+                Instructions.Add(new StackPop(register));
 
         return null;
     }
@@ -458,7 +467,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     private object? Visit(Nodes.BatchAssignment node)
     {
         Visit((Node)node.ValueExpr);
-        
+
         Visit((Node)node.DeviceTypeHashExpr);
 
         if (node.NameHashExpr is not null)
@@ -487,7 +496,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
             Instructions.Add(new Move(node.AddressVariable!, spExpr));
 
             Visit((Node)node.SizeExpression);
-            
+
             Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, "add"));
             Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, node.SizeExpression, "add"));
 

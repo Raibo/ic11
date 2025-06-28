@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace ic11.ControlFlow.Context;
+
 public class Scope
 {
     public readonly int Id = _staticIndex++;
@@ -54,16 +55,64 @@ public class Scope
         return childScope;
     }
 
+    public static bool IsCallerSavedRegister(string register) =>
+        register switch
+        {
+            "r0" => true,
+            "r1" => true,
+            "r2" => true,
+            "r3" => true,
+            "r4" => true,
+            "r5" => true,
+            "r6" => true,
+            "r7" => true,
+            _ => false
+        };
+
     public string GetAvailableRegister(int fromNodeIndex, int toNodeIndex)
     {
+        /* Optimization for fewer lines of generated code:
+         *
+         * If this method is the main method, it probably has a lot of variables
+         * and calls other small methods. In this case, we want to avoid pushing 
+         * all the variables to the stack and popping them back. So we use the
+         * original mips calling convention of having some registers be caller-saved
+         * and some be callee-saved. We use the caller-saved registers for the main method
+         * and callee-saved for the other methods. This way, we can minimize pushing and popping
+         * registers to the stack.
+         *
+         * We will assign registers 0 to 7 to be caller-saved and 8 to 14 to be callee-saved.
+         * This is configured in the IsCallerSavedRegister method above.
+         * This way, the main method can use registers 0 to 7 and the other methods can use 8 to 14.
+         * The limit is just a suggestion and won't limit any method from using more registers.
+         * The ratio might not be optimal and may be improved in the future.
+         *
+         * Idealy we would like to have a way to determone exactly what registers are changed in the
+         * called method and only save those registers. But this is a good enough solution for now.
+         */
+
         toNodeIndex = Math.Max(fromNodeIndex, toNodeIndex);
 
         var usedRegisters = GetUsedRegisters(fromNodeIndex, toNodeIndex);
+        IEnumerable<string> availableRegisters;
 
-        var availableRegisters = Enumerable.Range(0, 15)
-            .OrderBy(r => r)
-            .Select(r => $"r{r}")
-            .Except(usedRegisters);
+        // Main method should prioritize callee-saved registers
+        if (Method!.Name == "Main")
+        {
+            availableRegisters = Enumerable.Range(0, 14)
+           .OrderBy(r => r)
+           .Select(r => $"r{r}")
+           .Except(usedRegisters);
+            // reverse the order to prioritize caller-saved registers
+            availableRegisters = availableRegisters.Reverse();
+        }
+        else
+        {
+            availableRegisters = Enumerable.Range(0, 7)
+             .OrderBy(r => r)
+             .Select(r => $"r{r}")
+             .Except(usedRegisters);
+        }
 
         var register = availableRegisters.First();
         return register;
