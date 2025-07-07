@@ -9,6 +9,7 @@ public class MethodCall : Node, IStatement, IExpression, IExpressionContainer
     public List<IExpression> ArgumentExpressions;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue => null;
+    public HashSet<string> RegistersToPush;
 
     public override int IndexSize => 2;
 

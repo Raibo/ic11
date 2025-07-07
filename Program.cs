@@ -89,7 +89,9 @@ class Program
         new ScopeVisitor(flowContext).Visit((Root)flowContext.Root);
         new VariableVisitor(flowContext).Visit((Root)flowContext.Root);
         new VariableCyclesAdjVisitor().VisitRoot((Root)flowContext.Root);
-        new RegisterVisitor().Visit((Root)flowContext.Root);
+        new MethodCallGraphVisitor(flowContext).VisitRoot((Root)flowContext.Root);
+        new RegisterVisitor(flowContext).DoWork();
+        new MethodsRegisterRangesDistributor(flowContext).DoWork();
         var instructions = new Ic10CommandGenerator(flowContext).Visit((Root)flowContext.Root);
 
         UselessMoveRemover.Remove(instructions);
