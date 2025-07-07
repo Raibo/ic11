@@ -1,11 +1,13 @@
-﻿using Antlr4.Runtime;
+﻿using System.Text;
+using Antlr4.Runtime;
 using ic11.ControlFlow.Context;
 using ic11.ControlFlow.InstructionsProcessing;
 using ic11.ControlFlow.Nodes;
 using ic11.ControlFlow.TreeProcessing;
-using System.Text;
 
-class Program
+namespace ic11;
+
+public class Program
 {
     static void Main(string[] args)
     {
@@ -70,7 +72,7 @@ class Program
         }
     }
 
-    private static string CompileText(string input)
+    public static string CompileText(string input)
     {
         AntlrInputStream inputStream = new AntlrInputStream(input);
         Ic11Lexer lexer = new Ic11Lexer(inputStream);
