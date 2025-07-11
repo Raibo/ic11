@@ -17,8 +17,8 @@ public class Stack: Operation
                 break;
                 
             case "pop":
-                var value2 = emulator.Stack[(int)emulator.Registers[emulator.StackPointerRegister]];
                 emulator.Registers[emulator.StackPointerRegister] -= 1; 
+                var value2 = emulator.Stack[(int)emulator.Registers[emulator.StackPointerRegister]];
                 emulator.SetRegister(Args[0], value2);
                 
                 break;

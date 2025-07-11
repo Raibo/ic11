@@ -78,6 +78,8 @@ public class Math3 : Operation
         };
 
         emulator.SetRegister(register, result);
+        
+        emulator.ProgramCounter++;
     }
 
     private double Modulo(double x, double m)

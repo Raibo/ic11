@@ -7,7 +7,7 @@ public class Yield: Operation
     
     public override void Execute(Emulator emulator)
     {
+        emulator.Yielding = true;
         emulator.ProgramCounter++;
-        // TODO increment the tick counter
     }
 }

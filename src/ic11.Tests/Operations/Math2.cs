@@ -9,13 +9,12 @@ public class Math2 : Operation
     
     public override void Execute(Emulator emulator)
     {
-        //Device = args[0];
-        //PropertyName = args[1];
-        //Value = Convert.ToDouble(args[2]);
+        var register = Args[0];
+        var value = emulator.InferValue(Args[1]);
         
-        //var d = emulator.deviceAliases[Device];
-        //d.SetProperty(PropertyName, Value);
+        var result = value == 0 ? 1 : 0;
+        emulator.SetRegister(register, result);
         
-        throw new NotImplementedException();
+        emulator.ProgramCounter++;
     }
 }

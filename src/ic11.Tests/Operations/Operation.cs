@@ -61,4 +61,8 @@ public abstract class Operation
 
     public abstract void Execute(Emulator emulator);
 
+    public override string ToString()
+    {
+        return $"{Opcode} {string.Join(" ", Args)}";
+    }
 }
