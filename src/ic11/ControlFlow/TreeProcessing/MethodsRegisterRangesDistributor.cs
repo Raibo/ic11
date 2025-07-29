@@ -114,7 +114,7 @@ namespace ic11.ControlFlow.TreeProcessing
         {
             var currentlyUsedRegisters = method.AllVariables
                 .Where(v => v.Register is not null)
-                .Where(v => v.LastReferencedIndex >= 0 || v.LastReassignedIndex >= 0)
+                .Where(v => v.LastReferencedIndex >= 0 || v.LastReassignedIndex >= 0 || v.IsParameter)
                 .Select(v => v.Register)
                 .Distinct()
                 .ToList();
@@ -129,24 +129,33 @@ namespace ic11.ControlFlow.TreeProcessing
                 newRegisters.Remove(availableRegister);
             }
 
-            foreach (var var in method.AllVariables.Where(v => v.LastReferencedIndex >= 0 || v.LastReassignedIndex >= 0))
+            foreach (var var in method.AllVariables.Where(v => v.LastReferencedIndex >= 0 || v.LastReassignedIndex >= 0 || v.IsParameter))
                 var.Register = shiftMap[var.Register];
         }
 
-        private void AssignPushForCalls(MethodDeclaration method, HashSet<string> alreadyUsedRegisters = null!)
+        private void AssignPushForCalls(MethodDeclaration method)
         {
-            if (alreadyUsedRegisters is null)
-                alreadyUsedRegisters = new(method.AssignedRegisters);
-            else
-                alreadyUsedRegisters = new(alreadyUsedRegisters.Concat(method.AssignedRegisters));
-
             foreach (var call in method.MethodCalls)
             {
                 var inCodeUsedRegisters = call.Scope!.GetUsedRegisters(call.IndexInScope + 1, call.IndexInScope + 1);
-                var inCalledMethodUsedRegisters = call.Method!.AssignedRegisters;
+                var inCalledMethodUsedRegisters = GetUsedRegistersDownstream(call);
 
-                call.RegistersToPush = inCodeUsedRegisters.Intersect(inCalledMethodUsedRegisters).ToHashSet();
+                call.RegistersToPush = inCodeUsedRegisters
+                    .Intersect(inCalledMethodUsedRegisters)
+                    .ToHashSet();
             }
+        }
+
+        private HashSet<string> GetUsedRegistersDownstream(MethodCall call)
+        {
+            var registersUsageMap = allRegisters.ToDictionary(k => k, v => 0);
+            GetRegistersUsageAfterCalls(call.Method!, registersUsageMap);
+          
+            return registersUsageMap
+                .Where(p => p.Value > 0)
+                .Select(p => p.Key)
+                .Union(call.Method!.AssignedRegisters)
+                .ToHashSet();
         }
     }
 }

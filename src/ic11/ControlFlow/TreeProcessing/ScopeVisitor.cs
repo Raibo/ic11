@@ -81,6 +81,7 @@ public class ScopeVisitor
         foreach (var parameter in node.Parameters)
         {
             var variable = _currentScope!.ClaimNewVariable(-1);
+            variable.IsParameter = true;
             node.ParameterVariables.Add(variable);
 
             var newUserDefinedVariable = new UserDefinedVariable(parameter, variable!, -1, false);

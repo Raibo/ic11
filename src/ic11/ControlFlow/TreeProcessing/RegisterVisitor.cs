@@ -45,7 +45,7 @@ public class RegisterVisitor
         var.Register = register;
         _currentMethod.AllVariables.Add(var);
 
-        if (var.LastReferencedIndex >= 0 || var.LastReassignedIndex >= 0)
+        if (var.LastReferencedIndex >= 0 || var.LastReassignedIndex >= 0 || var.IsParameter)
             _currentUsedRegisters.Add(register);
     }
 

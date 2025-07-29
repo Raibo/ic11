@@ -18,8 +18,10 @@ public class Variable
         set => _lastReferencedIndex = Math.Max(_lastReferencedIndex, value); 
     }
 
+    public bool IsParameter { get; set; }
+
     public override string ToString() => $"{{Variable{Id} dec={DeclareIndex} ref={LastReferencedIndex} reg={Register} }}";
-    public string Register;
+    public string? Register;
 
     //private string _reg;
     //public string Register { get => _reg is null ? null : $"var{Id}[{_reg}] dec[{DeclareIndex}] ref[{LastReferencedIndex}]"; set { _reg = value; } }
