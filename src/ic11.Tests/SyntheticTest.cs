@@ -135,7 +135,7 @@ public sealed class SyntheticTest
                 
                 yield;
                 Dst.Res = array2[0];
-                array1[0] = 1;
+                //array1[0] = 1;
 
                 Dst.Done = 1;
             }
@@ -182,23 +182,24 @@ public sealed class SyntheticTest
         Console.WriteLine(compileText);
 
         var program = compileText.Split("\n");
+        
+        Emulator emulator = new();
+        emulator.LoadProgram(program);
 
-        _emulator.LoadProgram(program);
-
-        var dst = _emulator.Devices[1];
-        _emulator.Devices[1] = null;
-        _emulator.Devices[4] = null;
-        _emulator.Devices[2] = null;
-        _emulator.Devices[5] = null;
+        var dst = emulator.Devices[1];
+        emulator.Devices[1] = null;
+        emulator.Devices[4] = null;
+        emulator.Devices[2] = null;
+        emulator.Devices[5] = null;
 
         var limit = 100000;
         while (dst.GetProperty("Done") != 1 && --limit > 0)
-            _emulator.Run(1);
-
+        {
+            emulator.Run(1);
+            emulator.PrintSummary();
+        }
+        
         Assert.AreNotEqual(0, limit);
-
-        _emulator.PrintSummary();
-
         Assert.AreEqual(1, dst.GetProperty("Res"));
     }
 

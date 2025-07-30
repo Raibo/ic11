@@ -20,6 +20,7 @@ public sealed class Emulator
     public readonly int ReturnAddressRegister = 17;
     public bool Yielding;
     public long Clock;
+    public bool Stopped;
 
 
     public Emulator()
@@ -65,6 +66,8 @@ public sealed class Emulator
         ProgramCounter = 0;
 
         Clock = 0;
+        Stopped = false;
+        Yielding = false;
     }
 
 
@@ -91,6 +94,9 @@ public sealed class Emulator
 
     public void Run(int ticks = 1)
     {
+        if (Stopped)
+            return;
+        
         if (_program == null)
         {
             throw new Exception("Program not loaded");
@@ -103,7 +109,11 @@ public sealed class Emulator
                 Clock++;
 
                 if (ProgramCounter >= _program.Count)
+                {
                     ProgramCounter = 0;
+                    Stopped = true;
+                    return; // end of program
+                }
 
                 var operation = _program[ProgramCounter];
 
