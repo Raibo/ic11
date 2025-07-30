@@ -280,7 +280,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         var valueExprVariable = VisitNode((Node)node.ValueExpression);
 
         if (valueExprVariable is not null)
-            valueExprVariable.LastReferencedIndex = node.IndexInScope;
+            valueExprVariable.LastReferencedIndex = node.IndexInScope + 1;
 
         var indexExprVariable = VisitNode((Node)node.IndexExpression);
 
@@ -305,7 +305,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             indexVariable.LastReferencedIndex = node.IndexInScope;
 
         node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
-        node.Variable.LastReferencedIndex = node.IndexInScope;
+        node.Variable.LastReferencedIndex = node.IndexInScope; //  + 2
 
         return node.Variable;
     }

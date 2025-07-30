@@ -3,7 +3,7 @@
 [TestClass]
 public sealed class SyntheticTest
 {
-    private readonly Emulator _emulator = new ();
+    private readonly Emulator _emulator = new();
 
     [TestMethod]
     public void TestSimpleMath()
@@ -38,27 +38,27 @@ public sealed class SyntheticTest
         var program = compileText.Split("\n");
 
         _emulator.LoadProgram(program);
-        
+
         var src = _emulator.Devices[0];
         var dst = _emulator.Devices[1];
         _emulator.Devices[1] = null;
         _emulator.Devices[4] = null;
         _emulator.Devices[2] = null;
         _emulator.Devices[5] = null;
-        
+
         src.SetProperty("A", 1000);
         src.SetProperty("B", 1);
-        
+
         var limit = 1000;
         while (dst.GetProperty("Done") != 1 && limit-- > 0)
             _emulator.Run(1);
-        
+
         Assert.AreEqual(1001, dst.GetProperty("Res"));
-        
+
         _emulator.PrintSummary();
     }
-    
-    
+
+
     [TestMethod]
     public void TestFibonacci()
     {
@@ -97,28 +97,28 @@ public sealed class SyntheticTest
         var program = compileText.Split("\n");
 
         _emulator.LoadProgram(program);
-        
+
         var src = _emulator.Devices[0];
         var dst = _emulator.Devices[1];
         _emulator.Devices[1] = null;
         _emulator.Devices[4] = null;
         _emulator.Devices[2] = null;
         _emulator.Devices[5] = null;
-        
+
         src.SetProperty("A", 25);
-        
+
         var limit = 100000;
         while (dst.GetProperty("Done") != 1 && --limit > 0)
             _emulator.Run(1);
-        
+
         Assert.AreNotEqual(0, limit);
-        
+
         Assert.AreEqual(75025, dst.GetProperty("Res"));
-        
+
         _emulator.PrintSummary();
     }
-    
-    
+
+
     [TestMethod]
     public void TestQuicksort()
     {
@@ -180,25 +180,25 @@ public sealed class SyntheticTest
 
         var compileText = Program.CompileText(code);
         Console.WriteLine(compileText);
-        
+
         var program = compileText.Split("\n");
 
         _emulator.LoadProgram(program);
-        
+
         var dst = _emulator.Devices[1];
         _emulator.Devices[1] = null;
         _emulator.Devices[4] = null;
         _emulator.Devices[2] = null;
         _emulator.Devices[5] = null;
-        
+
         var limit = 100000;
         while (dst.GetProperty("Done") != 1 && --limit > 0)
             _emulator.Run(1);
-        
+
         Assert.AreNotEqual(0, limit);
-        
+
         _emulator.PrintSummary();
-        
+
         Assert.AreEqual(1, dst.GetProperty("Res"));
     }
 
@@ -208,10 +208,10 @@ public sealed class SyntheticTest
     {
         int[] arr = { 5, 3, 8, 6, 2, 7, 4, 1 };
         QuickSort(arr, 0, arr.Length - 1);
-            
+
         Console.WriteLine(String.Join(", ", arr));
         Assert.AreEqual(1, arr[0]);
-        
+
         void QuickSort(int[] arr, int low, int high)
         {
             if (low < high)
@@ -249,8 +249,8 @@ public sealed class SyntheticTest
             arr[j] = temp;
         }
     }
-    
-    
+
+
     [TestMethod]
     public void TestEdgeCase()
     {
@@ -279,30 +279,30 @@ public sealed class SyntheticTest
 
         var compileText = Program.CompileText(code);
         Console.WriteLine(compileText);
-        
+
         var program = compileText.Split("\n");
 
         _emulator.LoadProgram(program);
-        
+
         var src = _emulator.Devices[0];
         var dst = _emulator.Devices[1];
         _emulator.Devices[1] = null;
         _emulator.Devices[4] = null;
         _emulator.Devices[2] = null;
         _emulator.Devices[5] = null;
-        
+
         var limit = 100000;
         while (dst.GetProperty("Done") != 1 && --limit > 0)
             _emulator.Run(1);
-        
+
         Assert.AreNotEqual(0, limit);
-        
+
         _emulator.PrintSummary();
-        
+
         Assert.AreEqual(1, dst.GetProperty("Res"));
     }
-    
-    
+
+
     [TestMethod]
     public void TestEdgeCase2()
     {
@@ -363,29 +363,116 @@ public sealed class SyntheticTest
 
         var compileText = Program.CompileText(code);
         Console.WriteLine(compileText);
-        
+
         var program = compileText.Split("\n");
 
-        _emulator.LoadProgram(program);
-        
-        var dst = _emulator.Devices[1];
-        _emulator.Devices[1] = null;
-        _emulator.Devices[4] = null;
-        _emulator.Devices[2] = null;
-        _emulator.Devices[5] = null;
+        Emulator emulator = new(1);
+        emulator.LoadProgram(program);
+
+        var dst = emulator.Devices[1];
+        emulator.Devices[2] = null;
+        emulator.Devices[3] = null;
+        emulator.Devices[4] = null;
+        emulator.Devices[5] = null;
+
+        var limit = 100000;
+        while (dst.GetProperty("Done") != 1 && --limit > 0)
+        {
+            emulator.Run(1);
+            emulator.PrintSummary();
+        }
+
+        Assert.AreNotEqual(0, limit);
+
+        emulator.PrintSummary();
+
+        Assert.AreEqual(1, dst.GetProperty("Res"));
+    }
+
+
+    [TestMethod]
+    public void TestEdgeCase3()
+    {
+        var code = @"
+            pin Src d0;
+            pin Dst d1;
+
+            void Main()
+            {   
+                var array2 = { 5, 3, 8, 1 };
+                Swap(array2, 0, 3);
+                
+                Dst.Res = array2[0];
+                Dst.Done = 1;
+            }
+
+            void Swap(arr, i, j)
+            {
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        ";
+
+        var compileText = Program.CompileText(code);
+        Console.WriteLine(compileText);
+
+        var program = compileText.Split("\n");
+
+        Emulator emulator = new(1);
+        emulator.LoadProgram(program);
+
+        var dst = emulator.Devices[1];
         
         var limit = 100000;
         while (dst.GetProperty("Done") != 1 && --limit > 0)
         {
-            _emulator.Run(1);
-            _emulator.PrintSummary();
+            emulator.Run(1);
+            emulator.PrintSummary();
         }
 
         Assert.AreNotEqual(0, limit);
-        
-        _emulator.PrintSummary();
-        
         Assert.AreEqual(1, dst.GetProperty("Res"));
     }
+    
+    
+    [TestMethod]
+    public void TestEdgeCase4()
+    {
+        var code = @"
+            pin Src d0;
+            pin Dst d1;
 
+            void Main()
+            {   
+                var arr = { 5, 3, 8, 1 };
+                var i = 1;
+                var j = 0;
+                arr[i-1+j] = j + arr[3];
+                
+                Dst.Res = arr[0];
+                Dst.Done = 1;
+            }
+        ";
+
+        var compileText = Program.CompileText(code);
+        Console.WriteLine(compileText);
+
+        var program = compileText.Split("\n");
+
+        Emulator emulator = new(1);
+        emulator.LoadProgram(program);
+
+        var dst = emulator.Devices[1];
+        
+        var limit = 100000;
+        while (dst.GetProperty("Done") != 1 && --limit > 0)
+        {
+            emulator.Run(1);
+            emulator.PrintSummary();
+        }
+
+        Assert.AreNotEqual(0, limit);
+        Assert.AreEqual(1, dst.GetProperty("Res"));
+    }
 }

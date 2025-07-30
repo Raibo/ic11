@@ -4,10 +4,9 @@ namespace ic11.Tests;
 
 using Operations;
 
-
 public sealed class Emulator
 {
-    private const int CyclesPerTick = 128;
+    private readonly int _cyclesPerTick = 128;
 
     public List<Device?> Devices = null!;
     public Dictionary<int, Device> BatchDevices = null!; // devices that are used in batch operations
@@ -18,9 +17,19 @@ public sealed class Emulator
     public int ProgramCounter;
     public double[] Stack = null!;
     public readonly int StackPointerRegister = 16;
-    public readonly int ReturnAddressRegister = 17; 
+    public readonly int ReturnAddressRegister = 17;
     public bool Yielding;
     public long Clock;
+
+
+    public Emulator()
+    {
+    }
+
+    public Emulator(int cyclesPerTick)
+    {
+        _cyclesPerTick = cyclesPerTick;
+    }
 
     public void Reset()
     {
@@ -33,7 +42,7 @@ public sealed class Emulator
             Devices.Add(new Device());
             DeviceAliases.Add($"d{i}", Devices[i]!);
         }
-        
+
         Stack = new double[512];
         var db = new Device
         {
@@ -54,7 +63,7 @@ public sealed class Emulator
         RegisterAliases.Add("ra", 17);
 
         ProgramCounter = 0;
-        
+
         Clock = 0;
     }
 
@@ -86,16 +95,16 @@ public sealed class Emulator
         {
             throw new Exception("Program not loaded");
         }
-        
+
         while (ticks > 0)
         {
-            for (int i = 0; i < CyclesPerTick; i++)
+            for (int i = 0; i < _cyclesPerTick; i++)
             {
                 Clock++;
-                
+
                 if (ProgramCounter >= _program.Count)
-                    ProgramCounter = 0; 
-                
+                    ProgramCounter = 0;
+
                 var operation = _program[ProgramCounter];
 
                 operation.Execute(this);
@@ -138,16 +147,17 @@ public sealed class Emulator
     {
         Console.WriteLine(GetSummary());
     }
-    
+
     public string GetSummary()
     {
         var sb = new System.Text.StringBuilder();
         var valuesPerLine = 10;
-
+        
+        sb.AppendLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         sb.AppendLine("Emulator Summary:");
         sb.AppendLine($"Program Length: {_program.Count}");
         sb.AppendLine($"Clock: {Clock}");
-        sb.AppendLine($"Program Counter: {ProgramCounter}");
+        sb.AppendLine($"Program Counter: {ProgramCounter}: >> {_program[ProgramCounter]}");
         sb.AppendLine($"SP: {Registers[StackPointerRegister]}  RA: {Registers[ReturnAddressRegister]}");
         sb.AppendLine();
 
@@ -162,12 +172,14 @@ public sealed class Emulator
                 width--;
             }
         }
+
         sb.AppendLine();
 
         for (int i = 0; i < 16; i++)
         {
             sb.Append($"{Registers[i].ToString(CultureInfo.InvariantCulture),-3} ");
         }
+
         sb.AppendLine();
 
         var maxNonZeroIndex = 0;
@@ -177,12 +189,15 @@ public sealed class Emulator
                 maxNonZeroIndex = i;
         }
 
+        maxNonZeroIndex++;
+
         sb.AppendLine();
         sb.Append("Stack:");
         for (int i = 0; i < valuesPerLine; i++)
         {
             sb.Append($"{i,3} ");
         }
+
         sb.AppendLine();
 
         for (int i = 0; i < valuesPerLine + 1; i++)
@@ -190,7 +205,7 @@ public sealed class Emulator
             sb.Append("----");
         }
 
-        for (int i = 0; i <= maxNonZeroIndex; i++)
+        for (int i = 0; i <= maxNonZeroIndex && i < Stack.Length; i++)
         {
             if (i % valuesPerLine == 0)
             {
@@ -203,10 +218,12 @@ public sealed class Emulator
             else
                 sb.Append($"{Stack[i].ToString(CultureInfo.InvariantCulture),3} ");
         }
+        
+        sb.AppendLine();
 
         return sb.ToString();
     }
-    
+
 
     public Exception GenerateEmulatorException(string unexpectedOperationType)
     {
