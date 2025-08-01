@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\ic11\ic11.Emulator\ic11.Emulator.csproj" />
+    <ProjectReference Include="..\ic11.Emulator\ic11.Emulator.csproj" />
     <ProjectReference Include="..\ic11\ic11.csproj" />
   </ItemGroup>
 
