@@ -36,7 +36,7 @@ jobs:
       run: dotnet test -c Release --no-build --verbosity normal
 
     - name: Create fat executable
-      run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
+      run: dotnet publish src/ic11/ic11.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish 
 
     - name: Semantic Release
       uses: cycjimmy/semantic-release-action@v4
