@@ -8,7 +8,7 @@ public sealed class ProductionTest
     private readonly Emulator _emulator = new();
 
     [TestMethod]
-    public void TestLatheControl()
+    public void TestLatheControl_FollowsRules()
     {
         var code = @"
             pin Fab1 d0;

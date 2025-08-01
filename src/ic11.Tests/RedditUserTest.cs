@@ -8,7 +8,7 @@ public sealed class RedditUserTest
     private readonly Emulator _emulator = new();
 
     [TestMethod]
-    public void TestAc()
+    public void TestAc_GeneratesSameOrShorterProgram()
     {
         var code = @"
             pin sensor d0;
@@ -148,7 +148,7 @@ public sealed class RedditUserTest
 
 
     [TestMethod]
-    public void TestHarvie()
+    public void TestHarvie_GeneratesSameOrShorterProgram()
     {
         var code = @"
             pin Light d0;
