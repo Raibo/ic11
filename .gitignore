@@ -37,6 +37,7 @@ httpd.parse.errors
 
 # NUnit test results
 TestResult.xml
+packages/
  
 # build directory
 build/

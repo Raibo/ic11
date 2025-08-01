@@ -1,0 +1,18 @@
+pin Sensor d0;
+pin Pump d1;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        if (Sensor.Pressure == -1 )
+        {
+            Pump.On = false;
+            continue;
+        }
+        Pump.On = Sensor.Pressure < 30000 & Sensor.Temperature < 273 + 17;
+        
+    }
+}

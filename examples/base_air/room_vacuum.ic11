@@ -1,0 +1,13 @@
+pin Sensor d0;
+pin Vent d1;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        Vent.Mode = 1;
+        Vent.On = Sensor.Pressure > 0 & Sensor.RatioOxygen <= 0;
+    }
+}

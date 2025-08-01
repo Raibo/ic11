@@ -1,0 +1,70 @@
+pin Pump d0;
+pin PaInput d1;
+pin PaOutput d2;
+pin CanisterSlot d3;
+
+// TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.314)
+// PumpPerTick(moles) = PumpLitersSetting * InputTotalMoles / InputVolume(Liters)
+
+const GasConstant = 8.314;
+const SafePressure = 9500;
+const ExtendedPressure = 19500;
+
+const MinPower = 0.05;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        var canisterType = CanisterSlot.Slots[0].PrefabHash;
+
+        var pressure = SafePressure;
+        if (canisterType == "ItemGasCanisterSmart"){
+            pressure = ExtendedPressure;
+        }
+        Base.Setting = pressure;
+        
+        if (CanisterSlot.RatioCarbonDioxide < 1 | PaOutput.Pressure == -1 | PaInput.Pressure == -1)
+        {
+            Pump.On = false;
+            continue;
+        }
+        
+        var delta = pressure - PaOutput.Pressure;
+        var reverse = delta < 0;
+        Pump.Mode = reverse;
+
+        var pumpPower = 0;
+        if (reverse) {
+            var transferMolesPerLiter = PaOutput.TotalMoles / PaOutput.Volume;
+            var targetMoles = pressure / PaOutput.Pressure * PaOutput.TotalMoles;
+            var targSubMoles = PaOutput.TotalMoles - targetMoles;
+
+            pumpPower = targSubMoles / transferMolesPerLiter;
+        } else {
+            var transferMolesPerLiter = PaInput.TotalMoles / PaInput.Volume;
+
+            var targetMoles = 0;
+
+            if (PaOutput.Pressure > 0)
+                targetMoles = pressure / PaOutput.Pressure * PaOutput.TotalMoles;
+            else
+                targetMoles = PaOutput.Volume * pressure / PaInput.Temperature / GasConstant;
+            
+            var targAddMoles = targetMoles - PaOutput.TotalMoles;    
+
+            pumpPower = targAddMoles / transferMolesPerLiter;
+        }
+
+        if (pumpPower < MinPower)
+        {
+            Pump.On = false;
+            continue;
+        }
+
+        Pump.Setting = pumpPower;
+        Pump.On = true;
+    }
+}
+

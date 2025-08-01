@@ -99,7 +99,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
             Visit((Node)item);
 
         // save registers to stack             (Don't save params calculations)
-        var usedRegisters = node.Scope!.GetUsedRegisters(node.IndexInScope + 1, node.IndexInScope + 1);
+        var usedRegisters = node.RegistersToPush.ToList();
 
         if (node.Method!.ReturnType != MethodReturnType.Void)
             usedRegisters.Remove(node.Variable!.Register);
@@ -110,7 +110,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         var declaredMethod = _flowContext.DeclaredMethods[node.Name];
 
         foreach (var register in ((IEnumerable<string>)usedRegisters).Reverse())
-        Instructions.Add(new StackPush(register));
+            Instructions.Add(new StackPush(register));
 
         // saving parameters to stack
         foreach (var item in node.Expressions.Reverse())

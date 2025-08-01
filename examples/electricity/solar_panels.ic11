@@ -1,0 +1,14 @@
+pin Sensor d0;
+
+const SolarPanelType = "StructureSolarPanel";
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        DevicesOfType(SolarPanelType).Horizontal = Sensor.Horizontal;
+        DevicesOfType(SolarPanelType).Vertical = 90 - Sensor.Vertical;
+    }
+}

@@ -1,0 +1,13 @@
+const DesiredTemperature = 297 + 25;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        Base.Mode = Base.PressureInput > 150 
+                  && Base.PressureOutput < 9000 
+                  && Base.TemperatureInput <= DesiredTemperature;
+    }
+}
