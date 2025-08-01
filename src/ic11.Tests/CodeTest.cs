@@ -1,6 +1,7 @@
 ﻿namespace ic11.Tests;
 
 using ic11.ControlFlow.TreeProcessing;
+using ic11.Emulator;
 
 [TestClass]
 public sealed partial class CodeTest

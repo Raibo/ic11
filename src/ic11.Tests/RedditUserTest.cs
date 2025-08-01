@@ -1,9 +1,11 @@
 ﻿namespace ic11.Tests;
 
+using ic11.Emulator;
+
 [TestClass]
 public sealed class RedditUserTest
 {
-    private readonly Emulator _emulator = new ();
+    private readonly Emulator _emulator = new();
 
     [TestMethod]
     public void TestAc()
@@ -137,14 +139,14 @@ public sealed class RedditUserTest
         ";
 
         var compileText = Program.CompileText(code);
-        
+
         var program = compileText.Split("\n");
         Console.WriteLine(compileText);
-            
+
         Assert.IsTrue(program.Length <= 69, $"Program is too long: {program.Length} lines");
     }
-    
-    
+
+
     [TestMethod]
     public void TestHarvie()
     {
@@ -248,10 +250,10 @@ public sealed class RedditUserTest
         ";
 
         var compileText = Program.CompileText(code);
-        
+
         var program = compileText.Split("\n");
         Console.WriteLine(compileText);
-            
+
         Assert.IsTrue(program.Length <= 91, $"Program is too long: {program.Length} lines");
     }
 }

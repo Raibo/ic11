@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ic11", "src\ic11\ic11.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ic11.Tests", "src\ic11.Tests\ic11.Tests.csproj", "{271C1138-ADF6-4CF5-90F4-D28A43F30CD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ic11.Emulator", "..\src\ic11\ic11.Emulator\ic11.Emulator.csproj", "{F36593BC-F80F-4679-A937-C16C9318A325}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{271C1138-ADF6-4CF5-90F4-D28A43F30CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{271C1138-ADF6-4CF5-90F4-D28A43F30CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{271C1138-ADF6-4CF5-90F4-D28A43F30CD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36593BC-F80F-4679-A937-C16C9318A325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36593BC-F80F-4679-A937-C16C9318A325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36593BC-F80F-4679-A937-C16C9318A325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36593BC-F80F-4679-A937-C16C9318A325}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,14 @@
+pin Vent d0;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        Base.Mode = Base.PressureInput > 0 && Base.PressureOutput < 18000;
+
+        Vent.Mode = 1;
+        Vent.On = Base.PressureInput < 30000;
+    }
+}

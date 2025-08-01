@@ -1,0 +1,18 @@
+pin Sensor d0;
+pin Vent d1;
+
+const TargetPressure = 80;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        Vent.Mode = 0;
+        Vent.Lock = 0;
+        Vent.On = Sensor.Pressure < TargetPressure;
+        Vent.PressureExternal = TargetPressure;
+        
+    }
+}

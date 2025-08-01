@@ -1,12 +1,14 @@
 ﻿namespace ic11.Tests;
 
+using ic11.Emulator;
+
 [TestClass]
 public sealed class SyntheticTest
 {
     private readonly Emulator _emulator = new();
 
     [TestMethod]
-    public void TestSimpleMath()
+    public void TestSimpleMath_ReturnsCorrectResult()
     {
         var code = @"
             pin Src d0;
@@ -60,7 +62,7 @@ public sealed class SyntheticTest
 
 
     [TestMethod]
-    public void TestFibonacci()
+    public void TestFibonacci_OutputsExpected()
     {
         var code = @"
             pin Src d0;
@@ -120,7 +122,7 @@ public sealed class SyntheticTest
 
 
     [TestMethod]
-    public void TestQuicksort()
+    public void TestQuicksort_SortsArrayIC10()
     {
         var code = @"
             pin Src d0;
@@ -205,7 +207,7 @@ public sealed class SyntheticTest
 
 
     [TestMethod]
-    public void TestActualQuicksort()
+    public void TestActualQuicksort_SortsArray()
     {
         int[] arr = { 5, 3, 8, 6, 2, 7, 4, 1 };
         QuickSort(arr, 0, arr.Length - 1);
@@ -253,7 +255,7 @@ public sealed class SyntheticTest
 
 
     [TestMethod]
-    public void TestEdgeCase()
+    public void TestArrayParam_DoesNotOverrideRegister()
     {
         var code = @"
             pin Src d0;
@@ -305,7 +307,7 @@ public sealed class SyntheticTest
 
 
     [TestMethod]
-    public void TestEdgeCase2()
+    public void TestQuickSort_DoesNotCorruptStack()
     {
         var code = @"
             pin Src d0;
@@ -392,7 +394,7 @@ public sealed class SyntheticTest
 
 
     [TestMethod]
-    public void TestEdgeCase3()
+    public void TestArraySwap_DoesNotMessRegisterInFunction()
     {
         var code = @"
             pin Src d0;
@@ -438,7 +440,7 @@ public sealed class SyntheticTest
     
     
     [TestMethod]
-    public void TestEdgeCase4()
+    public void TestArraySwap_DoesNotMessRegister()
     {
         var code = @"
             pin Src d0;

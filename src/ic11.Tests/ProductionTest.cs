@@ -1,9 +1,11 @@
 ﻿namespace ic11.Tests;
 
+using ic11.Emulator;
+
 [TestClass]
 public sealed class ProductionTest
 {
-    private readonly Emulator _emulator = new ();
+    private readonly Emulator _emulator = new();
 
     [TestMethod]
     public void TestLatheControl()
@@ -57,35 +59,35 @@ public sealed class ProductionTest
         ";
 
         var compileText = Program.CompileText(code);
-        
+
         var program = compileText.Split("\n");
 
         _emulator.LoadProgram(program);
-        
+
         var fab1 = _emulator.Devices[0];
         var dial1 = _emulator.Devices[3];
         _emulator.Devices[1] = null;
         _emulator.Devices[4] = null;
         _emulator.Devices[2] = null;
         _emulator.Devices[5] = null;
-        
+
         fab1.SetProperty("Activate", 1);
         fab1.SetProperty("ExportCount", 1);
-        
+
         dial1.SetProperty("Setting", 50);
-        
+
         _emulator.Run(2);
-        
+
         Assert.AreEqual(49, dial1.GetProperty("Setting"));
         Assert.AreEqual(1, fab1.GetProperty("ClearMemory"));
-        
+
         fab1.SetProperty("ExportCount", 0);
         fab1.SetProperty("ClearMemory", 0);
-        
+
         _emulator.Run(1);
-        
+
         Assert.AreEqual(49, dial1.GetProperty("Setting"));
-        
+
         _emulator.PrintSummary();
     }
 }

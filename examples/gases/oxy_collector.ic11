@@ -1,0 +1,12 @@
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        var pressure = Base.PressureInput;
+        var oxygenPressure = pressure * Base.RatioOxygenInput;
+
+        Base.Mode = oxygenPressure > 30 && Base.PressureOutput < 19000;
+    }
+}
