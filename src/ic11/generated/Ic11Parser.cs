@@ -3942,46 +3942,12 @@ public partial class Ic11Parser : Parser {
 						break;
 					case 5:
 						{
-						_localctx = new BinaryOpContext(new ExpressionContext(_parentctx, _parentState));
-						((BinaryOpContext)_localctx).left = _prevctx;
+						_localctx = new TernaryOpContext(new ExpressionContext(_parentctx, _parentState));
+						((TernaryOpContext)_localctx).a = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 523;
 						if (!(Precpred(Context, 15))) throw new FailedPredicateException(this, "Precpred(Context, 15)");
 						State = 524;
-						((BinaryOpContext)_localctx).op = Match(AND);
-						State = 525;
-						((BinaryOpContext)_localctx).right = expression(16);
-						}
-						break;
-					case 6:
-						{
-						_localctx = new BinaryOpContext(new ExpressionContext(_parentctx, _parentState));
-						((BinaryOpContext)_localctx).left = _prevctx;
-						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 526;
-						if (!(Precpred(Context, 14))) throw new FailedPredicateException(this, "Precpred(Context, 14)");
-						State = 527;
-						((BinaryOpContext)_localctx).op = TokenStream.LT(1);
-						_la = TokenStream.LA(1);
-						if ( !(_la==OR || _la==XOR) ) {
-							((BinaryOpContext)_localctx).op = ErrorHandler.RecoverInline(this);
-						}
-						else {
-							ErrorHandler.ReportMatch(this);
-						    Consume();
-						}
-						State = 528;
-						((BinaryOpContext)_localctx).right = expression(15);
-						}
-						break;
-					case 7:
-						{
-						_localctx = new TernaryOpContext(new ExpressionContext(_parentctx, _parentState));
-						((TernaryOpContext)_localctx).a = _prevctx;
-						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 529;
-						if (!(Precpred(Context, 13))) throw new FailedPredicateException(this, "Precpred(Context, 13)");
-						State = 530;
 						((TernaryOpContext)_localctx).op = TokenStream.LT(1);
 						_la = TokenStream.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 1970324836974592L) != 0)) ) {
@@ -3991,12 +3957,46 @@ public partial class Ic11Parser : Parser {
 							ErrorHandler.ReportMatch(this);
 						    Consume();
 						}
-						State = 531;
+						State = 525;
 						((TernaryOpContext)_localctx).b = expression(0);
-						State = 532;
+						State = 526;
 						Match(T__13);
+						State = 527;
+						((TernaryOpContext)_localctx).c = expression(16);
+						}
+						break;
+					case 6:
+						{
+						_localctx = new BinaryOpContext(new ExpressionContext(_parentctx, _parentState));
+						((BinaryOpContext)_localctx).left = _prevctx;
+						PushNewRecursionContext(_localctx, _startState, RULE_expression);
+						State = 529;
+						if (!(Precpred(Context, 14))) throw new FailedPredicateException(this, "Precpred(Context, 14)");
+						State = 530;
+						((BinaryOpContext)_localctx).op = Match(AND);
+						State = 531;
+						((BinaryOpContext)_localctx).right = expression(15);
+						}
+						break;
+					case 7:
+						{
+						_localctx = new BinaryOpContext(new ExpressionContext(_parentctx, _parentState));
+						((BinaryOpContext)_localctx).left = _prevctx;
+						PushNewRecursionContext(_localctx, _startState, RULE_expression);
+						State = 532;
+						if (!(Precpred(Context, 13))) throw new FailedPredicateException(this, "Precpred(Context, 13)");
 						State = 533;
-						((TernaryOpContext)_localctx).c = expression(14);
+						((BinaryOpContext)_localctx).op = TokenStream.LT(1);
+						_la = TokenStream.LA(1);
+						if ( !(_la==OR || _la==XOR) ) {
+							((BinaryOpContext)_localctx).op = ErrorHandler.RecoverInline(this);
+						}
+						else {
+							ErrorHandler.ReportMatch(this);
+						    Consume();
+						}
+						State = 534;
+						((BinaryOpContext)_localctx).right = expression(14);
 						}
 						break;
 					}
@@ -4081,8 +4081,8 @@ public partial class Ic11Parser : Parser {
 		33,536,8,33,10,33,12,33,539,9,33,1,33,0,1,66,34,0,2,4,6,8,10,12,14,16,
 		18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,
 		66,0,11,1,0,3,4,1,0,53,55,2,0,26,26,65,65,3,0,30,30,34,34,51,51,2,0,64,
-		64,66,68,1,0,35,38,1,0,31,33,1,0,29,30,2,0,39,42,46,47,1,0,44,45,1,0,48,
-		50,585,0,75,1,0,0,0,2,80,1,0,0,0,4,85,1,0,0,0,6,101,1,0,0,0,8,112,1,0,
+		64,66,68,1,0,35,38,1,0,31,33,1,0,29,30,2,0,39,42,46,47,1,0,48,50,1,0,44,
+		45,585,0,75,1,0,0,0,2,80,1,0,0,0,4,85,1,0,0,0,6,101,1,0,0,0,8,112,1,0,
 		0,0,10,114,1,0,0,0,12,139,1,0,0,0,14,141,1,0,0,0,16,143,1,0,0,0,18,145,
 		1,0,0,0,20,150,1,0,0,0,22,152,1,0,0,0,24,155,1,0,0,0,26,157,1,0,0,0,28,
 		159,1,0,0,0,30,176,1,0,0,0,32,178,1,0,0,0,34,186,1,0,0,0,36,204,1,0,0,
@@ -4211,14 +4211,14 @@ public partial class Ic11Parser : Parser {
 		0,511,512,10,19,0,0,512,513,7,5,0,0,513,536,3,66,33,20,514,515,10,18,0,
 		0,515,516,7,6,0,0,516,536,3,66,33,19,517,518,10,17,0,0,518,519,7,7,0,0,
 		519,536,3,66,33,18,520,521,10,16,0,0,521,522,7,8,0,0,522,536,3,66,33,17,
-		523,524,10,15,0,0,524,525,5,43,0,0,525,536,3,66,33,16,526,527,10,14,0,
-		0,527,528,7,9,0,0,528,536,3,66,33,15,529,530,10,13,0,0,530,531,7,10,0,
-		0,531,532,3,66,33,0,532,533,5,14,0,0,533,534,3,66,33,14,534,536,1,0,0,
-		0,535,511,1,0,0,0,535,514,1,0,0,0,535,517,1,0,0,0,535,520,1,0,0,0,535,
-		523,1,0,0,0,535,526,1,0,0,0,535,529,1,0,0,0,536,539,1,0,0,0,537,535,1,
-		0,0,0,537,538,1,0,0,0,538,67,1,0,0,0,539,537,1,0,0,0,37,73,75,93,96,105,
-		112,139,166,169,176,184,189,193,197,202,210,215,217,239,254,262,277,299,
-		362,365,368,371,419,422,437,457,477,489,497,509,535,537
+		523,524,10,15,0,0,524,525,7,9,0,0,525,526,3,66,33,0,526,527,5,14,0,0,527,
+		528,3,66,33,16,528,536,1,0,0,0,529,530,10,14,0,0,530,531,5,43,0,0,531,
+		536,3,66,33,15,532,533,10,13,0,0,533,534,7,10,0,0,534,536,3,66,33,14,535,
+		511,1,0,0,0,535,514,1,0,0,0,535,517,1,0,0,0,535,520,1,0,0,0,535,523,1,
+		0,0,0,535,529,1,0,0,0,535,532,1,0,0,0,536,539,1,0,0,0,537,535,1,0,0,0,
+		537,538,1,0,0,0,538,67,1,0,0,0,539,537,1,0,0,0,37,73,75,93,96,105,112,
+		139,166,169,176,184,189,193,197,202,210,215,217,239,254,262,277,299,362,
+		365,368,371,419,422,437,457,477,489,497,509,535,537
 	};
 
 	public static readonly ATN _ATN =

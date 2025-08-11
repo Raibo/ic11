@@ -31,10 +31,10 @@ dotnet restore
 
 Build binaries:
 ```bash
-dotnet build -c Release --no-restore
+dotnet build src/ic11/ic11.csproj -c Release --no-restore
 ```
 
 Build a single exe:
 ```bash
-dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
+dotnet publish src/ic11/ic11.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
 ```

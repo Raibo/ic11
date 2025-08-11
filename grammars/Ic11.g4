@@ -97,9 +97,9 @@ expression:
     | left=expression op=(MUL | DIV | MOD) right=expression # BinaryOp
     | left=expression op=(ADD | SUB) right=expression # BinaryOp
     | left=expression op=(LT | GT | LE | GE | EQ | NE) right=expression # BinaryOp
+    | a=expression op=(AEQ | ANE | SEL) b=expression ':' c=expression # TernaryOp
     | left=expression op=AND right=expression # BinaryOp
     | left=expression op=(OR | XOR) right=expression # BinaryOp
-    | a=expression op=(AEQ | ANE | SEL) b=expression ':' c=expression # TernaryOp
     | '(' expression ')' # Parenthesis
     | type=(INTEGER | BOOLEAN | REAL | STRING_LITERAL) # Literal
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
