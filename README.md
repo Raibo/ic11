@@ -1,4 +1,4 @@
-# IC11: A Compiler for the Stationeers Game IC10 Assembly
+# IC11: Compiler for the Stationeers Game IC10 Assembly
 
 A tool that translates (compiles) a high-level language program to an IC10 assembly for the Stationeers game. 
 
