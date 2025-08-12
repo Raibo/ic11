@@ -1,8 +1,8 @@
-# IC11: Compiler for the Stationeers Game IC10 Assembly
+# IC11: Compiler for Stationeers Game IC10 Assembly
 
 A tool that translates (compiles) a high-level language program to an IC10 assembly for the Stationeers game. 
 
-The language has a C-like syntax and supports basic instructions like if/then/else, while, function calls, and return values.
+The language features a C-like syntax and supports basic instructions, including if/then/else, while loops, function calls, and return values.
 
 Use the [Wiki](https://github.com/Raibo/ic11/wiki) for the ic11 language reference.
 
