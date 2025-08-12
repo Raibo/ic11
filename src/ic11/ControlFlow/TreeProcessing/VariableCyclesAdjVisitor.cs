@@ -69,9 +69,9 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
         {
             if (statement is If ifStatement)
             {
-                ifStatement.CurrentStatementsContainer = ifStatement.IfStatements.Any()
-                    ? DataHolders.IfStatementsContainer.If
-                    : DataHolders.IfStatementsContainer.Else;
+                ifStatement.CurrentStatementsContainer = ifStatement.ElseStatements.Any()
+                    ? DataHolders.IfStatementsContainer.Else
+                    : DataHolders.IfStatementsContainer.If;
             }
 
             if (statement is not IStatementsContainer sc || !sc.Statements.Any())
