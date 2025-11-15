@@ -1,0 +1,32 @@
+/*
+    This script reads solar angle from a daylight sensor and alignes all solar panels in a network according to it.
+
+    You might need to tweak the horizontal and vertical values depending on your sensor and solar panels orientation.
+    E.g. Sensor.Horizontal - 90, Sensor.Horizontal - 180, 90 - Sensor.Vertical.
+*/
+
+pin Sensor d0;
+
+const SolarPanelType = "StructureSolarPanel";
+const SolarPanelDualType = "StructureSolarPanelDual";
+const HSolarPanelType = "StructureSolarPanelReinforced";
+const HSolarPanelDualType = "StructureSolarPanelDualReinforced";
+
+void Main()
+{
+    for(;;yield)
+    {
+        var horizontal = Sensor.Horizontal - 90;
+        var vertical = 90 - Sensor.Vertical;
+        
+        DevicesOfType(SolarPanelType).Horizontal = horizontal;
+        DevicesOfType(SolarPanelDualType).Horizontal = horizontal;
+        DevicesOfType(HSolarPanelType).Horizontal = horizontal;
+        DevicesOfType(HSolarPanelDualType).Horizontal = horizontal;
+        
+        DevicesOfType(SolarPanelType).Vertical = vertical;
+        DevicesOfType(SolarPanelDualType).Vertical = vertical;
+        DevicesOfType(HSolarPanelType).Vertical = vertical;
+        DevicesOfType(HSolarPanelDualType).Vertical = vertical;
+    }
+}

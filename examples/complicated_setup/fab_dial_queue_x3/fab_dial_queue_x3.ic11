@@ -1,0 +1,76 @@
+/*
+    This script can control up to 3 printing devices (usually, Autholathe, Electroprint, Pipe Bender),
+    so that the player could set how many items to print and walk away, while the printing is happening.
+
+    The amount of items is set using a dial.
+    Each time an item is successfully printed, the setting on the dial is reduced by 1.
+    If there are not enough materials to print the amount, the dial will be left at the remaining number where printing stopped.
+    When all requested items are successfully printed, the dial is automatically set to 1, for convenience.
+
+    It is also recommended to attach a stacker to pronting devices, so you won't return to 50 cables lying all over the place.
+
+    Setup is required, but is fairly simple.
+    For each printing device, there should be a dial.
+    
+    The pins are set up like this example:
+
+                    +---------+
+      Autholathe -> | d0   d3 | <- Dial for autholathe
+    Electroprint -> | d1   d4 | <- Dial for electroprint
+     Pipe bender -> | d2   d5 | <- Dial for pipe bender
+                    +---------+
+
+    It is not necessary to set all 3 pairs, you can leave any of them empty, like so:
+
+                    +---------+
+         Nothing -> | d0   d3 | <- Nothing
+    Electroprint -> | d1   d4 | <- Dial for electroprint
+         Nothing -> | d2   d5 | <- Nothing
+                    +---------+
+*/
+
+
+pin Fab1 d0;
+pin Dial1 d3;
+
+pin Fab2 d1;
+pin Dial2 d4;
+
+pin Fab3 d2;
+pin Dial3 d5;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        for(var i = 0; i < 3; i = i + 1)
+        {
+            if (Pins[i].IsSet & Pins[i + 3].IsSet)
+                ProcessMachine(i, i + 3);
+        }
+    }
+}
+
+void ProcessMachine(machineIndex, dialIndex)
+{
+    if (!Pins[machineIndex].Activate)
+    {
+        Pins[dialIndex].Setting = Pins[dialIndex].Setting - Pins[machineIndex].ExportCount;
+        Pins[machineIndex].ClearMemory = true;
+        return;
+    }
+    
+    var craftsDone = Pins[machineIndex].ExportCount;
+    var craftsLeft = Pins[dialIndex].Setting - craftsDone;
+    
+    Pins[dialIndex].Setting = craftsLeft;
+    Pins[machineIndex].ClearMemory = true;
+    
+    if (craftsLeft <= 0)
+    {
+        Pins[dialIndex].Setting = 1;
+        Pins[machineIndex].Activate = false;
+    }
+}

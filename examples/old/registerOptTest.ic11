@@ -1,0 +1,33 @@
+void Main()
+{
+    var a = 1;
+    var b = 2;
+    var c = 3;
+    var d = 4;
+
+    Method1(a, b);
+
+    a = a + 1;
+
+    Method2(c, d);
+}
+
+void Method1(par1, par2)
+{
+    var a = 1;
+    var b = 2;
+    var c = 3;
+    var d = 4;
+    var e = a + b + c + d + par1 + par2;
+    Method2(d, e);
+}
+
+void Method2(par1, par2)
+{
+    var a = 1;
+    var b = 2;
+    var c = 3;
+    var d = 4;
+    var e = a + b + c + d + par1 + par2;
+    Method2(d, e);
+}

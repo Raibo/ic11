@@ -1,0 +1,36 @@
+/*
+    This script's purpose is to control Grow Lights and Shutter Windows.
+
+    It will keep Grow Lights on and Shutters open for a set period of time. (All in the network)
+    Then off and closed for another set period of time.
+    Then repeat.
+
+    Starts randomly from dark phase or light phase. Insert the chip multiple times for it to start from the desired phase.
+*/
+
+const lightTicks = 5 * (60 * 2);
+const darkTicks = 5 * (60 * 2);
+const growLightType = "StructureGrowLight";
+const shutterControllerType = "StructureCompositeWindowShutterController";
+
+void Main()
+{
+    // Starts randomly from dark phase or light phase.
+    var currentTick = rand() < 0.5 ? lightTicks : 0;
+
+    while(true)
+    {
+        var isLightTime = currentTick > 0;
+
+        Base.Setting = currentTick;
+        DevicesOfType(growLightType).On = isLightTime;
+        DevicesOfType(shutterControllerType).Open = isLightTime;
+
+        currentTick = currentTick - 1;
+
+        if (currentTick <= -darkTicks + 1)
+            currentTick = lightTicks;
+
+        yield;
+    }
+}

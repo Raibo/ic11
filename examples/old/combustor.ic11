@@ -36,16 +36,16 @@ void Main()
 
         // combust
         Combustor.On = Combustor.PressureOutput < CombustionMaxPressure 
-                     && Combustor.PressureInput > 0;
+                     & Combustor.PressureInput > 0;
 
         // filter
         Filter.On = Filter.PressureInput > 0
-                  && Filter.PressureOutput < FilterMaxPressure 
-                  && LPAs1.VolumeOfLiquid / LPAs1.Volume < Stage1WaterMaxOccupancy;
+                  & Filter.PressureOutput < FilterMaxPressure 
+                  & LPAs1.VolumeOfLiquid / LPAs1.Volume < Stage1WaterMaxOccupancy;
 
         // wait for cooling
         Pump.On = LPAs1.Temperature < Stage1MaxTemp 
-                && LPAs2.Temperature < Stage2MaxTemp 
-                && LPAs2.VolumeOfLiquid / LPAs2.Volume < Stage2WaterMaxOccupancy;
+                & LPAs2.Temperature < Stage2MaxTemp 
+                & LPAs2.VolumeOfLiquid / LPAs2.Volume < Stage2WaterMaxOccupancy;
     }
 }

@@ -1,0 +1,55 @@
+pin Dish1 d0;
+pin Dish2 d1;
+pin Dish3 d2;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        var i = 0;
+
+        while(i < 3)
+        {
+            var watts = Pins[i].WattsReachingContact / Pins[i].Setting;
+            Base.Setting = watts;
+
+            var addr = i + 509;
+
+            if (watts > 0)
+                Base.Stack[addr] = WattsToAngle(watts);
+            else
+                continue;
+
+            i = i + 1;
+        }
+    }
+}
+
+real WattsToAngle(wattage)
+{
+    if (wattage >= 1)
+        return 2;
+
+    if (wattage >= 0.9)
+        return MapFromScale(1, 0.9, 2, 5, wattage);
+
+    if (wattage >= 0.1)
+        return MapFromScale(0.9, 0.1, 5, 22.5, wattage);
+
+    if (wattage >= 0.05)
+        return MapFromScale(0.1, 0.05, 22.5, 45, wattage);
+
+    if (wattage >= 0.01)
+        return MapFromScale(0.05, 0.01, 45, 90, wattage);
+
+    return MapFromScale(0.01, 0.001, 90, 180, wattage);
+}
+
+real MapFromScale(outMin, outMax, min1, max1, value)
+{
+    var num = outMax - outMin;
+    var num2 = max1 - min1;
+    return (value - outMin) * num2 / num + min1;
+}

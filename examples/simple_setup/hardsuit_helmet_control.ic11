@@ -1,0 +1,46 @@
+/*
+    This script controls your hardsuit.
+    If you are indoors, it will open the helmet and turn off suit's life support devices.
+    If you are outdoors, it will do the opposite.
+
+    Warning: "indoors" is calculated by temperature and pressure being suitable for breathing.
+    If there are hazardous gases, the script cannot know that and will still open your helmet, as long as pressure and temperature are good.
+    You can delete the helmet control part and it will still turn life support on/off for you when you manually close/open the helmet.
+*/
+
+pin Helmet d0;
+pin Jetpack d1;
+
+const breathePressureMin = 25;
+const breathePressureMax = 200;
+const celsius = 273.15;
+const breatheTempMin = 1 + celsius;
+const breatheTempMax = 30 + celsius;
+
+void Main()
+{
+    for(;;yield)
+    {
+        // Opens the helmet if pressure and temperature are in the breathable range. Warning: does not check gas composition.
+        var breathablePressure = breathePressureMin <= Base.PressureExternal & Base.PressureExternal <= breathePressureMax;
+        var breathableTemperature = breatheTempMin <= Base.TemperatureExternal & Base.TemperatureExternal <= breatheTempMax;
+        var canBreatheOutside = breathablePressure & breathableTemperature;
+
+        if (canBreatheOutside & !Helmet.Open)
+        {
+            yield;
+            yield;
+            Helmet.Open = true;
+        }
+        
+        if (!canBreatheOutside & Helmet.Open)
+        {
+            Helmet.Open = false;
+        }
+
+        // Suit life support off when the helmet is open and on when the helmet is closed.
+        Base.Filtration = !Helmet.Open;
+        Base.AirRelease = !Helmet.Open;
+        Base.On = !Helmet.Open;
+    }
+}

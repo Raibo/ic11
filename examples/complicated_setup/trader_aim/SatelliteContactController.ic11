@@ -1,0 +1,49 @@
+pin Finder d0;
+pin DishMain d1;
+pin ApplyButton d2;
+pin OutpHor d3;
+pin OutpVer d4;
+pin OutpSize d5;
+
+const DegInRad = 57.2958;
+const MediumDishHash = 439026183;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        DishMain.BestContactFilter = -1;
+
+        var x = Finder.Stack[509];
+        var y = Finder.Stack[510];
+        var z = Finder.Stack[511];
+
+        var mag = sqrt(x*x + y*y + z*z);
+
+        x = x / mag;
+        y = y / mag;
+        z = z / mag;
+
+        var hor = atan2(-y, x) * DegInRad;
+
+        if (hor < 0)
+            hor = hor + 360;
+
+        var ver = acos(z) * DegInRad;
+
+        OutpSize.Setting = Finder.Stack[506]
+        
+        if (Finder.On)
+        {
+            OutpHor.Setting = hor;
+            OutpVer.Setting = ver;
+        }
+
+        if (ApplyButton.Activate)
+        {
+            DishMain.Horizontal = OutpHor.Setting;
+            DishMain.Vertical = OutpVer.Setting;
+        }
+    }
+}
