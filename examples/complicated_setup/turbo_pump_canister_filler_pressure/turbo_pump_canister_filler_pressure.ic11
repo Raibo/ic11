@@ -1,0 +1,88 @@
+/*
+    This script's purpose is to fill a canister (probably oxygen or propellant) as quickly as possible, using Torbo Pump.
+    With the right conditions, it is able to fill gas canisters in a few ticks.
+    The script can recognize if a Smart Canister is inserted and has a different target pressure for it.
+    
+    For the turbo pump to work at full capacity, the input pipe must have at least 100L of volume.
+    (Not including gas tanks or other adjacent volumes)
+    There is no point in 100L of pump power if the input pipe is only 20L.
+
+    The script does not account for temperature differences that may be between the gas source and canister contents.
+    If such difference is big enough, it may overshoot or undershoot.
+    It will still bring the pressure to the desired value, but take more time.
+
+    The setup is as follows:
+    (pump default direction towards the canister)
+
+    [Gas source]===[Pipe Analyzer "PaInput"]===[Turbo Pump "Pump"]===[Pipe Analyzer "PaOutput"]===[Gas Tank Storage "CanisterHolder"]
+
+    If the input pipe is not long enough to have 100L of volume, use In-Line Tank Small.
+    Otherwise, the pump maximum power will be capped at existing pipe volume.
+*/
+
+pin Pump d0;
+pin PaInput d1;
+pin PaOutput d2;
+pin CanisterHolder d3;
+
+// TotalMoles = Volume(Liters) * Pressure(kPa) / Temperature(K) / GasConst(8.3144)
+
+const gasConstant = 8.3144;
+
+const targetPressureBasic = 9500;
+const targetPressureSmart = 19500;
+
+const minPower = 0.002;
+
+
+void Main()
+{
+    for(;;yield)
+    {
+        // target values
+        var volumeCanister = 0;
+
+        if (CanisterHolder.Slots[0].Occupied)
+            volumeCanister = CanisterHolder.Slots[0].Volume;
+
+        var targetPressure = CanisterHolder.Slots[0].OccupantHash == "ItemGasCanisterSmart"
+            ? targetPressureSmart
+            : targetPressureBasic;
+
+        // Measurements
+        var volumeOutpPipe = PaOutput.Volume;
+        var volumeOutpTotal = volumeOutpPipe + volumeCanister;
+
+        var molesOutpPipe = PaOutput.TotalMoles;
+        var molesOutpTotal = molesOutpPipe + CanisterHolder.Quantity;
+
+        var molesForPressure = volumeOutpTotal * targetPressure / PaOutput.Temperature / gasConstant;
+        var molesToAdd = molesForPressure - molesOutpTotal;
+
+        // Pump direction and power
+        var isForward = molesToAdd >= 0;
+        var subtractedVolume = isForward ? PaInput.Volume : volumeOutpPipe;
+        var subtractedMoles = isForward ? PaInput.TotalMoles : molesOutpPipe;
+
+        var molesPerLiter = subtractedMoles / subtractedVolume;
+        var mode = isForward ? 0 : 1;
+
+        if (molesPerLiter == 0)
+        {
+            Pump.On = false;
+            continue;
+        }
+
+        var power = min(subtractedVolume, abs(molesToAdd / molesPerLiter));
+
+        if (power < minPower)
+        {
+            Pump.On = false;
+            continue;
+        }
+
+        Pump.Setting = power;
+        Pump.On = true;
+        Pump.Mode = mode;
+    }
+}

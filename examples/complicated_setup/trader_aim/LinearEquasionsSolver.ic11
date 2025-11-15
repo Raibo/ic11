@@ -1,0 +1,77 @@
+/*
+This is a program that solves linear equasions with 3 unknowns.
+It is only meant to be used remotely, by another IC chip.
+
+Usage:
+Populate stack addresses from <colX> to <colAns> (excluding) with input values : columns of the equasion matrix.
+Set stack address <calculateCommand> value as non-zero to trigger the calculation.
+
+Once completed:
+  - In case of success, answers are written to stack address <colAns> and further: x, y, z respectively, flag is set to 0.
+  - In case of failure (unsolvable), flag is set to -1.
+
+
+Description:
+
+Since we are solving a system of linear equasions, we deal with 3 equasions and 3 unknowns:
+x1 * X + y1 * Y + z1 * Z = c1
+x2 * X + y2 * Y + z2 * Z = c2
+x3 * X + y3 * Y + z3 * Z = c3
+
+Which is commonly represented as a matrix with coefficients:
+x1 y1 z1 c1
+x2 y2 z2 c2
+x3 y3 z3 c3
+
+You write these coefficients, column by column, into stack as described above, set the flag, and the program will solve the equasions.
+Once finished, answers will be in stack in addresses mentioned above, and the flag set to 0.
+*/
+
+const calculateCommand = 496;
+
+const colX = 497;
+const colY = 500;
+const colZ = 503;
+const colC = 506;
+const colAns = 509;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        Base.Setting = Base.Stack[calculateCommand];
+
+        if (Base.Stack[calculateCommand] <= 0)
+            continue;
+        
+        Solve();
+    }
+}
+
+void Solve()
+{
+    var detC = Determinant(colX, colY, colZ);
+    var detX = Determinant(colC, colY, colZ);
+    var detY = Determinant(colX, colC, colZ);
+    var detZ = Determinant(colX, colY, colC);
+
+    if (detC == 0)
+    {
+        Base.Stack[calculateCommand] = -1;
+        return;
+    }
+
+    Base.Stack[colAns + 0] = detX / detC;
+    Base.Stack[colAns + 1] = detY / detC;
+    Base.Stack[colAns + 2] = detZ / detC;
+
+    Base.Stack[calculateCommand] = 0;
+}
+
+real Determinant(col1, col2, col3)
+{
+    var pos = col1[0] * col2[1] * col3[2] + col2[0] * col3[1] * col1[2] + col3[0] * col1[1] * col2[2];
+    var neg = col3[0] * col2[1] * col1[2] + col1[0] * col3[1] * col2[2] + col2[0] * col1[1] * col3[2];
+    return pos - neg;
+}

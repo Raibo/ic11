@@ -1,0 +1,7 @@
+void Main()
+{
+    for(;;yield)
+    {
+        Base.Mode = 1;
+    }
+}

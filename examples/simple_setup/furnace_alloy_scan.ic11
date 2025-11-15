@@ -1,0 +1,118 @@
+/*
+    This script will look into a furnace's contents and find out if such contents can result in an alloy.
+    It will not detect simple smelts, like iron, gold, solid fuel, etc., only alloys.
+    Temperature and pressure of the furnace are ignored, only contents are taken into account.
+
+    Will not detect alloys when input slot is occupied to avoid premature result before everything is processed.
+
+    It will then set the chip housing device's Setting parameter to the hash code of the alloy's ingot, or 0 if none can be created.
+    The Setting parameter can then be used by HashDisplay console to display the alloy.
+    It can also be used by another script to bring the furnace's temperature and pressure to match the alloy's requirements.
+*/
+
+pin furnace d0;
+
+const epsilon = 0.0000001;
+
+void Main()
+{
+    for(;;yield)
+    {
+        var sum = furnace.Reagents;
+
+        if (furnace.Slots[0].Occupied)
+        {
+            Base.Setting = 0;
+            yield;
+            continue;
+        }
+
+        if (sum <= 0)
+        {
+            Base.Setting = 0;
+            continue;
+        }
+
+        // basic alloys
+        var iron = furnace.Reagent["Iron"].Contents;
+        var coal = furnace.Reagent["Hydrocarbon"].Contents;
+        
+        if (coal * 3 ~= iron : epsilon & coal + iron == sum)
+        {
+            Base.Setting = "ItemSteelIngot";
+            continue;
+        }
+
+        var lead = furnace.Reagent["Lead"].Contents;
+
+        if (iron == lead & iron + lead == sum)
+        {
+            Base.Setting = "ItemSolderIngot";
+            continue;
+        }
+
+        var nickel = furnace.Reagent["Nickel"].Contents;
+
+        if (iron == nickel & iron + nickel == sum)
+        {
+            Base.Setting = "ItemInvarIngot";
+            continue;
+        }
+
+        var copper = furnace.Reagent["Copper"].Contents;
+        
+        if (copper == nickel & copper + nickel == sum)
+        {
+            Base.Setting = "ItemConstantanIngot";
+            continue;
+        }
+
+        var silver = furnace.Reagent["Silver"].Contents;
+        var gold = furnace.Reagent["Gold"].Contents;
+
+        if (silver == gold & silver + gold == sum)
+        {
+            Base.Setting = "ItemElectrumIngot";
+            continue;
+        }
+
+        // advanced alloys
+        if (nickel ~= silver : epsilon & nickel * 2 ~= lead : epsilon & nickel + silver + lead == sum)
+        {
+            Base.Setting = "ItemWaspaloyIngot";
+            continue;
+        }
+
+        var steel = furnace.Reagent["Steel"].Contents;
+
+        if (nickel ~= steel : epsilon & nickel * 2 ~= gold : epsilon & nickel + gold + steel == sum)
+        {
+            Base.Setting = "ItemInconelIngot";
+            continue;
+        }
+        
+        var cobalt = furnace.Reagent["Cobalt"].Contents;
+
+        if (cobalt ~= copper : epsilon & cobalt * 2 ~= steel : epsilon & cobalt + copper + steel == sum)
+        {
+            Base.Setting = "ItemAstroloyIngot";
+            continue;
+        }
+
+        if (nickel ~= cobalt : epsilon & nickel * 2 ~= silver : epsilon & nickel + cobalt + silver == sum)
+        {
+            Base.Setting = "ItemHastelloyIngot";
+            continue;
+        }
+
+        var silicon = furnace.Reagent["Silicon"].Contents;
+
+        if (cobalt ~= silver : epsilon & cobalt * 2 ~= silicon : epsilon & cobalt + silver + silicon == sum)
+        {
+            Base.Setting = "ItemStelliteIngot";
+            continue;
+        }
+
+        Base.Setting = 0;
+    }
+}

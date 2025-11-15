@@ -1,0 +1,111 @@
+/*
+    This script is meant to monitor a single control value and keep it in the configured range
+    by increasing it whet it is too low and decreasing it when it is too high.
+    
+    Configuring:
+    To configure the range to keep the control value in,
+    change constants `startIncrease`, `stopIncrease`, `startDecrease`, `stopDecrease`.
+
+    To configure what is read as the control value,
+    change method `GetControlValue`.
+    
+    To configure what is done to increase/decrease the control value,
+    change methods `StartIncrease`, `StopIncrease`, `StartDecrease`, `StopDecrease`.
+
+    Behavior:
+    If the value becomes less than `startIncrease` and `increaser` device is set, it will do action to increase it to `stopIncrease`.
+    If the value becomes bigger than `startDecrease` and `decreaser` device is set, it will do action to decrease it to `stopDecrease`.
+    
+    For example, it can be used to monitor a battery charge and turn on a generator when the charge is too low.
+    In this case, one can leave `decreaser` device unset, and the script will not care if the value is too high.
+
+    Another example is to use it as a thermostat controller, so that it will keep the temperature in the configured range.
+    In this case, both increaser and decreaser devices can be set, so that it would both use a heater when it's too cold and cooler when it's too hot.
+*/
+
+pin controlValueSource d0;
+pin increaser d1;
+pin decreaser d2;
+
+// current state enum
+const idle = 0;
+const increasing = 1;
+const decreasing = 2;
+
+// adjust the desired range
+const startIncrease = 0.2; // start increasing if the control value is lower than this value
+const stopIncrease = 0.3; // stop increasing upon reaching this value
+
+const startDecrease = 0.8; // start decreasing if the control value is higher than this value
+const stopDecrease = 0.4; // stop decreasing upon reaching this value
+
+// adjust how to measure the control value
+real GetControlValue()
+{
+    return controlValueSource.Setting;
+}
+
+// adjust how to start and stop increasing the value
+void StartIncrease()
+{
+    increaser.On = true;
+}
+
+void StopIncrease()
+{
+    increaser.On = false;
+}
+
+// adjust how to start and stop decreasing the value
+void StartDecrease()
+{
+    decreaser.On = true;
+}
+
+void StopDecrease()
+{
+    decreaser.On = false;
+}
+
+// the algorithm itself, should support most cases without change
+void Main()
+{
+    var state = idle;
+
+    for(;;yield)
+    {
+        var controlValue = GetControlValue();
+
+        if (increaser.IsSet)
+        {
+            if (controlValue < startIncrease)
+            {
+                state = increasing;
+                StartIncrease();
+            }
+
+            if (state == increasing & controlValue >= stopIncrease)
+            {
+                state = idle;
+                StopIncrease();
+            }
+        }
+
+        if (decreaser.IsSet)
+        {
+            if (controlValue > startDecrease)
+            {
+                state = decreasing;
+                StartDecrease();
+            }
+
+            if (state == decreasing & controlValue <= stopDecrease)
+            {
+                state = idle;
+                StopDecrease();
+            }
+        }
+
+        Base.Setting = state;
+    }
+}

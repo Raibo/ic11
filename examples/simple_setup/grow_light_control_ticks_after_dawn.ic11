@@ -1,0 +1,39 @@
+/*
+    This script's purpose is to control Grow Lights and Shutter Windows, in alignment with the day/night cycle.
+    This way one can combine natural sunlight with Grow Lights to achieve better crops growth.
+
+    Waits for the sunrise.
+    Then turns on Grow Lights and opens Shutters for a set period of time. (All in the network)
+    After the time runs out, turns off the Grow Lights and closes the Shutters.
+    Repeats.
+*/
+
+pin Sensor d0;
+
+const lightTicksPerDay = 5 * (60 * 2); // How many ticks to keep the lights on after each dawn
+const growLightType = "StructureGrowLight";
+const shutterControllerType = "StructureCompositeWindowShutterController";
+
+void Main()
+{
+    var wasSunshineLastTick = true;
+    var lightTicksLeft = 0;
+
+    while(true)
+    {
+        var isSunshine = Sensor.SolarIrradiance > 0;
+
+        if (isSunshine & !wasSunshineLastTick)
+            lightTicksLeft = lightTicksPerDay;
+        
+        var isLightTime = lightTicksLeft > 0;
+
+        Base.Setting = lightTicksLeft;
+        DevicesOfType(growLightType).On = isLightTime;
+        DevicesOfType(shutterControllerType).Open = isLightTime;
+
+        lightTicksLeft = lightTicksLeft - 1;
+        wasSunshineLastTick = isSunshine;
+        yield;
+    }
+}

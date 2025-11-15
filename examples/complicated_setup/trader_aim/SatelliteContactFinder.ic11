@@ -1,0 +1,101 @@
+pin Dial d0;
+pin Dish1 d1;
+pin Dish2 d2;
+pin Dish3 d3;
+pin DishMain d4;
+pin Solver d5;
+
+const ContSize = 506;
+const ContType = 507;
+const ContId = 508;
+const ContX = 509;
+const ContY = 510;
+const ContZ = 511;
+
+const WattsToDegreeId = 25024;
+
+const degInRad = 57.2958;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+
+        
+        if (Dial.Setting <= 0)
+        {
+            Dish1.On = false;
+            Dish2.On = false;
+            Dish3.On = false;
+            Base.Stack[ContSize] = 0;
+            continue;
+        }
+
+        Dish1.On = true;
+        Dish2.On = true;
+        Dish3.On = true;
+
+        // Which signal is controlled by the dial
+        var sett = Dial.Setting;
+        Pins[sett].BestContactFilter = -1;
+
+        yield;
+
+        var signalId = Pins[sett].SignalID;
+        Base.Stack[ContSize] = Pins[sett].SizeX;
+
+        // Wait for signal to be detected
+        if (signalId < 0)
+            continue;
+        
+        Dish1.BestContactFilter = signalId;
+        Dish2.BestContactFilter = signalId;
+        Dish3.BestContactFilter = signalId;
+
+        Pins[sett].BestContactFilter = -1;
+
+        yield;
+
+        if (Dish1.SignalStrength < 0 | Dish2.SignalStrength < 0 | Dish3.SignalStrength < 0)
+            continue;
+
+        Base.Stack[ContType] = Pins[sett].ContactTypeId;
+
+        if (Solver.Setting > 0)
+            continue;
+
+        Solver.Stack[506] = cos(DeviceWithId(WattsToDegreeId).Stack[509] / degInRad);
+        Solver.Stack[507] = cos(DeviceWithId(WattsToDegreeId).Stack[510] / degInRad);
+        Solver.Stack[508] = cos(DeviceWithId(WattsToDegreeId).Stack[511] / degInRad);
+
+        ApplyVector(Dish1.Horizontal, Dish1.Vertical, 0);
+        ApplyVector(Dish2.Horizontal, Dish2.Vertical, 1);
+        ApplyVector(Dish3.Horizontal, Dish3.Vertical, 2);
+
+        Solver.Stack[496] = 1;
+
+        while(Solver.Stack[496] == 1)
+            yield;
+        
+        Base.Stack[ContId] = signalId;
+        Base.Stack[ContX] = Solver.Stack[509];
+        Base.Stack[ContY] = Solver.Stack[510];
+        Base.Stack[ContZ] = Solver.Stack[511];
+    }
+}
+
+void ApplyVector(hor, ver, rez)
+{
+    hor = hor / degInRad;
+    ver = ver / degInRad;
+
+    var addr1 = 497 + 0 + rez;
+    var addr2 = 497 + 3 + rez;
+    var addr3 = 497 + 6 + rez;
+
+    // Write Solver inputs
+    Solver.Stack[addr1] = sin(ver) * cos(-hor);
+    Solver.Stack[addr2] = sin(ver) * sin(-hor);
+    Solver.Stack[addr3] = cos(ver);
+}

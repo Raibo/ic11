@@ -1,3 +1,29 @@
+/*
+    This script's purpose is to control an improved version of basic airlock. (Vacuum on one side, atmosphere on the other)
+    It can use many active vents at a time, as opposed to just one.
+    The cycle also takes less time in general, so it will cycle faster than usual advanced airlocks even without additional vents.
+
+    The script lacks cycle cancel capability. It won't open the door unless a vaccum is achieved inside the chamber.
+
+    It can also liberate the player form the necessity to push buttons to initiate the transition process,
+    if pressure plates are used.
+    
+    With the rigt setup, one can go through an airlock quickly even with substantial pressure, like on Venus.
+    (Assuming you have vacuum inside your base, otherwise use the advanced version of this script)
+    
+    The setup requires 2 pressure plates, a gas sensor, an occupancy sensor, 2 conposite doors (change typeDoor if you use another door type),
+    a set of actve vents, containing as many active vents as needed and possible to squeeze into the airlock room.
+
+    The pipe from "Vent airlock" group should be connected to the non-vacuum side's atmosphere.
+
+    One wall can hold up to 6 active vents, having a gas pipe in the middle and vents in the sides
+    (which is stronger than a single large powered vent, that would still take up the whole wall)
+
+    The script accesses devices by name (which also requires type, due to ic10 limitations).
+    If you have more than one such airlock in the same network, you have to use different names for the devices.
+    (I.e. "Sensor airlock 2" instead of "Sensor airlock 1")
+*/
+
 const typeActiveVent = "StructureActiveVent";
 const nameActiveVent = "Vent airlock 1";
 

@@ -1,0 +1,23 @@
+/*
+    This script will look into a furnace's contents, and if there is anything there, it will turn on a flashing light.
+    The purpose of this is to inform the player that the furnace has contents, and adding materials can result in waste of materials.
+    The script will account for both processed and unprocessed ores.
+*/
+
+pin furnace d0;
+pin flashlight d1;
+
+void Main()
+{
+    for(;;yield)
+    {
+        var sum = 0;
+
+        sum = sum + furnace.Slots[0].Occupied;
+        sum = sum + furnace.Reagents;
+
+        var hasContents = sum > 0;
+
+        flashlight.On = hasContents;
+    }
+}
