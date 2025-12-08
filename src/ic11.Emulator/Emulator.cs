@@ -165,8 +165,8 @@ public sealed class Emulator
         sb.AppendLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         sb.AppendLine("Emulator Summary:");
         sb.AppendLine($"Program Length: {_program.Count}");
-        sb.AppendLine($"Clock: {Clock}");
-        sb.AppendLine($"Program Counter: {ProgramCounter}: >> {_program[ProgramCounter]}");
+        sb.AppendLine($"Clock: {Clock}{(Stopped ? " (Stopped)" : "")}");
+        sb.AppendLine($"Program Counter: {ProgramCounter}: >> {(ProgramCounter < _program.Count ? _program[ProgramCounter] : "Out of bounds")}");
         sb.AppendLine($"SP: {Registers[StackPointerRegister]}  RA: {Registers[ReturnAddressRegister]}");
         sb.AppendLine();
 
