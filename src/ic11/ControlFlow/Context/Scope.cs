@@ -1,21 +1,40 @@
 ﻿using ic11.ControlFlow.Nodes;
-using System.Collections.Generic;
 
 namespace ic11.ControlFlow.Context;
 public class Scope
 {
     public readonly int Id = _staticIndex++;
-    public Scope? Parent;
-    public List<Scope> Children = new();
-    public MethodDeclaration? Method;
+    public readonly Scope? Parent;
+    public readonly List<Scope> Children = new();
+    public readonly MethodDeclaration? Method;
 
     public int CurrentNodeOrder = 0;
-    public List<Variable> Variables = new();
+    public readonly List<Variable> Variables = new();
 
     private static int _staticIndex = 0;
 
-    public Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
-    public Dictionary<string, UserDefinedConstant> UserDefinedConstants = new();
+    public readonly Dictionary<string, UserDefinedVariable> UserDefinedVariables = new();
+    public readonly Dictionary<string, UserDefinedConstant> UserDefinedConstants = new();
+
+    public Scope()
+    { }
+
+    private Scope(Scope parent, MethodDeclaration? method = null)
+    {
+        parent.Children.Add(this);
+        Parent = parent;
+
+        if (method is not null)
+        {
+            Method = method;
+            return;
+        }
+
+        UserDefinedVariables = new(parent.UserDefinedVariables);
+        Variables = new(parent.Variables);
+        CurrentNodeOrder = parent.CurrentNodeOrder;
+        Method = parent.Method;
+    }
 
     public Variable ClaimNewVariable(int declareIndex)
     {
@@ -35,24 +54,7 @@ public class Scope
             item.AddVariable(variable);
     }
 
-    public Scope CreateChildScope(MethodDeclaration? method = null)
-    {
-        var childScope = new Scope();
-        Children.Add(childScope);
-        childScope.Parent = this;
-
-        if (method is not null)
-        {
-            childScope.Method = method;
-            return childScope;
-        }
-
-        childScope.UserDefinedVariables = new(UserDefinedVariables);
-        childScope.Variables = new(Variables);
-        childScope.CurrentNodeOrder = CurrentNodeOrder;
-        childScope.Method = Method;
-        return childScope;
-    }
+    public Scope CreateChildScope(MethodDeclaration? method = null) => new Scope(this, method);
 
     public string GetAvailableRegister(int fromNodeIndex, int toNodeIndex)
     {
