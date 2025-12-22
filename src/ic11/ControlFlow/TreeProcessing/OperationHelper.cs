@@ -55,31 +55,33 @@ public static class OperationHelper
 
         int chars = 0;
         long result = 0;
+        
         for (int i = 0; i < input.Length; i++)
         {
             char c = input[i];
+            
             if (c == '\\')
             {
                 i++;
+                
                 if (i >= input.Length)
-                {
                     throw new InvalidOperationException("Escape character at end of string");
-                }
+
                 c = input[i];
             }
+            
             chars++;
+            
             if (chars > MAX_INT_DOUBLE)
-            {
                 throw new InvalidOperationException("String is too long to convert");
-            }
+                
             if (!char.IsAscii(c))
-            {
                 throw new InvalidOperationException("String does contain non-ASCII character");
-            }
             
             result <<= 8;
             result |= (byte)c;
         }
+        
         return result;
     }
 }
