@@ -12,8 +12,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     public readonly List<Instruction> Instructions = new();
     private readonly FlowContext _flowContext;
-    private readonly Stack<string> _continueLabels = new();
-    private readonly Stack<string> _breakLabels = new();
+    private readonly Stack<(string Continue, string Break)> _loopLabels = new();
 
     public Ic10CommandGenerator(FlowContext flowContext)
     {
@@ -168,11 +167,9 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.Expression);
         Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
 
-        _continueLabels.Push(labelEnterInstruction.Name);
-        _breakLabels.Push(labelExitInstruction.Name);
+        _loopLabels.Push((labelEnterInstruction.Name, labelExitInstruction.Name));
         VisitStatements(node.Statements);
-        _breakLabels.Pop();
-        _continueLabels.Pop();
+        _loopLabels.Pop();
 
         Instructions.Add(new Jump(JumpType.J, labelEnterInstruction.Name));
         Instructions.Add(labelExitInstruction);
@@ -203,8 +200,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         Visit((Node)node.Expression);
         Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
 
-        _continueLabels.Push(labelContinueInstruction.Name);
-        _breakLabels.Push(labelExitInstruction.Name);
+        _loopLabels.Push((labelContinueInstruction.Name, labelExitInstruction.Name));
 
         VisitStatements(innerStatements.ToList());
 
@@ -214,8 +210,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.HasStatement2)
             Visit((Node)node.Statements.Last());
 
-        _breakLabels.Pop();
-        _continueLabels.Pop();
+        _loopLabels.Pop();
 
         Instructions.Add(new Jump(JumpType.J, labelEnterInstruction.Name));
         Instructions.Add(labelExitInstruction);
@@ -225,20 +220,20 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Continue node)
     {
-        if (!_continueLabels.Any())
-            throw new Exception("Cuntinue must be inside a cycle");
+        if (!_loopLabels.Any())
+            throw new Exception("Continue must be inside a cycle");
 
-        Instructions.Add(new Jump(JumpType.J, _continueLabels.Peek()));
+        Instructions.Add(new Jump(JumpType.J, _loopLabels.Peek().Continue));
 
         return null;
     }
 
     private object? Visit(Break node)
     {
-        if (!_continueLabels.Any())
+        if (!_loopLabels.Any())
             throw new Exception("Break must be inside a cycle");
 
-        Instructions.Add(new Jump(JumpType.J, _breakLabels.Peek()));
+        Instructions.Add(new Jump(JumpType.J, _loopLabels.Peek().Break));
 
         return null;
     }
