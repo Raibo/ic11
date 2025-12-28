@@ -18,4 +18,11 @@
     <ProjectReference Include="..\ic11\ic11.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\examples\**\*.ic11">
+      <Link>examples\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

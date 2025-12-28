@@ -20,7 +20,7 @@ void Main()
 void ControlTemp(paIdx, valveIdx, targetTemp)
 {
     var needCooling = Pins[paIdx].Temperature > targetTemp;
-    var delta = Abs(targetTemp - Pins[paIdx].Temperature);
+    var delta = abs(targetTemp - Pins[paIdx].Temperature);
     var power = 10;
     if (delta > 5){
         power = 100;
