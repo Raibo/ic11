@@ -1,6 +1,6 @@
 ﻿namespace ic11.Tests;
 
-using ic11.Emulator;
+using ic11.Tests.Utils;
 
 [TestClass]
 public sealed class ElseRegisterSpoilTest
@@ -27,25 +27,7 @@ public sealed class ElseRegisterSpoilTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var dst = emulator.Devices[1];
-
-        var limit = 1000;
-        while (dst.GetProperty("Done") != 1 && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         Assert.AreEqual(45, emulator.Stack.Sum());
     }
 
@@ -73,25 +55,7 @@ public sealed class ElseRegisterSpoilTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var dst = emulator.Devices[1];
-
-        var limit = 1000;
-        while (dst.GetProperty("Done") != 1 && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         Assert.AreEqual(45, emulator.Stack.Sum());
     }
 
@@ -118,25 +82,7 @@ public sealed class ElseRegisterSpoilTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var dst = emulator.Devices[1];
-
-        var limit = 1000;
-        while (dst.GetProperty("Done") != 1 && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         Assert.AreEqual(45, emulator.Stack.Sum());
     }
 
@@ -162,25 +108,7 @@ public sealed class ElseRegisterSpoilTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var dst = emulator.Devices[1];
-
-        var limit = 1000;
-        while (dst.GetProperty("Done") != 1 && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         Assert.AreEqual(45, emulator.Stack.Sum());
     }
     
@@ -206,25 +134,7 @@ public sealed class ElseRegisterSpoilTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var dst = emulator.Devices[1];
-
-        var limit = 1000;
-        while (dst.GetProperty("Done") != 1 && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         Assert.AreEqual(45, emulator.Stack.Sum());
     }
 }

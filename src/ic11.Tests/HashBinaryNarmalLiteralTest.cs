@@ -1,6 +1,7 @@
 ﻿namespace ic11.Tests;
 
 using ic11.Emulator;
+using ic11.Tests.Utils;
 
 [TestClass]
 public sealed class HashBinaryNarmalLiteralTest
@@ -38,23 +39,7 @@ public sealed class HashBinaryNarmalLiteralTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var limit = 1000;
-        while (!emulator.Stopped && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         var dev = emulator.Devices[0]!;
         Assert.AreEqual(0, dev.GeneralProperties["Binary00"]);
         Assert.AreEqual(0, dev.GeneralProperties["Binary0"]);
