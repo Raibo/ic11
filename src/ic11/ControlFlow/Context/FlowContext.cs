@@ -4,7 +4,7 @@ using ic11.ControlFlow.Nodes;
 namespace ic11.ControlFlow.Context;
 public class FlowContext
 {
-    public readonly Node Root;
+    public readonly Root Root;
     public Node CurrentNode;
     public Dictionary<string, MethodDeclaration> DeclaredMethods = new();
     public List<IStatement>? CurrentStatementList;

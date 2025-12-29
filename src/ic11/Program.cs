@@ -85,16 +85,16 @@ public class Program
         var flowAnalyzer = new ControlFlowBuilderVisitor(flowContext);
         flowAnalyzer.Visit(tree);
 
-        new RootStatementsSorter().SortStatements((Root)flowContext.Root);
-        new MethodsVisitor(flowContext).Visit((Root)flowContext.Root);
-        new MethodCallsVisitor(flowContext).VisitRoot((Root)flowContext.Root);
-        new ScopeVisitor(flowContext).Visit((Root)flowContext.Root);
-        new VariableVisitor(flowContext).Visit((Root)flowContext.Root);
-        new VariableCyclesAdjVisitor().VisitRoot((Root)flowContext.Root);
-        new MethodCallGraphVisitor(flowContext).VisitRoot((Root)flowContext.Root);
+        new RootStatementsSorter().SortStatements(flowContext.Root);
+        new MethodsVisitor(flowContext).Visit(flowContext.Root);
+        new MethodCallsVisitor(flowContext).VisitRoot(flowContext.Root);
+        new ScopeVisitor(flowContext).Visit(flowContext.Root);
+        new VariableVisitor(flowContext).Visit(flowContext.Root);
+        new VariableCyclesAdjVisitor().VisitRoot(flowContext.Root);
+        new MethodCallGraphVisitor(flowContext).VisitRoot(flowContext.Root);
         new RegisterVisitor(flowContext).DoWork();
         new MethodsRegisterRangesDistributor(flowContext).DoWork();
-        var instructions = new Ic10CommandGenerator(flowContext).Visit((Root)flowContext.Root);
+        var instructions = new Ic10CommandGenerator(flowContext).Visit(flowContext.Root);
 
         UselessMoveRemover.Remove(instructions);
         LabelsRemoval.RemoveLabels(instructions);
