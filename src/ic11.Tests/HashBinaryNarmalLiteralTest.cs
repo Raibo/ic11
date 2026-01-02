@@ -20,11 +20,15 @@ public sealed class HashBinaryNarmalLiteralTest
                 Display.Binary07 = 0b000000000000000000000111;
                 Display.Binary7_ = 0b0000_0000_0000_0000_0000_0111;
                 Display.Binary7 = 0b111;
+                Display.BinaryMinus7 = -0b111;
 
                 Display.Hex1 = 0x1;
                 Display.Hex01 = 0x0001;
                 Display.Hex01_ = 0x0000_0001;
                 Display.Hex65535 = 0xFFFF;
+                Display.Hex11259375 = 0xABCDEF;
+                Display.Hex11259375lowerCase = 0xabcdef;
+                Display.HexMinus15 = -0xF;
 
                 Display.Normal0 = 0;
                 Display.Normal1 = 1;
@@ -59,11 +63,15 @@ public sealed class HashBinaryNarmalLiteralTest
         Assert.AreEqual(7, dev.GeneralProperties["Binary07"]);
         Assert.AreEqual(7, dev.GeneralProperties["Binary7_"]);
         Assert.AreEqual(7, dev.GeneralProperties["Binary7"]);
+        Assert.AreEqual(-7, dev.GeneralProperties["BinaryMinus7"]);
 
         Assert.AreEqual(1, dev.GeneralProperties["Hex1"]);
         Assert.AreEqual(1, dev.GeneralProperties["Hex01"]);
         Assert.AreEqual(1, dev.GeneralProperties["Hex01_"]);
         Assert.AreEqual(65535, dev.GeneralProperties["Hex65535"]);
+        Assert.AreEqual(11259375, dev.GeneralProperties["Hex11259375"]);
+        Assert.AreEqual(11259375, dev.GeneralProperties["Hex11259375lowerCase"]);
+        Assert.AreEqual(-15, dev.GeneralProperties["HexMinus15"]);
 
         Assert.AreEqual(0, dev.GeneralProperties["Normal0"]);
         Assert.AreEqual(1, dev.GeneralProperties["Normal1"]);
