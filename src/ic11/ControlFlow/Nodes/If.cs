@@ -4,7 +4,7 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Nodes;
 public class If : Node, IStatement, IStatementsContainer, IExpressionContainer
 {
-    public IExpression Expression;
+    public INodeExpression Expression;
     public List<IStatement> IfStatements = new();
     public List<IStatement> ElseStatements = new();
 
@@ -15,13 +15,13 @@ public class If : Node, IStatement, IStatementsContainer, IExpressionContainer
             ? IfStatements
             : ElseStatements;
 
-    public If(IExpression expression)
+    public If(INodeExpression expression)
     {
         Expression = expression;
-        ((Node)expression).Parent = this;
+        expression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

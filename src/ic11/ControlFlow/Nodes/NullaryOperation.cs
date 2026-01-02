@@ -2,7 +2,7 @@
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class NullaryOperation : Node, IExpression
+public class NullaryOperation : Node, INodeExpression
 {
     public string Operation;
     public Variable? Variable { get; set; }

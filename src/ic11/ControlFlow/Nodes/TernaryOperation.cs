@@ -3,11 +3,11 @@ using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.TreeProcessing;
 
 namespace ic11.ControlFlow.Nodes;
-public class TernaryOperation : Node, IExpression, IExpressionContainer
+public class TernaryOperation : Node, INodeExpression, IExpressionContainer
 {
-    public IExpression OperandA;
-    public IExpression OperandB;
-    public IExpression OperandC;
+    public INodeExpression OperandA;
+    public INodeExpression OperandB;
+    public INodeExpression OperandC;
     public string Operation;
     public Variable? Variable { get; set; }
 
@@ -22,18 +22,18 @@ public class TernaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
-    public TernaryOperation(IExpression operandA, IExpression operandB, IExpression operandC, string operation)
+    public TernaryOperation(INodeExpression operandA, INodeExpression operandB, INodeExpression operandC, string operation)
     {
         OperandA = operandA;
         OperandB = operandB;
         OperandC = operandC;
         Operation = GetOperation(operation ?? throw new ArgumentNullException(nameof(operation)));
-        ((Node)operandA).Parent = this;
-        ((Node)operandB).Parent = this;
-        ((Node)operandC).Parent = this;
+        operandA.Parent = this;
+        operandB.Parent = this;
+        operandC.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

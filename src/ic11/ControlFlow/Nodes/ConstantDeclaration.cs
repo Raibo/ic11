@@ -4,16 +4,16 @@ namespace ic11.ControlFlow.Nodes;
 public class ConstantDeclaration : Node, IStatement, IExpressionContainer
 {
     public string Name;
-    public IExpression Expression;
+    public INodeExpression Expression;
 
-    public ConstantDeclaration(string name, IExpression expression)
+    public ConstantDeclaration(string name, INodeExpression expression)
     {
         Name = name;
         Expression = expression;
-        ((Node)expression).Parent = this;
+        expression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

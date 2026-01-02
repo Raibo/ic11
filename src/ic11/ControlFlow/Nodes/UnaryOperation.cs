@@ -3,9 +3,9 @@ using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.TreeProcessing;
 
 namespace ic11.ControlFlow.Nodes;
-public class UnaryOperation : Node, IExpression, IExpressionContainer
+public class UnaryOperation : Node, INodeExpression, IExpressionContainer
 {
-    public IExpression Operand;
+    public INodeExpression Operand;
     public string Operation;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue
@@ -19,14 +19,14 @@ public class UnaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
-    public UnaryOperation(IExpression operand, string operation)
+    public UnaryOperation(INodeExpression operand, string operation)
     {
         Operand = operand;
-        ((Node)operand).Parent = this;
+        operand.Parent = this;
         Operation = GetOperation(operation ?? throw new ArgumentNullException(nameof(operation)));
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

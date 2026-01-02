@@ -5,17 +5,17 @@ namespace ic11.ControlFlow.Nodes;
 public class VariableAssignment : Node, IStatement, IExpressionContainer
 {
     public string Name;
-    public IExpression Expression;
+    public INodeExpression Expression;
     public Variable? Variable;
 
-    public VariableAssignment(string name, IExpression expression)
+    public VariableAssignment(string name, INodeExpression expression)
     {
         Name = name;
         Expression = expression;
-        ((Node)expression).Parent = this;
+        expression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

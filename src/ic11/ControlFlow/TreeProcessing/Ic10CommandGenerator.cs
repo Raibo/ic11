@@ -29,7 +29,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     private object? VisitStatements(List<IStatement> statements)
     {
         foreach (var item in statements)
-            Visit((Node)item);
+            Visit(item);
 
         return null;
     }
@@ -96,7 +96,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     {
         // calculating parameters
         foreach (var item in node.Expressions.Reverse())
-            Visit((Node)item);
+            Visit(item);
 
         // save registers to stack             (Don't save params calculations)
         var usedRegisters = node.RegistersToPush.ToList();
@@ -151,7 +151,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
                 Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, r15Expr, "sub"));
             }
 
-            Visit((Node)node.Expression!);
+            Visit(node.Expression!);
             Instructions.Add(new Move("r15", node.Expression!));
             Instructions.Add(new Jump(JumpType.J, $"methodExit{declaredMethod.Name}"));
         }
@@ -165,7 +165,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         var labelExitInstruction = new Label($"While{node.Id}Exit");
 
         Instructions.Add(labelEnterInstruction);
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
 
         _continueLabels.Push(labelEnterInstruction.Name);
@@ -192,7 +192,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.HasStatement1)
         {
             innerStatements = innerStatements.Skip(1);
-            Visit((Node)node.Statements.First());
+            Visit(node.Statements.First());
         }
 
         Instructions.Add(labelEnterInstruction);
@@ -200,7 +200,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.HasStatement2)
             innerStatements = innerStatements.SkipLast(1);
 
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         Instructions.Add(new Jump(JumpType.Beqz, labelExitInstruction.Name, node.Expression.Render()));
 
         _continueLabels.Push(labelContinueInstruction.Name);
@@ -212,7 +212,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
         // Last statement is executed after every iteration, so continue label goes before it
         if (node.HasStatement2)
-            Visit((Node)node.Statements.Last());
+            Visit(node.Statements.Last());
 
         _breakLabels.Pop();
         _continueLabels.Pop();
@@ -245,7 +245,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     protected override object? Visit(If node)
     {
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
 
         var ifSkipLabelInstruction = new Label($"If{node.Id}Skip");
 
@@ -283,14 +283,14 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.StatementParam1 node)
     {
-        Visit((Node)node.Parameter);
+        Visit(node.Parameter);
         Instructions.Add(new Instructions.StatementParam1(node.Operation, node.Parameter));
         return null;
     }
 
     private object? Visit(VariableDeclaration node)
     {
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         Instructions.Add(new Move(node.Variable!, node.Expression));
         return null;
     }
@@ -302,7 +302,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(VariableAssignment node)
     {
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         Instructions.Add(new Move(node.Variable!, node.Expression));
         return null;
     }
@@ -314,10 +314,10 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.MemberAssignment node)
     {
-        Visit((Node)node.ValueExpression);
+        Visit(node.ValueExpression);
 
         if (node.TargetIndexExpr is not null)
-            Visit((Node)node.TargetIndexExpr);
+            Visit(node.TargetIndexExpr);
 
         if (node.Target == DeviceTarget.Device)
         {
@@ -346,7 +346,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.CtKnownValue.HasValue)
             return null;
 
-        Visit((Node)node.Operand);
+        Visit(node.Operand);
 
         Instructions.Add(new Instructions.UnaryOperation(node.Variable!, node.Operand, node.Operation));
 
@@ -358,8 +358,8 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.CtKnownValue.HasValue)
             return null;
 
-        Visit((Node)node.Left);
-        Visit((Node)node.Right);
+        Visit(node.Left);
+        Visit(node.Right);
 
         Instructions.Add(new Instructions.BinaryOperation(node.Variable!, node.Left, node.Right, node.Operation));
 
@@ -371,9 +371,9 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
         if (node.CtKnownValue.HasValue)
             return null;
 
-        Visit((Node)node.OperandA);
-        Visit((Node)node.OperandB);
-        Visit((Node)node.OperandC);
+        Visit(node.OperandA);
+        Visit(node.OperandB);
+        Visit(node.OperandC);
 
         Instructions.Add(new Instructions.TernaryOperation(node.Variable!, node.OperandA, node.OperandB, node.OperandC, node.Operation));
 
@@ -383,7 +383,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
     private object? Visit(Nodes.MemberAccess node)
     {
         if (node.TargetIndexExpr is not null)
-            Visit((Node)node.TargetIndexExpr);
+            Visit(node.TargetIndexExpr);
 
         if (node.Target == DeviceTarget.Device)
         {
@@ -399,10 +399,10 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.DeviceWithIndexAccess node)
     {
-        Visit((Node)node.DeviceIndexExpr);
+        Visit(node.DeviceIndexExpr);
 
         if (node.TargetIndexExpr is not null)
-            Visit((Node)node.TargetIndexExpr);
+            Visit(node.TargetIndexExpr);
 
         if (node.Target == DeviceTarget.Device)
         {
@@ -419,13 +419,13 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.BatchAccess node)
     {
-        Visit((Node)node.DeviceTypeHashExpr);
+        Visit(node.DeviceTypeHashExpr);
 
         if (node.NameHashExpr is not null)
-            Visit((Node)node.NameHashExpr);
+            Visit(node.NameHashExpr);
 
         if (node.TargetIndexExpr is not null)
-            Visit((Node)node.TargetIndexExpr);
+            Visit(node.TargetIndexExpr);
 
         Instructions.Add(new Instructions.BatchAccess(node.Variable!, node.DeviceTypeHashExpr, node.NameHashExpr, node.TargetIndexExpr,
             node.Target, node.MemberName, node.BatchMode));
@@ -435,12 +435,12 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.DeviceWithIndexAssignment node)
     {
-        Visit((Node)node.ValueExpr);
+        Visit(node.ValueExpr);
 
         if (node.TargetIndexExpr is not null)
-            Visit((Node)node.TargetIndexExpr);
+            Visit(node.TargetIndexExpr);
 
-        Visit((Node)node.DeviceIndexExpr);
+        Visit(node.DeviceIndexExpr);
 
         if (node.Target == DeviceTarget.Device)
         {
@@ -457,15 +457,15 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(Nodes.BatchAssignment node)
     {
-        Visit((Node)node.ValueExpr);
+        Visit(node.ValueExpr);
         
-        Visit((Node)node.DeviceTypeHashExpr);
+        Visit(node.DeviceTypeHashExpr);
 
         if (node.NameHashExpr is not null)
-            Visit((Node)node.NameHashExpr);
+            Visit(node.NameHashExpr);
 
         if (node.TargetIndexExpr is not null)
-            Visit((Node)node.TargetIndexExpr);
+            Visit(node.TargetIndexExpr);
 
         Instructions.Add(new Instructions.BatchAssignment(node.DeviceTypeHashExpr, node.NameHashExpr, node.TargetIndexExpr, node.ValueExpr, node.MemberName, node.Target));
 
@@ -486,7 +486,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
             Instructions.Add(new Move(node.AddressVariable!, spExpr));
 
-            Visit((Node)node.SizeExpression);
+            Visit(node.SizeExpression);
             
             Instructions.Add(new Instructions.BinaryOperation(spExpr.Variable!, spExpr, node.SizeExpression, "add"));
             Instructions.Add(new Instructions.BinaryOperation(r15Expr.Variable!, r15Expr, node.SizeExpression, "add"));
@@ -506,7 +506,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
             foreach (var item in node.InitialElementExpressions!)
             {
-                Visit((Node)item);
+                Visit(item);
                 Instructions.Add(new StackPush(item));
             }
 
@@ -518,8 +518,8 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(ArrayAssignment node)
     {
-        Visit((Node)node.IndexExpression);
-        Visit((Node)node.ValueExpression);
+        Visit(node.IndexExpression);
+        Visit(node.ValueExpression);
 
         var arrayAddr = new DirectExpression(node.ArrayAddressVariable!.Variable);
         Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, "add"));
@@ -532,7 +532,7 @@ public class Ic10CommandGenerator : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(ArrayAccess node)
     {
-        Visit((Node)node.IndexExpression);
+        Visit(node.IndexExpression);
 
         var arrayAddr = new DirectExpression(node.ArrayAddressVariable!.Variable);
         Instructions.Add(new Instructions.BinaryOperation(node.Variable!, arrayAddr, node.IndexExpression, "add"));
