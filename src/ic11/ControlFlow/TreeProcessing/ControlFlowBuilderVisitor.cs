@@ -149,23 +149,18 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
     {
         var value = context.GetText();
 
-        switch (context.type.Type)
+        var number = context.type.Type switch
         {
-            case STRING_LITERAL:
-                return new Literal(OperationHelper.ToASCII(value.AsSpan(1..^1)));
-            case HASH_LITERAL:
-                return new Literal(OperationHelper.Hash(value.Trim('"')));
-        }
+            STRING_LITERAL => OperationHelper.ToASCII(value.AsSpan(1..^1)),
+            HASH_LITERAL => OperationHelper.Hash(value.Trim('"')),
+            INTEGER_HEX => OperationHelper.ParseHex(value),
+            INTEGER_BINARY => OperationHelper.ParseBinary(value),
+            _ when value == "true" => 1m,
+            _ when value == "false" => 0m,
+            _ => decimal.Parse(value, CultureInfo.InvariantCulture),
+        };
 
-        if (value == "true")
-            value = "1";
-
-        if (value == "false")
-            value = "0";
-
-        var parsedValue = decimal.Parse(value, CultureInfo.InvariantCulture);
-
-        return new Literal(parsedValue);
+        return new Literal(number);
     }
 
     public override Node? VisitIfStatement([NotNull] IfStatementContext context)
