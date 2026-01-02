@@ -84,4 +84,18 @@ public static class OperationHelper
         
         return result;
     }
+
+    public static decimal ParseHex(string input)
+    {
+        // Drop the "0x" prefix and underscores
+        var justNumber = input[2..].Replace("_", string.Empty);
+        return long.Parse(justNumber, System.Globalization.NumberStyles.HexNumber);
+    }
+
+    public static decimal ParseBinary(string input)
+    {
+        // Drop the "0x" prefix and underscores
+        var justNumber = input[2..].Replace("_", string.Empty);
+        return long.Parse(justNumber, System.Globalization.NumberStyles.BinaryNumber);
+    }
 }

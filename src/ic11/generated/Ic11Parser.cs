@@ -45,8 +45,8 @@ public partial class Ic11Parser : Parser {
 		NEGATION=51, PINS=52, SLOTS=53, REAGENTS=54, STACK=55, CLEAR=56, DEVICE_WITH_ID=57, 
 		DEVICES_OF_TYPE=58, WITH_NAME=59, DIRECT_NULLARY_OPERATOR=60, DIRECT_UNARY_OPERATOR=61, 
 		DIRECT_BINARY_OPERATOR=62, DIRECT_TERNARY_OPERATOR=63, BOOLEAN=64, IDENTIFIER=65, 
-		INTEGER=66, HASH_LITERAL=67, STRING_LITERAL=68, REAL=69, WS=70, LINE_COMMENT=71, 
-		MULTILINE_COMMENT=72;
+		INTEGER=66, INTEGER_HEX=67, INTEGER_BINARY=68, HASH_LITERAL=69, STRING_LITERAL=70, 
+		REAL=71, WS=72, LINE_COMMENT=73, MULTILINE_COMMENT=74;
 	public const int
 		RULE_program = 0, RULE_declaration = 1, RULE_function = 2, RULE_block = 3, 
 		RULE_statement = 4, RULE_delimetedStatmentWithDelimiter = 5, RULE_delimitedStatement = 6, 
@@ -91,8 +91,8 @@ public partial class Ic11Parser : Parser {
 		"NE", "AEQ", "ANE", "SEL", "NEGATION", "PINS", "SLOTS", "REAGENTS", "STACK", 
 		"CLEAR", "DEVICE_WITH_ID", "DEVICES_OF_TYPE", "WITH_NAME", "DIRECT_NULLARY_OPERATOR", 
 		"DIRECT_UNARY_OPERATOR", "DIRECT_BINARY_OPERATOR", "DIRECT_TERNARY_OPERATOR", 
-		"BOOLEAN", "IDENTIFIER", "INTEGER", "HASH_LITERAL", "STRING_LITERAL", 
-		"REAL", "WS", "LINE_COMMENT", "MULTILINE_COMMENT"
+		"BOOLEAN", "IDENTIFIER", "INTEGER", "INTEGER_HEX", "INTEGER_BINARY", "HASH_LITERAL", 
+		"STRING_LITERAL", "REAL", "WS", "LINE_COMMENT", "MULTILINE_COMMENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -1218,7 +1218,7 @@ public partial class Ic11Parser : Parser {
 			State = 169;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 63L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 255L) != 0)) {
 				{
 				State = 161;
 				expression(0);
@@ -1498,7 +1498,7 @@ public partial class Ic11Parser : Parser {
 			State = 193;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 63L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 255L) != 0)) {
 				{
 				State = 192;
 				expression(0);
@@ -2782,7 +2782,7 @@ public partial class Ic11Parser : Parser {
 				State = 365;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 63L) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 255L) != 0)) {
 					{
 					State = 357;
 					expression(0);
@@ -3151,6 +3151,8 @@ public partial class Ic11Parser : Parser {
 	public partial class LiteralContext : ExpressionContext {
 		public IToken type;
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER() { return GetToken(Ic11Parser.INTEGER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER_HEX() { return GetToken(Ic11Parser.INTEGER_HEX, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER_BINARY() { return GetToken(Ic11Parser.INTEGER_BINARY, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BOOLEAN() { return GetToken(Ic11Parser.BOOLEAN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL() { return GetToken(Ic11Parser.REAL, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_LITERAL() { return GetToken(Ic11Parser.STRING_LITERAL, 0); }
@@ -3509,7 +3511,7 @@ public partial class Ic11Parser : Parser {
 				State = 411;
 				((LiteralContext)_localctx).type = TokenStream.LT(1);
 				_la = TokenStream.LA(1);
-				if ( !(((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 61L) != 0)) ) {
+				if ( !(((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 253L) != 0)) ) {
 					((LiteralContext)_localctx).type = ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -3530,7 +3532,7 @@ public partial class Ic11Parser : Parser {
 				State = 422;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 63L) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & -713820522617503712L) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & 255L) != 0)) {
 					{
 					State = 414;
 					expression(0);
@@ -4041,7 +4043,7 @@ public partial class Ic11Parser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,72,541,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,74,541,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
@@ -4083,7 +4085,7 @@ public partial class Ic11Parser : Parser {
 		33,536,8,33,10,33,12,33,539,9,33,1,33,0,1,66,34,0,2,4,6,8,10,12,14,16,
 		18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,
 		66,0,11,1,0,3,4,1,0,53,55,2,0,26,26,65,65,3,0,30,30,34,34,51,51,2,0,64,
-		64,66,69,1,0,35,38,1,0,31,33,1,0,29,30,2,0,39,42,46,47,1,0,48,50,1,0,44,
+		64,66,71,1,0,35,38,1,0,31,33,1,0,29,30,2,0,39,42,46,47,1,0,48,50,1,0,44,
 		45,585,0,75,1,0,0,0,2,80,1,0,0,0,4,85,1,0,0,0,6,101,1,0,0,0,8,112,1,0,
 		0,0,10,114,1,0,0,0,12,139,1,0,0,0,14,141,1,0,0,0,16,143,1,0,0,0,18,145,
 		1,0,0,0,20,150,1,0,0,0,22,152,1,0,0,0,24,155,1,0,0,0,26,157,1,0,0,0,28,
