@@ -2,11 +2,20 @@ const vscode = require('vscode');
 const { compileIC11Code } = require('./compiler');
 const path = require('path');
 const fs = require('fs');
+const { ensureCompiler } = require('./download-compiler');
 
-function activate(context) {
+async function activate(context) {
   let diagnosticCollection = vscode.languages.createDiagnosticCollection('ic11');
   
-  let disposable = vscode.commands.registerCommand('ic11.compile', function () {
+  // Ensure compiler is available on activation (download if needed)
+  // This happens in the background so activation doesn't block
+  const extensionRoot = path.join(__dirname, '..');
+  ensureCompiler(extensionRoot).catch((error) => {
+    // Log error but don't block activation
+    console.error('Failed to ensure compiler availability:', error);
+  });
+  
+  let disposable = vscode.commands.registerCommand('ic11.compile', async function () {
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const document = editor.document;

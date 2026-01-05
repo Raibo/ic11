@@ -13,7 +13,23 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            artifact-name: ic11-linux-x64
+            executable-name: ic11
+          - os: windows-latest
+            rid: win-x64
+            artifact-name: ic11-win-x64
+            executable-name: ic11.exe
+          - os: macos-latest
+            rid: osx-x64
+            artifact-name: ic11-osx-x64
+            executable-name: ic11
 
     steps:
     - name: Checkout code
@@ -36,11 +52,82 @@ jobs:
       run: dotnet test -c Release --no-build --verbosity normal
 
     - name: Create fat executable
-      run: dotnet publish src/ic11/ic11.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish 
+      run: dotnet publish src/ic11/ic11.csproj -c Release -r ${{ matrix.rid }} --self-contained -p:PublishSingleFile=true -o ./publish-${{ matrix.rid }}
+
+    - name: Make executable (Linux/Mac)
+      if: matrix.os != 'windows-latest'
+      run: chmod +x ./publish-${{ matrix.rid }}/ic11
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact-name }}
+        path: ./publish-${{ matrix.rid }}/${{ matrix.executable-name }}
+        retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./publish
+
+    - name: Prepare release assets
+      run: |
+        mkdir -p ./publish-release
+        
+        # Copy Windows executable
+        if [ -f ./publish/ic11-win-x64/ic11.exe ]; then
+          cp ./publish/ic11-win-x64/ic11.exe ./publish-release/ic11.exe
+          echo "✓ Windows executable copied"
+        else
+          echo "✗ Windows executable not found"
+          exit 1
+        fi
+        
+        # Copy Linux executable
+        if [ -f ./publish/ic11-linux-x64/ic11 ]; then
+          cp ./publish/ic11-linux-x64/ic11 ./publish-release/ic11-linux-x64
+          chmod +x ./publish-release/ic11-linux-x64
+          echo "✓ Linux executable copied"
+        else
+          echo "✗ Linux executable not found"
+          exit 1
+        fi
+        
+        # Copy macOS executable
+        if [ -f ./publish/ic11-osx-x64/ic11 ]; then
+          cp ./publish/ic11-osx-x64/ic11 ./publish-release/ic11-osx-x64
+          chmod +x ./publish-release/ic11-osx-x64
+          echo "✓ macOS executable copied"
+        else
+          echo "✗ macOS executable not found"
+          exit 1
+        fi
+        
+        echo "All release assets prepared successfully"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Install semantic-release and exec plugin
+      run: |
+        npm install -g semantic-release @semantic-release/exec
 
     - name: Semantic Release
       uses: cycjimmy/semantic-release-action@v4
       with:
         dry_run: ${{ github.ref != 'refs/heads/master' }}
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

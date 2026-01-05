@@ -2,7 +2,11 @@
   "name": "ic11",
   "displayName": "ic11",
   "description": "ic11 programming language syntax",
-  "version": "0.0.6",
+  "version": "1.0.0-snapshot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Raibo/ic11.git"
+  },
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -57,7 +61,8 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "copy-compiler": "node scripts/copy-compiler.js"
   },
   "devDependencies": {
     "@types/vscode": "^1.93.0",
