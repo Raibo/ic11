@@ -9,14 +9,56 @@ const REPO_OWNER = 'Raibo';
 const REPO_NAME = 'ic11';
 
 /**
- * Gets the latest release info from GitHub API
+ * Gets the extension version from package.json
+ * @param {string} extensionRoot - Root directory of the extension
+ * @returns {string} Extension version
+ */
+function getExtensionVersion(extensionRoot) {
+  const packageJsonPath = path.join(extensionRoot, 'package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  return packageJson.version;
+}
+
+/**
+ * Gets the stored compiler version
+ * @param {string} binDir - Directory where compiler is stored
+ * @returns {string|null} Stored version or null if not found
+ */
+function getStoredCompilerVersion(binDir) {
+  const versionPath = path.join(binDir, '.version');
+  if (fs.existsSync(versionPath)) {
+    try {
+      return fs.readFileSync(versionPath, 'utf8').trim();
+    } catch (error) {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
+ * Stores the compiler version
+ * @param {string} binDir - Directory where compiler is stored
+ * @param {string} version - Version to store
+ */
+function storeCompilerVersion(binDir, version) {
+  const versionPath = path.join(binDir, '.version');
+  fs.writeFileSync(versionPath, version, 'utf8');
+}
+
+/**
+ * Gets a specific release by tag from GitHub API
+ * @param {string} tag - Release tag (e.g., "v1.0.0" or "1.0.0")
  * @returns {Promise<Object>} Release information with assets
  */
-function getLatestRelease() {
+function getReleaseByTag(tag) {
   return new Promise((resolve, reject) => {
+    // Normalize tag - remove 'v' prefix if present, then add it back for API
+    const normalizedTag = tag.startsWith('v') ? tag : `v${tag}`;
+    
     const options = {
       hostname: GITHUB_API_BASE,
-      path: `/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest`,
+      path: `/repos/${REPO_OWNER}/${REPO_NAME}/releases/tags/${normalizedTag}`,
       method: 'GET',
       headers: {
         'User-Agent': 'ic11-vscode-extension',
@@ -33,7 +75,7 @@ function getLatestRelease() {
 
       res.on('end', () => {
         if (res.statusCode !== 200) {
-          reject(new Error(`GitHub API error: ${res.statusCode} - ${data}`));
+          reject(new Error(`GitHub API error: ${res.statusCode} - ${data}. Release tag: ${normalizedTag}`));
           return;
         }
 
@@ -160,32 +202,28 @@ function downloadFile(url, filePath, progressCallback) {
 /**
  * Downloads the compiler executable from GitHub releases
  * @param {string} extensionRoot - Root directory of the extension
+ * @param {string} version - Extension version to download compiler for
  * @param {Function} progressCallback - Callback for download progress
  * @returns {Promise<string>} Path to the downloaded executable
  */
-async function downloadCompiler(extensionRoot, progressCallback) {
+async function downloadCompiler(extensionRoot, version, progressCallback) {
   const binDir = path.join(extensionRoot, 'bin');
   const executableName = process.platform === 'win32' ? 'ic11.exe' : 'ic11';
   const executablePath = path.join(binDir, executableName);
   
-  // Check if already downloaded
-  if (fs.existsSync(executablePath)) {
-    return executablePath;
-  }
-
   // Ensure bin directory exists
   if (!fs.existsSync(binDir)) {
     fs.mkdirSync(binDir, { recursive: true });
   }
 
-  // Get latest release info
-  const release = await getLatestRelease();
+  // Get release info for the specific version
+  const release = await getReleaseByTag(version);
   
   // Find the appropriate asset for this platform
   const asset = findPlatformAsset(release.assets);
   
   if (!asset) {
-    throw new Error(`No compatible compiler found for platform: ${process.platform}. Available assets: ${release.assets.map(a => a.name).join(', ')}`);
+    throw new Error(`No compatible compiler found for platform: ${process.platform} in release ${version}. Available assets: ${release.assets.map(a => a.name).join(', ')}`);
   }
 
   // Download to a temporary file first (asset might have a different name)
@@ -195,14 +233,18 @@ async function downloadCompiler(extensionRoot, progressCallback) {
     // Download the asset
     await downloadFile(asset.browser_download_url, tempDownloadPath, progressCallback);
     
+    // Remove existing executable if it exists (for upgrade scenario)
+    if (fs.existsSync(executablePath)) {
+      fs.unlinkSync(executablePath);
+    }
+    
     // Rename to the expected executable name
     if (tempDownloadPath !== executablePath) {
-      // Remove existing file if it exists
-      if (fs.existsSync(executablePath)) {
-        fs.unlinkSync(executablePath);
-      }
       fs.renameSync(tempDownloadPath, executablePath);
     }
+    
+    // Store the version we downloaded
+    storeCompilerVersion(binDir, version);
   } catch (error) {
     // Clean up temp file on error
     if (fs.existsSync(tempDownloadPath)) {
@@ -223,21 +265,40 @@ async function ensureCompiler(extensionRoot) {
   const binDir = path.join(extensionRoot, 'bin');
   const executableName = process.platform === 'win32' ? 'ic11.exe' : 'ic11';
   const executablePath = path.join(binDir, executableName);
+  
+  // Get current extension version
+  const extensionVersion = getExtensionVersion(extensionRoot);
+  
+  // Skip snapshot versions (local development)
+  if (extensionVersion.includes('-snapshot')) {
+    // For snapshot versions, check if compiler exists locally
+    if (fs.existsSync(executablePath)) {
+      return executablePath;
+    }
+    // Don't try to download for snapshot versions
+    throw new Error('Compiler not found locally. For snapshot versions, use "npm run copy-compiler" to copy from local build.');
+  }
 
-  // If already exists, return it
-  if (fs.existsSync(executablePath)) {
+  // Get stored compiler version
+  const storedVersion = getStoredCompilerVersion(binDir);
+  const needsDownload = !fs.existsSync(executablePath) || storedVersion !== extensionVersion;
+
+  if (!needsDownload) {
+    // Compiler exists and version matches
     return executablePath;
   }
 
   // Download with progress
   const progressOptions = {
     location: vscode.ProgressLocation.Notification,
-    title: 'Downloading IC11 compiler...',
+    title: storedVersion 
+      ? `Updating IC11 compiler to ${extensionVersion}...`
+      : `Downloading IC11 compiler ${extensionVersion}...`,
     cancellable: false
   };
 
   return vscode.window.withProgress(progressOptions, async (progress) => {
-    return downloadCompiler(extensionRoot, (downloaded, total) => {
+    return downloadCompiler(extensionRoot, extensionVersion, (downloaded, total) => {
       const percent = Math.round((downloaded / total) * 100);
       progress.report({ increment: percent, message: `${percent}%` });
     });
