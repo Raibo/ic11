@@ -44,9 +44,27 @@ jobs:
       working-directory: extension
       run: npm ci
 
+    - name: Install VS Code runtime deps
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          xvfb \
+          libnspr4 \
+          libnss3 \
+          libxkbfile1 \
+          libgtk-3-0 \
+          libatk1.0-0 \
+          libatk-bridge2.0-0 \
+          libcups2 \
+          libdrm2 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxfixes3 \
+          libxrandr2 \
+          libgbm1
+
     - name: Run extension tests
-      working-directory: extension
-      run: npm test
+      run: xvfb-run -a npm test
 
   build:
     needs: test
