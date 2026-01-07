@@ -59,7 +59,7 @@
     ]
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint src test scripts",
     "pretest": "npm run lint",
     "test": "vscode-test",
     "copy-compiler": "node scripts/copy-compiler.js"

@@ -8,6 +8,12 @@ A VSCode extension for the .ic11 syntax highlighting and compilation
 - Compile IC11 code to IC10 assembly
 - The compiler executable is automatically downloaded from GitHub releases on first use
 
+## Install
+
+1. Build the extension (see below) or download from the GitHub releases
+2. Go to View/Command Palette, and type "Install from VSIX...", select the extension file
+3. The extension will automatically download the compiler from GitHub releases
+
 ## Build Extension
 
 **Source code:** [https://github.com/Raibo/ic11](https://github.com/Raibo/ic11)
@@ -22,11 +28,6 @@ The extension downloads the compiler executable on-demand from GitHub releases, 
 
 The extension will be lightweight (~1MB) and will download the compiler (68MB) automatically when first used.
 
-## Install
-
-1. Build the extension (see above) or download from the GitHub releases
-2. Go to View/Command Palette, and type "Install from VSIX..."
-3. The extension will automatically download the compiler from GitHub releases
 
 ## Development
 
