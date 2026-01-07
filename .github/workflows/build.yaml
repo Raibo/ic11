@@ -64,6 +64,7 @@ jobs:
           libgbm1
 
     - name: Run extension tests
+      working-directory: extension
       run: xvfb-run -a npm test
 
   build:
