@@ -26,14 +26,4 @@ The extension downloads the compiler executable on-demand from GitHub releases, 
    vsce package
    ```
 
-The extension will be lightweight (~1MB) and will download the compiler (68MB) automatically when first used.
-
-
-## Development
-
-For local development, you can manually copy the compiler:
-```
-npm run copy-compiler
-```
-
-This copies the compiler from `../publish/ic11.exe` to `bin/ic11.exe` for local testing.
+2. Install the the vsix file (see "Install")

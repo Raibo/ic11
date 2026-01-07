@@ -6,6 +6,12 @@ The language features a C-like syntax and supports basic instructions, including
 
 Use the [Wiki](https://github.com/Raibo/ic11/wiki) for the ic11 language reference.
 
+# Usage in VSCode
+
+Follow instructions in the [vscode extension README](./extension/README.md). 
+
+This also works in Cursor. Use the [examples](./examples/) for context. 
+
 # Usage
 
 `ic11.exe <path> [-w]`  
