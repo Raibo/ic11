@@ -340,9 +340,6 @@ async function ensureCompiler(extensionRoot) {
 }
 
 
-
-
-
 /**
  * Compiles IC11 code to IC10 assembly
  * @param {string} code - IC11 source code
@@ -413,63 +410,8 @@ async function compileIC11Code(code, extensionRoot, outputChannel, callback) {
 }
 
 
-
 // Create output channel for compiler messages
 let outputChannel;
-
-/**
- * Parses compiler error messages and creates diagnostics
- * @param {string} errorMessage - Error message from compiler
- * @param {vscode.TextDocument} document - The source document
- * @returns {vscode.Diagnostic[]} Array of diagnostics
- */
-function parseCompilerErrors(errorMessage, document) {
-  const diagnostics = [];
-  const lines = errorMessage.split('\n');
-  
-  // Common error patterns (adjust based on actual compiler output format)
-  // Example: "error: file.ic11:5:10: message"
-  // Example: "file.ic11(5,10): error: message"
-  const errorPatterns = [
-    /(?:error|warning):\s*(?:.*?):(\d+):(\d+):\s*(.+)/i,
-    /(?:.*?)\((\d+),(\d+)\):\s*(?:error|warning):\s*(.+)/i,
-    /line\s+(\d+)[,\s]+column\s+(\d+)[:\s]+(?:error|warning):\s*(.+)/i,
-  ];
-  
-  for (const line of lines) {
-    for (const pattern of errorPatterns) {
-      const match = line.match(pattern);
-      if (match) {
-        const lineNum = parseInt(match[1], 10) - 1; // VSCode uses 0-based line numbers
-        const colNum = parseInt(match[2], 10) - 1; // VSCode uses 0-based column numbers
-        const message = match[3].trim();
-        
-        if (lineNum >= 0 && lineNum < document.lineCount) {
-          const range = new vscode.Range(
-            lineNum,
-            Math.max(0, colNum),
-            lineNum,
-            Math.max(0, colNum)
-          );
-          
-          const severity = line.toLowerCase().includes('warning') 
-            ? vscode.DiagnosticSeverity.Warning 
-            : vscode.DiagnosticSeverity.Error;
-          
-          diagnostics.push(new vscode.Diagnostic(range, message, severity));
-        }
-      }
-    }
-  }
-  
-  // If no structured errors found, create a general diagnostic at the start
-  if (diagnostics.length === 0 && errorMessage.trim()) {
-    const range = new vscode.Range(0, 0, 0, 0);
-    diagnostics.push(new vscode.Diagnostic(range, errorMessage, vscode.DiagnosticSeverity.Error));
-  }
-  
-  return diagnostics;
-}
 
 async function activate(context) {
   // Create output channel for compiler messages
@@ -519,13 +461,7 @@ async function activate(context) {
         outputChannel.appendLine(error);
         outputChannel.appendLine('');
         outputChannel.show(true); // Show the output channel
-        
-        // Parse errors and show as diagnostics
-        const diagnostics = parseCompilerErrors(error, document);
-        if (diagnostics.length > 0) {
-          diagnosticCollection.set(uri, diagnostics);
-        }
-        
+   
         // Show a brief notification with option to view details
         vscode.window.showErrorMessage(
           `Compilation failed: ${fileName}`,
