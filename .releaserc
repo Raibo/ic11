@@ -6,7 +6,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "bash -c 'cd extension && npm version ${nextRelease.version} --no-git-tag-version && npm ci && npm install -g @vscode/vsce && vsce package --out ../publish-release/ic11-${nextRelease.version}.vsix && cp ../publish-release/ic11-${nextRelease.version}.vsix ../publish-release/ic11.vsix'"
+        "prepareCmd": "bash -c 'cd extension && npm version ${nextRelease.version} --no-git-tag-version && npm ci && npm install -g @vscode/vsce && vsce package --out ../publish-release/ic11-${nextRelease.version}.vsix'"
       }
     ],
     [
@@ -16,7 +16,7 @@
             { "path": "./publish-release/ic11.exe", "label": "Win-x64" },
             { "path": "./publish-release/ic11-linux-x64", "label": "Linux-x64" },
             { "path": "./publish-release/ic11-osx-x64", "label": "macOS-x64" },
-            { "path": "./publish-release/ic11.vsix", "label": "VSCode Extension" }
+            { "path": "./publish-release/ic11-*.vsix", "label": "VSCode Extension" }
           ]
         }
       ],
