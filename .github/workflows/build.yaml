@@ -175,13 +175,12 @@ jobs:
       with:
         node-version: '20.x'
 
-    - name: Install semantic-release and exec plugin
-      run: |
-        npm install -g semantic-release @semantic-release/exec
-
     - name: Semantic Release
       uses: cycjimmy/semantic-release-action@v4
       with:
         dry_run: ${{ github.ref != 'refs/heads/master' }}
+        extra_plugins: |
+          @semantic-release/exec
+          @semantic-release/git
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
