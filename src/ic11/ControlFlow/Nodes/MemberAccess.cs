@@ -3,12 +3,12 @@ using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class MemberAccess : Node, IExpression, IExpressionContainer
+public class MemberAccess : Node, INodeExpression, IExpressionContainer
 {
     public string Name;
     public string? MemberName;
     public DeviceTarget Target;
-    public IExpression? TargetIndexExpr;
+    public INodeExpression? TargetIndexExpr;
 
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue => null;
@@ -21,17 +21,17 @@ public class MemberAccess : Node, IExpression, IExpressionContainer
         Validate();
     }
 
-    public MemberAccess(string name, DeviceTarget target, IExpression targetIndexExpr, string? memberName)
+    public MemberAccess(string name, DeviceTarget target, INodeExpression targetIndexExpr, string? memberName)
     {
         Name = name;
         TargetIndexExpr = targetIndexExpr;
         MemberName = memberName;
         Target = target;
-        ((Node)targetIndexExpr).Parent = this;
+        targetIndexExpr.Parent = this;
         Validate();
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

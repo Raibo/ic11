@@ -8,11 +8,11 @@ using System.Globalization;
 using static Ic11Parser;
 
 namespace ic11.ControlFlow.TreeProcessing;
-public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
+public class ControlFlowBuilderVisitor : Ic11BaseVisitor<INodeExpression?>
 {
     public FlowContext FlowContext;
 
-    private Node CurrentNode
+    private INode CurrentNode
     {
         get { return FlowContext.CurrentNode; }
         set { FlowContext.CurrentNode = value; }
@@ -31,9 +31,11 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         FlowContext = flowContext;
     }
 
-    public override Node? Visit(IParseTree tree) => base.Visit(tree);
+    public override INodeExpression? Visit(IParseTree tree) => base.Visit(tree);
 
-    public override Node? VisitDeclaration([NotNull] DeclarationContext context)
+    public INodeExpression Visit(ExpressionContext context) => base.Visit(context)!;
+
+    public override INodeExpression? VisitDeclaration([NotNull] DeclarationContext context)
     {
         if (CurrentNode is not Root root)
             throw new Exception($"Pin declaration must be top level statement");
@@ -44,7 +46,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitFunction([NotNull] FunctionContext context)
+    public override INodeExpression? VisitFunction([NotNull] FunctionContext context)
     {
         var identifiers = context.IDENTIFIER();
         var name = identifiers[0].GetText();
@@ -76,7 +78,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitYieldStatement([NotNull] YieldStatementContext context)
+    public override INodeExpression? VisitYieldStatement([NotNull] YieldStatementContext context)
     {
         var newNode = new StatementParam0("yield");
         AddToStatements(newNode);
@@ -84,7 +86,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitHcfStatement([NotNull] HcfStatementContext context)
+    public override INodeExpression? VisitHcfStatement([NotNull] HcfStatementContext context)
     {
         var newNode = new StatementParam0("hcf");
         AddToStatements(newNode);
@@ -92,7 +94,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceStackClear([NotNull] DeviceStackClearContext context)
+    public override INodeExpression? VisitDeviceStackClear([NotNull] DeviceStackClearContext context)
     {
         var device = context.identifier.Text;
 
@@ -105,28 +107,28 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceWithIdStackClear([NotNull] DeviceWithIdStackClearContext context)
+    public override INodeExpression? VisitDeviceWithIdStackClear([NotNull] DeviceWithIdStackClearContext context)
     {
-        var expression = (IExpression)Visit(context.deviceIdxExpr)!;
+        var expression = Visit(context.deviceIdxExpr)!;
         var newNode = new StatementParam1("clrd", expression);
         AddToStatements(newNode);
 
         return null;
     }
 
-    public override Node? VisitSleepStatement([NotNull] SleepStatementContext context)
+    public override INodeExpression? VisitSleepStatement([NotNull] SleepStatementContext context)
     {
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
         var newNode = new StatementParam1("sleep", expression);
         AddToStatements(newNode);
 
         return null;
     }
 
-    public override Node? VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
+    public override INodeExpression? VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
     {
         var variableName = context.IDENTIFIER().GetText();
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
         var newNode = new VariableDeclaration(variableName, expression);
 
         AddToStatements(newNode);
@@ -134,10 +136,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitConstantDeclaration([NotNull] ConstantDeclarationContext context)
+    public override INodeExpression? VisitConstantDeclaration([NotNull] ConstantDeclarationContext context)
     {
         var constantName = context.IDENTIFIER().GetText();
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
         var newNode = new ConstantDeclaration(constantName, expression);
 
         AddToStatements(newNode);
@@ -145,7 +147,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitLiteral([NotNull] LiteralContext context)
+    public override INodeExpression VisitLiteral([NotNull] LiteralContext context)
     {
         var value = context.GetText();
 
@@ -163,7 +165,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return new Literal(number);
     }
 
-    public override Node? VisitIfStatement([NotNull] IfStatementContext context)
+    public override INodeExpression? VisitIfStatement([NotNull] IfStatementContext context)
     {
         var hasElsePart = context.ELSE() is not null;
 
@@ -177,7 +179,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         if (hasElsePart && blocks.Length == 1 && rawStatements.Length == 1)
             throw new Exception($"Inconsistent if-else satement. Either use blocks or raw statements for both parts.");
 
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
 
         var newNode = new If(expression);
         AddToStatements(newNode);
@@ -197,9 +199,9 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitMemberAssignment([NotNull] MemberAssignmentContext context)
+    public override INodeExpression? VisitMemberAssignment([NotNull] MemberAssignmentContext context)
     {
-        var valueExpr = (IExpression)Visit(context.valueExpr)!;
+        var valueExpr = Visit(context.valueExpr)!;
 
         var member = context.member.Text;
         var device = context.identifier.Text;
@@ -213,10 +215,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitMemberExtendedAssignment([NotNull] MemberExtendedAssignmentContext context)
+    public override INodeExpression? VisitMemberExtendedAssignment([NotNull] MemberExtendedAssignmentContext context)
     {
-        var valueExpr = (IExpression)Visit(context.valueExpr)!;
-        var targetIdxExpr = (IExpression)Visit(context.targetIdxExpr)!;
+        var valueExpr = Visit(context.valueExpr)!;
+        var targetIdxExpr = Visit(context.targetIdxExpr)!;
 
         var member = context.member?.Text;
         var device = context.identifier.Text;
@@ -230,7 +232,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitMemberAccess([NotNull] MemberAccessContext context)
+    public override INodeExpression VisitMemberAccess([NotNull] MemberAccessContext context)
     {
         var member = context.member.Text;
         var device = context.identifier.Text;
@@ -243,9 +245,9 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitExtendedMemberAccess([NotNull] ExtendedMemberAccessContext context)
+    public override INodeExpression? VisitExtendedMemberAccess([NotNull] ExtendedMemberAccessContext context)
     {
-        var targetIdxExpr = (IExpression)Visit(context.targetIdxExpr)!;
+        var targetIdxExpr = Visit(context.targetIdxExpr)!;
 
         var member = context.member?.Text;
         var device = context.identifier.Text;
@@ -260,17 +262,17 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitBatchAccess([NotNull] BatchAccessContext context)
+    public override INodeExpression? VisitBatchAccess([NotNull] BatchAccessContext context)
     {
-        var typeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
+        var typeHash = Visit(context.deviceTypeHashExpr)!;
 
         var nameHash = context.deviceNameHashExpr is null
             ? null
-            : (IExpression)Visit(context.deviceNameHashExpr)!;
+            : Visit(context.deviceNameHashExpr)!;
 
         var targetIdx = context.targetIdxExpr is null
             ? null
-            : (IExpression)Visit(context.targetIdxExpr)!;
+            : Visit(context.targetIdxExpr)!;
 
         var deviceProperty = context.member.Text;
         var batchMode = context.batchMode.Text;
@@ -284,10 +286,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitWhileStatement([NotNull] WhileStatementContext context)
+    public override INodeExpression? VisitWhileStatement([NotNull] WhileStatementContext context)
     {
         var innerCode = (IParseTree)context.block() ?? context.statement();
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
 
         var newNode = new While(expression);
         AddToStatements(newNode);
@@ -298,7 +300,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitForStatement([NotNull] ForStatementContext context)
+    public override INodeExpression? VisitForStatement([NotNull] ForStatementContext context)
     {
         var newNode = new For();
         AddToStatements(newNode);
@@ -315,7 +317,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
         if (context.expression() is not null)
         {
-            var expression = (IExpression)Visit(context.expression())!;
+            var expression = Visit(context.expression())!;
             newNode.Expression = expression;
         }
         else
@@ -336,9 +338,9 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitAssignment([NotNull] AssignmentContext context)
+    public override INodeExpression? VisitAssignment([NotNull] AssignmentContext context)
     {
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
         var variableName = context.IDENTIFIER().GetText();
 
         var newNode = new VariableAssignment(variableName, expression);
@@ -347,41 +349,41 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitNullaryOp([NotNull] NullaryOpContext context)
+    public override INodeExpression VisitNullaryOp([NotNull] NullaryOpContext context)
     {
         return new NullaryOperation(context.op.Text);
     }
 
-    public override Node VisitUnaryOp([NotNull] UnaryOpContext context)
+    public override INodeExpression VisitUnaryOp([NotNull] UnaryOpContext context)
     {
-        var operand = (IExpression)Visit(context.operand)!;
+        var operand = Visit(context.operand)!;
 
         var newNode = new UnaryOperation(operand, context.op.Text);
         return newNode;
     }
 
-    public override Node VisitBinaryOp([NotNull] BinaryOpContext context)
+    public override INodeExpression VisitBinaryOp([NotNull] BinaryOpContext context)
     {
-        var operand1 = (IExpression)Visit(context.left)!;
-        var operand2 = (IExpression)Visit(context.right)!;
+        var operand1 = Visit(context.left)!;
+        var operand2 = Visit(context.right)!;
 
         var newNode = new BinaryOperation(operand1, operand2, context.op.Text);
 
         return newNode;
     }
 
-    public override Node VisitTernaryOp([NotNull] TernaryOpContext context)
+    public override INodeExpression VisitTernaryOp([NotNull] TernaryOpContext context)
     {
-        var operandA = (IExpression)Visit(context.a)!;
-        var operandB = (IExpression)Visit(context.b)!;
-        var operandC = (IExpression)Visit(context.c)!;
+        var operandA = Visit(context.a)!;
+        var operandB = Visit(context.b)!;
+        var operandC = Visit(context.c)!;
 
         var newNode = new TernaryOperation(operandA, operandB, operandC, context.op.Text);
 
         return newNode;
     }
 
-    public override Node VisitIdentifier([NotNull] IdentifierContext context)
+    public override INodeExpression VisitIdentifier([NotNull] IdentifierContext context)
     {
         var name = context.IDENTIFIER().GetText();
 
@@ -390,10 +392,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitDeviceWithIdAssignment([NotNull] DeviceWithIdAssignmentContext context)
+    public override INodeExpression? VisitDeviceWithIdAssignment([NotNull] DeviceWithIdAssignmentContext context)
     {
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
-        var value = (IExpression)Visit(context.valueExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
+        var value = Visit(context.valueExpr)!;
 
         var deviceProperty = context.member.Text;
 
@@ -403,11 +405,11 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceWithIdExtendedAssignment([NotNull] DeviceWithIdExtendedAssignmentContext context)
+    public override INodeExpression? VisitDeviceWithIdExtendedAssignment([NotNull] DeviceWithIdExtendedAssignmentContext context)
     {
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
-        var targetIdxExpr = (IExpression)Visit(context.targetIdxExpr)!;
-        var value = (IExpression)Visit(context.valueExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
+        var targetIdxExpr = Visit(context.targetIdxExpr)!;
+        var value = Visit(context.valueExpr)!;
 
         var deviceProperty = context.member?.Text;
 
@@ -419,19 +421,19 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitBatchAssignment([NotNull] BatchAssignmentContext context)
+    public override INodeExpression? VisitBatchAssignment([NotNull] BatchAssignmentContext context)
     {
-        var deviceTypeHash = (IExpression)Visit(context.deviceTypeHashExpr)!;
+        var deviceTypeHash = Visit(context.deviceTypeHashExpr)!;
 
         var deviceNameHash = context.deviceNameHashExpr is null
             ? null
-            : (IExpression)Visit(context.deviceNameHashExpr)!;
+            : Visit(context.deviceNameHashExpr)!;
 
         var targetIdx = context.targetIdxExpr is null
             ? null
-            : (IExpression)Visit(context.targetIdxExpr)!;
+            : Visit(context.targetIdxExpr)!;
 
-        var value = (IExpression)Visit(context.valueExpr)!;
+        var value = Visit(context.valueExpr)!;
 
         var deviceProperty = context.member.Text;
 
@@ -446,10 +448,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceWithIndexAssignment([NotNull] DeviceWithIndexAssignmentContext context)
+    public override INodeExpression? VisitDeviceWithIndexAssignment([NotNull] DeviceWithIndexAssignmentContext context)
     {
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
-        var value = (IExpression)Visit(context.valueExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
+        var value = Visit(context.valueExpr)!;
 
         var deviceProperty = context.member.Text;
 
@@ -459,11 +461,11 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceWithIndexExtendedAssignment([NotNull] DeviceWithIndexExtendedAssignmentContext context)
+    public override INodeExpression? VisitDeviceWithIndexExtendedAssignment([NotNull] DeviceWithIndexExtendedAssignmentContext context)
     {
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
-        var targetIdxExpr = (IExpression)Visit(context.targetIdxExpr)!;
-        var valueExpr = (IExpression)Visit(context.valueExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
+        var targetIdxExpr = Visit(context.targetIdxExpr)!;
+        var valueExpr = Visit(context.valueExpr)!;
 
         var deviceProperty = context.member?.Text;
 
@@ -473,50 +475,50 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitDeviceIndexAccess([NotNull] DeviceIndexAccessContext context)
+    public override INodeExpression? VisitDeviceIndexAccess([NotNull] DeviceIndexAccessContext context)
     {
         var member = context.member.Text;
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
 
         var newNode = new DeviceWithIndexAccess(deviceIdxExpr, DeviceIndexType.Pin, member);
 
         return newNode;
     }
 
-    public override Node? VisitExtendedDeviceIndexAccess([NotNull] ExtendedDeviceIndexAccessContext context)
+    public override INodeExpression? VisitExtendedDeviceIndexAccess([NotNull] ExtendedDeviceIndexAccessContext context)
     {
         var member = context.member?.Text;
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
-        var targetIdxExpr = (IExpression)Visit(context.targetIdxExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
+        var targetIdxExpr = Visit(context.targetIdxExpr)!;
 
         var newNode = new DeviceWithIndexAccess(deviceIdxExpr, DeviceIndexType.Pin, targetIdxExpr, GetDeviceTarget(context.prop.Type), member);
 
         return newNode;
     }
 
-    public override Node VisitDeviceIdAccess([NotNull] DeviceIdAccessContext context)
+    public override INodeExpression VisitDeviceIdAccess([NotNull] DeviceIdAccessContext context)
     {
         var member = context.member.Text;
 
-        var deviceIdExpr = (IExpression)Visit(context.expression())!;
+        var deviceIdExpr = Visit(context.expression())!;
 
         var newNode = new DeviceWithIndexAccess(deviceIdExpr, DeviceIndexType.Id, member);
 
         return newNode;
     }
 
-    public override Node VisitExtendedDeviceIdAccess([NotNull] ExtendedDeviceIdAccessContext context)
+    public override INodeExpression VisitExtendedDeviceIdAccess([NotNull] ExtendedDeviceIdAccessContext context)
     {
         var member = context.member?.Text;
-        var deviceIdxExpr = (IExpression)Visit(context.deviceIdxExpr)!;
-        var targetIdxExpr = (IExpression)Visit(context.targetIdxExpr)!;
+        var deviceIdxExpr = Visit(context.deviceIdxExpr)!;
+        var targetIdxExpr = Visit(context.targetIdxExpr)!;
 
         var newNode = new DeviceWithIndexAccess(deviceIdxExpr, DeviceIndexType.Id, targetIdxExpr, GetDeviceTarget(context.prop.Type), member);
 
         return newNode;
     }
 
-    public override Node? VisitContinueStatement([NotNull] ContinueStatementContext context)
+    public override INodeExpression? VisitContinueStatement([NotNull] ContinueStatementContext context)
     {
         var newNode = new Continue();
         AddToStatements(newNode);
@@ -524,7 +526,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitBreakStatement([NotNull] BreakStatementContext context)
+    public override INodeExpression? VisitBreakStatement([NotNull] BreakStatementContext context)
     {
         var newNode = new Break();
         AddToStatements(newNode);
@@ -532,12 +534,12 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node VisitFunctionCall([NotNull] FunctionCallContext context)
+    public override INodeExpression VisitFunctionCall([NotNull] FunctionCallContext context)
     {
         var name = context.IDENTIFIER().GetText();
 
         var paramExpressions = context.expression()
-            .Select(e => (IExpression)Visit(e)!)
+            .Select(e => Visit(e)!)
             .ToList();
 
         var newNode = new MethodCall(name, paramExpressions);
@@ -545,12 +547,12 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return newNode;
     }
 
-    public override Node? VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
+    public override INodeExpression? VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
     {
         var name = context.IDENTIFIER().GetText();
 
         var paramExpressions = context.expression()
-            .Select(e => (IExpression)Visit(e)!)
+            .Select(e => Visit(e)!)
             .ToList();
 
         var newNode = new MethodCall(name, paramExpressions);
@@ -559,7 +561,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitReturnStatement([NotNull] ReturnStatementContext context)
+    public override INodeExpression? VisitReturnStatement([NotNull] ReturnStatementContext context)
     {
         var newNode = new Return();
         AddToStatements(newNode);
@@ -567,9 +569,9 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitReturnValueStatement([NotNull] ReturnValueStatementContext context)
+    public override INodeExpression? VisitReturnValueStatement([NotNull] ReturnValueStatementContext context)
     {
-        var expression = (IExpression)Visit(context.expression())!;
+        var expression = Visit(context.expression())!;
 
         var newNode = new Return(expression);
         AddToStatements(newNode);
@@ -577,9 +579,9 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitArraySizeDeclaration([NotNull] ArraySizeDeclarationContext context)
+    public override INodeExpression? VisitArraySizeDeclaration([NotNull] ArraySizeDeclarationContext context)
     {
-        var sizeExpression = (IExpression)Visit(context.sizeExpr)!;
+        var sizeExpression = Visit(context.sizeExpr)!;
 
         var newNode = new ArrayDeclaration(context.IDENTIFIER().GetText(), sizeExpression);
         AddToStatements(newNode);
@@ -587,10 +589,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitArrayListDeclaration([NotNull] ArrayListDeclarationContext context)
+    public override INodeExpression? VisitArrayListDeclaration([NotNull] ArrayListDeclarationContext context)
     {
         var elementExpressions = context.expression()
-            .Select(ec => (IExpression)Visit(ec)!)
+            .Select(ec => Visit(ec)!)
             .ToList();
 
         var newNode = new ArrayDeclaration(context.IDENTIFIER().GetText(), elementExpressions);
@@ -599,10 +601,10 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitArrayAssignment([NotNull] ArrayAssignmentContext context)
+    public override INodeExpression? VisitArrayAssignment([NotNull] ArrayAssignmentContext context)
     {
-        var indexExpr = (IExpression)Visit(context.indexExpr)!;
-        var valueExpr = (IExpression)Visit(context.valueExpr)!;
+        var indexExpr = Visit(context.indexExpr)!;
+        var valueExpr = Visit(context.valueExpr)!;
 
         var newNode = new ArrayAssignment(context.IDENTIFIER().GetText(), indexExpr, valueExpr);
         AddToStatements(newNode);
@@ -610,24 +612,24 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return null;
     }
 
-    public override Node? VisitArrayElementAccess([NotNull] ArrayElementAccessContext context)
+    public override INodeExpression? VisitArrayElementAccess([NotNull] ArrayElementAccessContext context)
     {
-        var indexExpr = (IExpression)Visit(context.indexExpr)!;
+        var indexExpr = Visit(context.indexExpr)!;
         var newNode = new ArrayAccess(context.IDENTIFIER().GetText(), indexExpr);
 
         return newNode;
     }
 
-    public override Node VisitParenthesis([NotNull] ParenthesisContext context) =>
+    public override INodeExpression VisitParenthesis([NotNull] ParenthesisContext context) =>
         Visit(context.expression())!;
-    public override Node? VisitChildren(IRuleNode node) => base.VisitChildren(node);
-    public override Node? VisitDelimitedStatement([NotNull] DelimitedStatementContext context) => base.VisitDelimitedStatement(context);
-    public override Node? VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
-    public override Node? VisitStatement([NotNull] StatementContext context) => base.VisitStatement(context);
-    public override Node? VisitTerminal(ITerminalNode node) => base.VisitTerminal(node);
-    public override Node? VisitUndelimitedStatement([NotNull] UndelimitedStatementContext context) => base.VisitUndelimitedStatement(context);
-    public override Node? VisitBlock([NotNull] BlockContext context) => base.VisitBlock(context);
-    protected override Node? AggregateResult(Node? aggregate, Node? nextResult) => base.AggregateResult(aggregate, nextResult);
+    public override INodeExpression? VisitChildren(IRuleNode node) => base.VisitChildren(node);
+    public override INodeExpression? VisitDelimitedStatement([NotNull] DelimitedStatementContext context) => base.VisitDelimitedStatement(context);
+    public override INodeExpression? VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
+    public override INodeExpression? VisitStatement([NotNull] StatementContext context) => base.VisitStatement(context);
+    public override INodeExpression? VisitTerminal(ITerminalNode node) => base.VisitTerminal(node);
+    public override INodeExpression? VisitUndelimitedStatement([NotNull] UndelimitedStatementContext context) => base.VisitUndelimitedStatement(context);
+    public override INodeExpression? VisitBlock([NotNull] BlockContext context) => base.VisitBlock(context);
+    protected override INodeExpression? AggregateResult(INodeExpression? aggregate, INodeExpression? nextResult) => base.AggregateResult(aggregate, nextResult);
 
     private static DeviceTarget GetDeviceTarget(int propType) =>
         propType switch

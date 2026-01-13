@@ -12,7 +12,7 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
     private readonly Dictionary<Type, MethodInfo> _methodsMap = new();
     protected abstract Type VisitorType { get; }
 
-    public virtual TResult Visit(Node node)
+    public virtual TResult Visit(INode node)
     {
         var nodeType = node.GetType();
         var methodInfo = GetVisitMethodForNodeType(nodeType);
@@ -62,7 +62,7 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
 
     protected virtual TResult Visit(Root node)
     {
-        foreach (Node item in ((IStatementsContainer)node).Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return default!;
@@ -70,7 +70,7 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
 
     protected virtual TResult Visit(MethodDeclaration node)
     {
-        foreach (Node item in ((IStatementsContainer)node).Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return default!;
@@ -78,7 +78,7 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
 
     protected virtual TResult Visit(While node)
     {
-        foreach (Node item in ((IStatementsContainer)node).Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return default!;
@@ -86,7 +86,7 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
 
     protected virtual TResult Visit(For node)
     {
-        foreach (Node item in ((IStatementsContainer)node).Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return default!;
@@ -96,12 +96,12 @@ public abstract class ControlFlowTreeVisitorBase<TResult>
     {
         node.CurrentStatementsContainer = IfStatementsContainer.If;
 
-        foreach (Node item in ((IStatementsContainer)node).Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         node.CurrentStatementsContainer = IfStatementsContainer.Else;
 
-        foreach (Node item in ((IStatementsContainer)node).Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return default!;

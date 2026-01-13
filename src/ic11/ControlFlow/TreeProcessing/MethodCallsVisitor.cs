@@ -53,16 +53,16 @@ public class MethodCallsVisitor : ControlFlowTreeVisitorBase<object?>
         }
 
         foreach (var item in statements)
-            Visit((Node)item);
+            Visit(item);
     }
 
     private void Visit(IExpressionContainer node)
     {
         foreach (var item in node.Expressions)
-            Visit((Node)item);
+            Visit(item);
     }
 
-    private void Visit(Node node)
+    private void Visit(INode node)
     {
         if (node is IExpressionContainer ic)
             Visit(ic);

@@ -3,11 +3,11 @@ using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class DeviceWithIndexAccess : Node, IExpression, IExpressionContainer
+public class DeviceWithIndexAccess : Node, INodeExpression, IExpressionContainer
 {
-    public IExpression DeviceIndexExpr;
+    public INodeExpression DeviceIndexExpr;
     public DeviceIndexType IndexType;
-    public IExpression? TargetIndexExpr;
+    public INodeExpression? TargetIndexExpr;
     public DeviceTarget Target;
     public string? MemberName;
 
@@ -15,30 +15,30 @@ public class DeviceWithIndexAccess : Node, IExpression, IExpressionContainer
     public decimal? CtKnownValue => null;
     public override int IndexSize => 2;
 
-    public DeviceWithIndexAccess(IExpression deviceIndexExpr, DeviceIndexType indexType, string memberName)
+    public DeviceWithIndexAccess(INodeExpression deviceIndexExpr, DeviceIndexType indexType, string memberName)
     {
         DeviceIndexExpr = deviceIndexExpr;
-        ((Node)deviceIndexExpr).Parent = this;
+        deviceIndexExpr.Parent = this;
         IndexType = indexType;
         Target = DeviceTarget.Device;
         MemberName = memberName;
         Validate();
     }
 
-    public DeviceWithIndexAccess(IExpression deviceIndexExpr, DeviceIndexType indexType, IExpression targetIndexExpr,
+    public DeviceWithIndexAccess(INodeExpression deviceIndexExpr, DeviceIndexType indexType, INodeExpression targetIndexExpr,
         DeviceTarget target, string? memberName)
     {
         DeviceIndexExpr = deviceIndexExpr;
         TargetIndexExpr = targetIndexExpr;
-        ((Node)deviceIndexExpr).Parent = this;
-        ((Node)targetIndexExpr).Parent = this;
+        deviceIndexExpr.Parent = this;
+        targetIndexExpr.Parent = this;
         IndexType = indexType;
         Target = target;
         MemberName = memberName;
         Validate();
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

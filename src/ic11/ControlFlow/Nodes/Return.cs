@@ -4,21 +4,21 @@ namespace ic11.ControlFlow.Nodes;
 public class Return : Node, IStatement, IExpressionContainer
 {
     public bool HasValue;
-    public IExpression? Expression;
+    public INodeExpression? Expression;
 
     public Return()
     {
         HasValue = false;
     }
 
-    public Return(IExpression expression)
+    public Return(INodeExpression expression)
     {
         HasValue = true;
         Expression = expression;
-        ((Node)expression).Parent = this;
+        expression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

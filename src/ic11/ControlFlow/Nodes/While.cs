@@ -3,16 +3,16 @@
 namespace ic11.ControlFlow.Nodes;
 public class While : Node, IStatement, IStatementsContainer, IExpressionContainer
 {
-    public IExpression Expression;
+    public INodeExpression Expression;
     public List<IStatement> Statements { get; set; } = new();
 
-    public While(IExpression expression)
+    public While(INodeExpression expression)
     {
         Expression = expression;
-        ((Node)expression).Parent = this;
+        expression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

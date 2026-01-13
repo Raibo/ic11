@@ -2,22 +2,22 @@
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class ArrayAccess : Node, IExpression, IExpressionContainer
+public class ArrayAccess : Node, INodeExpression, IExpressionContainer
 {
     public string Name;
-    public IExpression IndexExpression;
+    public INodeExpression IndexExpression;
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue => null;
     public UserDefinedVariable? ArrayAddressVariable;
 
-    public ArrayAccess(string name, IExpression indexExpression)
+    public ArrayAccess(string name, INodeExpression indexExpression)
     {
         Name = name;
         IndexExpression = indexExpression;
-        ((Node)indexExpression).Parent = this;
+        indexExpression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

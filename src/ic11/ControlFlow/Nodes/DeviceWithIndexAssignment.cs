@@ -4,42 +4,42 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Nodes;
 public class DeviceWithIndexAssignment : Node, IStatement, IExpressionContainer
 {
-    public IExpression DeviceIndexExpr;
+    public INodeExpression DeviceIndexExpr;
     public DeviceIndexType IndexType;
-    public IExpression? TargetIndexExpr;
-    public IExpression ValueExpr;
+    public INodeExpression? TargetIndexExpr;
+    public INodeExpression ValueExpr;
     public DeviceTarget Target;
     public string? MemberName;
     public override int IndexSize => 2;
 
-    public DeviceWithIndexAssignment(IExpression deviceIndexExpr, DeviceIndexType indexType, IExpression valueExpr, string memberName)
+    public DeviceWithIndexAssignment(INodeExpression deviceIndexExpr, DeviceIndexType indexType, INodeExpression valueExpr, string memberName)
     {
         DeviceIndexExpr = deviceIndexExpr;
         IndexType = indexType;
         ValueExpr = valueExpr;
-        ((Node)deviceIndexExpr).Parent = this;
-        ((Node)valueExpr).Parent = this;
+        deviceIndexExpr.Parent = this;
+        valueExpr.Parent = this;
         Target = DeviceTarget.Device;
         MemberName = memberName;
         Validate();
     }
 
-    public DeviceWithIndexAssignment(IExpression deviceIndexExpr, DeviceIndexType indexType, IExpression slotIndexExpr, IExpression valueExpr,
+    public DeviceWithIndexAssignment(INodeExpression deviceIndexExpr, DeviceIndexType indexType, INodeExpression slotIndexExpr, INodeExpression valueExpr,
         DeviceTarget target, string? memberName)
     {
         DeviceIndexExpr = deviceIndexExpr;
         IndexType = indexType;
         TargetIndexExpr = slotIndexExpr;
         ValueExpr = valueExpr;
-        ((Node)deviceIndexExpr).Parent = this;
-        ((Node)slotIndexExpr).Parent = this;
-        ((Node)valueExpr).Parent = this;
+        deviceIndexExpr.Parent = this;
+        slotIndexExpr.Parent = this;
+        valueExpr.Parent = this;
         Target = target;
         MemberName = memberName;
         Validate();
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {
