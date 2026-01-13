@@ -1,6 +1,6 @@
 ﻿namespace ic11.Tests;
 
-using ic11.Emulator;
+using ic11.Tests.Utils;
 
 [TestClass]
 public sealed class StringHashLiteralTest
@@ -21,23 +21,7 @@ public sealed class StringHashLiteralTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
-
-        var limit = 1000;
-        while (!emulator.Stopped && --limit > 0)
-        {
-            emulator.Run(1);
-            emulator.PrintSummary();
-        }
-
-        emulator.PrintSummary();
-
+        var emulator = EmulatorHelper.Run(code, 1);
         var dev = emulator.Devices[0]!;
         Assert.AreEqual(1588896491, dev.GeneralProperties["Hash"]);
         Assert.AreEqual(0x43_4C_45_41_52, dev.GeneralProperties["String"]);

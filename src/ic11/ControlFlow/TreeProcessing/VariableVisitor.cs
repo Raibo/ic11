@@ -111,12 +111,45 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
     protected Variable? Visit(ConstantDeclaration node)
     {
-        if (!node.Expression.CtKnownValue.HasValue)
-            throw new Exception($"Constant must have a compile time known value");
+        // This is only using the constant parts from VisitNode, to not claim variables
+        decimal VisitConstantAccess(UserDefinedValueAccess innerNode)
+        {
+            if (innerNode.Scope!.TryGetUserConstant(innerNode.Name, out var userDefinedConstant))
+            {
+                var constant = userDefinedConstant.CtKnownValue;
+                innerNode.CtKnownValue = constant;
+                userDefinedConstant.LastReferencedIndex = node.IndexInScope;
+                return constant;
+            }
 
+            throw new Exception($"Constant {node.Name} accesses {innerNode.Name} which has no compile time known value");
+        }
+
+        decimal VisitConstantNode(IExpression expression)
+        {
+            if (expression.CtKnownValue.HasValue)
+                return expression.CtKnownValue.Value;
+
+            if (expression is UserDefinedValueAccess access)
+                return VisitConstantAccess(access);
+
+            if (expression is IExpressionContainer ec)
+            {
+                foreach (IExpression innerExpression in ec.Expressions)
+                    VisitConstantNode(innerExpression);
+
+                if (expression.CtKnownValue.HasValue)
+                    return expression.CtKnownValue.Value;
+            }
+
+            throw new Exception($"Constant {node.Name} must have a compile time known value");
+        }
+
+        var constant = VisitConstantNode(node.Expression);
+        
         var scope = node.Scope!;
 
-        var newUserDefinedConstant = new UserDefinedConstant(node.Name, node.Expression.CtKnownValue.Value, node.IndexInScope);
+        var newUserDefinedConstant = new UserDefinedConstant(node.Name, constant, node.IndexInScope);
 
         scope.AddUserConstant(newUserDefinedConstant);
         _flowContext.AllUserDefinedConstants.Add(newUserDefinedConstant);

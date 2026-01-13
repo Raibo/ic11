@@ -1,12 +1,10 @@
 ﻿namespace ic11.Tests;
 
-using ic11.Emulator;
+using ic11.Tests.Utils;
 
 [TestClass]
 public sealed class SyntheticTest
 {
-    private readonly Emulator _emulator = new();
-
     [TestMethod]
     public void TestSimpleMath_ReturnsCorrectResult()
     {
@@ -36,28 +34,25 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        var program = compileText.Split("\n");
+        var emulator = EmulatorHelper.Create(code);
 
-        _emulator.LoadProgram(program);
-
-        var src = _emulator.Devices[0];
-        var dst = _emulator.Devices[1];
-        _emulator.Devices[1] = null;
-        _emulator.Devices[4] = null;
-        _emulator.Devices[2] = null;
-        _emulator.Devices[5] = null;
+        var src = emulator.Devices[0];
+        var dst = emulator.Devices[1];
+        emulator.Devices[1] = null;
+        emulator.Devices[4] = null;
+        emulator.Devices[2] = null;
+        emulator.Devices[5] = null;
 
         src.SetProperty("A", 1000);
         src.SetProperty("B", 1);
 
         var limit = 1000;
         while (dst.GetProperty("Done") != 1 && limit-- > 0)
-            _emulator.Run(1);
+            emulator.Run(1);
 
         Assert.AreEqual(1001, dst.GetProperty("Res"));
 
-        _emulator.PrintSummary();
+        emulator.PrintSummary();
     }
 
 
@@ -95,29 +90,26 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        var program = compileText.Split("\n");
+        var emulator = EmulatorHelper.Create(code);
 
-        _emulator.LoadProgram(program);
-
-        var src = _emulator.Devices[0];
-        var dst = _emulator.Devices[1];
-        _emulator.Devices[1] = null;
-        _emulator.Devices[4] = null;
-        _emulator.Devices[2] = null;
-        _emulator.Devices[5] = null;
+        var src = emulator.Devices[0];
+        var dst = emulator.Devices[1];
+        emulator.Devices[1] = null;
+        emulator.Devices[4] = null;
+        emulator.Devices[2] = null;
+        emulator.Devices[5] = null;
 
         src.SetProperty("A", 25);
 
         var limit = 100000;
         while (dst.GetProperty("Done") != 1 && --limit > 0)
-            _emulator.Run(1);
+            emulator.Run(1);
 
         Assert.AreNotEqual(0, limit);
 
         Assert.AreEqual(75025, dst.GetProperty("Res"));
 
-        _emulator.PrintSummary();
+        emulator.PrintSummary();
     }
 
 
@@ -180,13 +172,7 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-        
-        Emulator emulator = new();
-        emulator.LoadProgram(program);
+        var emulator = EmulatorHelper.Create(code);
 
         var dst = emulator.Devices[1];
         emulator.Devices[1] = null;
@@ -280,12 +266,7 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        _emulator.LoadProgram(program);
+        var _emulator = EmulatorHelper.Create(code);
 
         var src = _emulator.Devices[0];
         var dst = _emulator.Devices[1];
@@ -364,13 +345,7 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
+        var emulator = EmulatorHelper.Create(code, 1);
 
         var dst = emulator.Devices[1];
         emulator.Devices[2] = null;
@@ -417,13 +392,7 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
+        var emulator = EmulatorHelper.Create(code, 1);
 
         var dst = emulator.Devices[1];
         
@@ -458,13 +427,7 @@ public sealed class SyntheticTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
-        Console.WriteLine(compileText);
-
-        var program = compileText.Split("\n");
-
-        Emulator emulator = new(1);
-        emulator.LoadProgram(program);
+        var emulator = EmulatorHelper.Create(code, 1);
 
         var dst = emulator.Devices[1];
         

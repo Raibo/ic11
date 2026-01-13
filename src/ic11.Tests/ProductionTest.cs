@@ -1,12 +1,10 @@
 ﻿namespace ic11.Tests;
 
-using ic11.Emulator;
+using ic11.Tests.Utils;
 
 [TestClass]
 public sealed class ProductionTest
 {
-    private readonly Emulator _emulator = new();
-
     [TestMethod]
     public void TestLatheControl_FollowsRules()
     {
@@ -58,25 +56,21 @@ public sealed class ProductionTest
             }
         ";
 
-        var compileText = Program.CompileText(code);
+        var emulator = EmulatorHelper.Create(code);
 
-        var program = compileText.Split("\n");
-
-        _emulator.LoadProgram(program);
-
-        var fab1 = _emulator.Devices[0];
-        var dial1 = _emulator.Devices[3];
-        _emulator.Devices[1] = null;
-        _emulator.Devices[4] = null;
-        _emulator.Devices[2] = null;
-        _emulator.Devices[5] = null;
+        var fab1 = emulator.Devices[0];
+        var dial1 = emulator.Devices[3];
+        emulator.Devices[1] = null;
+        emulator.Devices[4] = null;
+        emulator.Devices[2] = null;
+        emulator.Devices[5] = null;
 
         fab1.SetProperty("Activate", 1);
         fab1.SetProperty("ExportCount", 1);
 
         dial1.SetProperty("Setting", 50);
 
-        _emulator.Run(2);
+        emulator.Run(2);
 
         Assert.AreEqual(49, dial1.GetProperty("Setting"));
         Assert.AreEqual(1, fab1.GetProperty("ClearMemory"));
@@ -84,10 +78,10 @@ public sealed class ProductionTest
         fab1.SetProperty("ExportCount", 0);
         fab1.SetProperty("ClearMemory", 0);
 
-        _emulator.Run(1);
+        emulator.Run(1);
 
         Assert.AreEqual(49, dial1.GetProperty("Setting"));
 
-        _emulator.PrintSummary();
+        emulator.PrintSummary();
     }
 }

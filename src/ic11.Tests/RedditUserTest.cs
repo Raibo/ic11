@@ -1,12 +1,8 @@
 ﻿namespace ic11.Tests;
 
-using ic11.Emulator;
-
 [TestClass]
 public sealed class RedditUserTest
 {
-    private readonly Emulator _emulator = new();
-
     [TestMethod]
     public void TestAc_GeneratesSameOrShorterProgram()
     {

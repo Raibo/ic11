@@ -8,7 +8,11 @@ public class RootStatementsSorter
     {
         var statementsList = node.Statements;
 
-        statementsList.Sort(new StatementComparer());
+        // List<T>.Sort/Array.Sort are not always stable
+        List<IStatement> temporaryStatements = new(statementsList.Count);
+        temporaryStatements.AddRange(statementsList.OrderBy(s => s, new StatementComparer()));
+        statementsList.Clear();
+        statementsList.AddRange(temporaryStatements);
     }
 
     private class StatementComparer : IComparer<IStatement>
