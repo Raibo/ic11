@@ -4,10 +4,10 @@ using ic11.Emulator;
 using ic11.Tests.Utils;
 
 [TestClass]
-public sealed class HashBinaryNarmalLiteralTest
+public sealed class HashBinaryNormalLiteralTest
 {
     [TestMethod]
-    public void HashBinaryNarmalLiteralTestCase()
+    public void HashBinaryNormalLiteralTestCase()
     {
         var code = @"
             pin Display d0;
@@ -36,6 +36,7 @@ public sealed class HashBinaryNarmalLiteralTest
                 Display.Normal_minus1 = -1;
                 Display.Normal15 = 15;
                 Display.Normal15_73 = 15.73;
+                Display.Normal_73 = .73;
             }
         ";
 
@@ -63,5 +64,6 @@ public sealed class HashBinaryNarmalLiteralTest
         Assert.AreEqual(-1, dev.GeneralProperties["Normal_minus1"]);
         Assert.AreEqual(15, dev.GeneralProperties["Normal15"]);
         Assert.AreEqual(15.73, dev.GeneralProperties["Normal15_73"]);
+        Assert.AreEqual(0.73, dev.GeneralProperties["Normal_73"]);
     }
 }
