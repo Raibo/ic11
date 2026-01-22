@@ -15,6 +15,8 @@ block: '{' statement* '}';
 
 statement: delimetedStatmentWithDelimiter | undelimitedStatement;
 
+blockOrStatement: block | statement;
+
 delimetedStatmentWithDelimiter: delimitedStatement ';';
 
 delimitedStatement: (
@@ -53,10 +55,10 @@ functionCallStatement: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 undelimitedStatement: whileStatement | forStatement | ifStatement;
 
-whileStatement: WHILE '(' expression ')' (block | statement);
-forStatement: FOR '(' statement1=delimitedStatement? ';' expression? ';' statement2=delimitedStatement? ')' (block | innerStatement=statement);
+whileStatement: WHILE '(' expression ')' blockOrStatement;
+forStatement: FOR '(' statement1=delimitedStatement? ';' expression? ';' statement2=delimitedStatement? ')' blockOrStatement;
 
-ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
+ifStatement: IF '(' expression ')' thenPart=blockOrStatement ( ELSE elsePart=blockOrStatement)?;
 
 deviceWithIdAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER '=' valueExpr=expression;
 deviceWithIdExtendedAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;

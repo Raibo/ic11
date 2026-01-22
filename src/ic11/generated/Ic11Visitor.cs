@@ -62,6 +62,12 @@ public interface IIc11Visitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] Ic11Parser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="Ic11Parser.blockOrStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlockOrStatement([NotNull] Ic11Parser.BlockOrStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="Ic11Parser.delimetedStatmentWithDelimiter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

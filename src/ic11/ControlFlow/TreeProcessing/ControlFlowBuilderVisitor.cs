@@ -163,19 +163,16 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
         return new Literal(number);
     }
 
+    private static IParseTree GetTreeFromBlockOrStatement(BlockOrStatementContext ctx)
+    {
+        IParseTree block = ctx.block();
+        IParseTree statement = ctx.statement();
+        return block ?? statement;
+    }
+
     public override Node? VisitIfStatement([NotNull] IfStatementContext context)
     {
-        var hasElsePart = context.ELSE() is not null;
-
-        var blocks = context.block();
-        var rawStatements = context.statement();
-
-        List<IParseTree> codeContents = blocks.Any()
-            ? blocks.Select(b => (IParseTree)b).ToList()
-            : rawStatements.Select(s => (IParseTree)s).ToList();
-
-        if (hasElsePart && blocks.Length == 1 && rawStatements.Length == 1)
-            throw new Exception($"Inconsistent if-else satement. Either use blocks or raw statements for both parts.");
+        var thenPart = GetTreeFromBlockOrStatement(context.thenPart);
 
         var expression = (IExpression)Visit(context.expression())!;
 
@@ -184,12 +181,13 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
         CurrentNode = newNode;
         newNode.CurrentStatementsContainer = IfStatementsContainer.If;
-        Visit(codeContents[0]);
+        Visit(thenPart);
 
-        if (hasElsePart)
+        if (context.elsePart != null)
         {
+            var elsePart = GetTreeFromBlockOrStatement(context.elsePart);
             newNode.CurrentStatementsContainer = IfStatementsContainer.Else;
-            Visit(codeContents[1]);
+            Visit(elsePart);
         }
 
         CurrentNode = newNode.Parent!;
@@ -286,7 +284,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
     public override Node? VisitWhileStatement([NotNull] WhileStatementContext context)
     {
-        var innerCode = (IParseTree)context.block() ?? context.statement();
+        var innerCode = GetTreeFromBlockOrStatement(context.blockOrStatement());
         var expression = (IExpression)Visit(context.expression())!;
 
         var newNode = new While(expression);
@@ -305,7 +303,7 @@ public class ControlFlowBuilderVisitor : Ic11BaseVisitor<Node?>
 
         CurrentNode = newNode;
 
-        var innerCode = (IParseTree)context.block() ?? context.innerStatement;
+        var innerCode = GetTreeFromBlockOrStatement(context.blockOrStatement());
 
         if (context.statement1 is not null)
         {
