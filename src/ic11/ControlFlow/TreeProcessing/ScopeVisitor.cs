@@ -19,7 +19,7 @@ public class ScopeVisitor
     {
         node.Scope = _currentScope;
 
-        VisitStatementList(((IStatementsContainer)node).Statements);
+        VisitStatementList(node.Statements);
 
         return default!;
     }
@@ -54,9 +54,7 @@ public class ScopeVisitor
             foreach (var item in ec.Expressions)
                 VisitExpression(item);
 
-        var node = (Node)statement;
-        node.Scope = _currentScope;
-        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+        AssignScope((Node)statement);
 
         if (statement is IStatementsContainer st)
         {
@@ -93,8 +91,7 @@ public class ScopeVisitor
 
     protected object? Visit(If node)
     {
-        node.Scope = _currentScope;
-        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+        AssignScope(node);
 
         VisitExpression(node.Expression);
 
@@ -124,8 +121,7 @@ public class ScopeVisitor
 
     protected object? Visit(For node)
     {
-        node.Scope = _currentScope;
-        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+        AssignScope(node);
 
         _currentScope = _currentScope.CreateChildScope();
 
@@ -150,8 +146,7 @@ public class ScopeVisitor
     protected object? Visit(ArrayDeclaration node)
     {
         // Array declarations need their expressions only *after* the address is assigned, so the order is reversed
-        node.Scope = _currentScope;
-        node.SetIndex(ref _currentScope.CurrentNodeOrder);
+        AssignScope(node);
 
         foreach (var item in node.Expressions)
             VisitExpression(item);
@@ -167,7 +162,11 @@ public class ScopeVisitor
                 VisitExpression(item);
         }
 
-        var node = (Node)expression;
+        AssignScope((Node)expression);
+    }
+
+    private void AssignScope(Node node)
+    {
         node.Scope = _currentScope;
         node.SetIndex(ref _currentScope.CurrentNodeOrder);
     }

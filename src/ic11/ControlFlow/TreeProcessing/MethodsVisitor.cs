@@ -19,7 +19,7 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
 
     public void Visit(Root root)
     {
-        var methodDeclarations = root.Statements.Where(s => s is MethodDeclaration md);
+        var methodDeclarations = root.Statements.OfType<MethodDeclaration>();
 
         foreach (MethodDeclaration method in methodDeclarations)
             Visit(method);
