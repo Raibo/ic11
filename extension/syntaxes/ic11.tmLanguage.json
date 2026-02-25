@@ -10,6 +10,9 @@
       "include": "#keywords"
     },
     {
+      "include": "#includes"
+    },
+    {
       "include": "#identifiers"
     },
     {
@@ -20,11 +23,27 @@
     }
   ],
   "repository": {
+    "includes": {
+      "patterns": [
+        {
+          "name": "keyword.control.directive.include.ic11",
+          "match": "^\\s*#include\\b"
+        },
+        {
+          "name": "string.quoted.other.include.ic11",
+          "match": "(?<=^\\s*#include\\s*)<[^>\\r\\n]*\\.[^>\\r\\n]+>"
+        },
+        {
+          "name": "string.quoted.double.include.ic11",
+          "match": "(?<=^\\s*#include\\s*)\"[^\"\\r\\n]*\\.[^\"\\r\\n]+\""
+        }
+      ]
+    },
     "keywords": {
       "patterns": [
         {
           "name": "keyword.control.ic11",
-          "match": "\\b(pin|void|real|yield|return|continue|var|while|if|else|for)\\b"
+          "match": "\\b(pin|void|real|yield|return|continue|var|const|while|if|else|for|sleep|break|hcf)\\b"
         },
         {
           "name": "support.type.device.ic11",

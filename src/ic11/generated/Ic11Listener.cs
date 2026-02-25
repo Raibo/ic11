@@ -41,6 +41,16 @@ public interface IIc11Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitProgram([NotNull] Ic11Parser.ProgramContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="Ic11Parser.includeDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIncludeDirective([NotNull] Ic11Parser.IncludeDirectiveContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="Ic11Parser.includeDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIncludeDirective([NotNull] Ic11Parser.IncludeDirectiveContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="Ic11Parser.declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

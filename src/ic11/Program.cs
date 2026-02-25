@@ -4,6 +4,7 @@ using ic11.ControlFlow.Context;
 using ic11.ControlFlow.InstructionsProcessing;
 using ic11.ControlFlow.Nodes;
 using ic11.ControlFlow.TreeProcessing;
+using System.Text.RegularExpressions;
 
 namespace ic11;
 
@@ -60,14 +61,21 @@ public class Program
 
     private static void CompileFile(string path, bool shouldSave)
     {
-        var input = File.ReadAllText(path);
-        var output = CompileText(input);
+        var fullPath = Path.GetFullPath(path);
+        var baseDir = Path.GetDirectoryName(fullPath) ?? Directory.GetCurrentDirectory();
+
+        var input = File.ReadAllText(fullPath);
+
+        // preprocess includes (this returns source with includes inlined)
+        var expanded = IncludePreprocessor.ExpandIncludes(input, baseDir);
+
+        var output = CompileText(expanded);
         Console.WriteLine(output);
 
         if (shouldSave)
         {
-            var directoryPath = Path.GetDirectoryName(path);
-            var fileName = Path.Combine(directoryPath!, Path.GetFileNameWithoutExtension(path) + ".ic10");
+            var directoryPath = Path.GetDirectoryName(fullPath);
+            var fileName = Path.Combine(directoryPath!, Path.GetFileNameWithoutExtension(fullPath) + ".ic10");
             File.WriteAllText(fileName, output);
         }
     }
@@ -112,5 +120,45 @@ public class Program
         Nonexistant,
         File,
         Directory,
+    }
+
+    static class IncludePreprocessor
+    {
+        // Supports: #include <a.b> or #include "a.b"
+        private static readonly Regex IncludeLine =
+            new Regex(@"^\s*#include\s*(<([^>\r\n]+)>|""([^""\r\n]+)"")\s*$",
+                      RegexOptions.Multiline);
+
+        public static string ExpandIncludes(string input, string baseDir)
+        {
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            return Expand(input, baseDir, seen);
+        }
+
+        private static string Expand(string input, string baseDir, HashSet<string> seen)
+        {
+            return IncludeLine.Replace(input, m =>
+            {
+                // group2 = <...> contents, group3 = "..." contents
+                var rel = m.Groups[2].Success ? m.Groups[2].Value : m.Groups[3].Value;
+                rel = rel.Trim();
+
+                if (!rel.Contains('.'))
+                    throw new Exception($"Invalid include (missing dot): {rel}");
+
+                var full = Path.GetFullPath(Path.Combine(baseDir, rel));
+
+                if (!File.Exists(full))
+                    throw new FileNotFoundException($"Included file not found: {full}");
+
+                if (!seen.Add(full))
+                    return string.Empty;
+
+                var includedText = File.ReadAllText(full);
+
+                var nextBase = Path.GetDirectoryName(full) ?? baseDir;
+                return Expand(includedText, nextBase, seen);
+            });
+        }
     }
 }

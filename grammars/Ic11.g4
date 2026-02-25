@@ -5,7 +5,9 @@ options {
 }
 
 // Parser rules
-program: (declaration | ( constantDeclaration ';') | function)* EOF;
+program: (includeDirective | declaration | ( constantDeclaration ';') | function)* EOF;
+
+includeDirective: INCLUDE_DIRECTIVE;
 
 declaration: 'pin' IDENTIFIER PINID ';';
 
@@ -231,6 +233,17 @@ STRING_LITERAL: '\'' ( ESC | ~[\r\n\\'] )* '\'';
 fragment ESC: '\\' ( '\'' | '\\' );
 
 REAL: [0-9]* '.' [0-9]+;
+
+// --- Preprocessor include support ---
+INCLUDE_DIRECTIVE
+    : '#include' [ \t]* '<' INCLUDE_PATH_WITH_DOT '>'
+    | '#include' [ \t]* '"' INCLUDE_PATH_WITH_DOT '"'
+    ;
+
+fragment INCLUDE_PATH_WITH_DOT
+    : [a-zA-Z0-9_./\\-]* '.' [a-zA-Z0-9_./\\-]+
+    ;
+
 
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
