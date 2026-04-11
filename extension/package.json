@@ -56,7 +56,57 @@
         "command": "ic11.compile",
         "title": "Compile IC11"
       }
-    ]
+    ],
+    "configurationDefaults": {
+      "[ic11]": {
+        "editor.tokenColorCustomizations": {
+          "textMateRules": [
+            {
+              "scope": "entity.name.function.ic11",
+              "settings": {
+                "foreground": "#DCDCAA"
+              }
+            },
+            {
+              "scope": "variable.other.property.ic11",
+              "settings": {
+                "foreground": "#9CDCFE"
+              }
+            },
+            {
+              "scope": "support.function.builtin.ic11",
+              "settings": {
+                "foreground": "#4EC9B0"
+              }
+            },
+            {
+              "scope": "support.constant.device.ic11",
+              "settings": {
+                "foreground": "#4FC1FF"
+              }
+            },
+            {
+              "scope": "storage.type.ic11",
+              "settings": {
+                "foreground": "#569CD6"
+              }
+            },
+            {
+              "scope": "punctuation.accessor.ic11",
+              "settings": {
+                "foreground": "#C586C0"
+              }
+            },
+            {
+              "scope": "punctuation.separator.statement.ic11,punctuation.definition.block.ic11,punctuation.section.parens.ic11,punctuation.section.brackets.ic11,punctuation.separator.comma.ic11,punctuation.separator.key-value.ic11",
+              "settings": {
+                "foreground": "#808080"
+              }
+            }
+          ]
+        }
+      }
+    }
   },
   "scripts": {
     "lint": "eslint src test",
