@@ -1,6 +1,6 @@
 pin WeatherStation d0;
 pin Led d1;
-pin Alarm d2;
+//pin Alarm d2;
 
 void Main()
 {
@@ -12,12 +12,12 @@ void Main()
         if (nwe == 0)
         {
             Led.On = false;
-            Alarm.On = false;
+            //Alarm.On = false;
         }
         else
         {
             Led.On = true;
-            Alarm.On = true;
+            //Alarm.On = true;
 
             Led.Setting = nwe;
         }

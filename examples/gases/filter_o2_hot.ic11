@@ -1,0 +1,17 @@
+pin CoolerValve d0;
+
+const TargetTemperature = 273.15 + 25;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        Base.Mode = Base.PressureOutput < 40000 
+                  & Base.RatioOxygenInput > 0
+                  & Base.TemperatureOutput <= TargetTemperature + 3;
+    
+        CoolerValve.On = Base.TemperatureOutput > TargetTemperature;
+    }
+}

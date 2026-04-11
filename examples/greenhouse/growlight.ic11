@@ -1,0 +1,31 @@
+pin Sensor d0;
+pin Light d1;
+
+const DarknessTicks = 5 * 60 * 2;
+const BeforeDawnTicks = 60 * 2;
+const DayLengthTicks = 20 * 60 * 2;
+
+void Main()
+{
+    var currentTick = -1;
+    var previousLight = 0;
+
+    while(true)
+    {
+        yield;
+        currentTick = currentTick + 1;
+        Base.Setting = currentTick;
+        
+        // count the day from dawn
+        if (Sensor.SolarIrradiance > 0 && previousLight == 0)
+            currentTick = 0;
+
+        var darkBeginTick = DayLengthTicks - BeforeDawnTicks - DarknessTicks;
+        var darkEndTick = DayLengthTicks - BeforeDawnTicks;
+
+        var darkTime = darkBeginTick <= currentTick && currentTick < darkEndTick;
+        Light.On = !darkTime;
+
+        previousLight = Sensor.SolarIrradiance;
+    }
+}

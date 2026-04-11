@@ -1,0 +1,19 @@
+pin Sensor d0;
+pin Chamber d1;
+
+void Main()
+{
+    while(true)
+    {
+        yield;
+        
+        if (Sensor.Pressure == -1 )
+        {
+            Chamber.On = false;
+            continue;
+        }
+
+        Chamber.On = Sensor.Pressure < 5500;
+
+    }
+}

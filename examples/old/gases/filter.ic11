@@ -1,4 +1,5 @@
-const DesiredTemperature = 297 + 25;
+const MinTemperature = 273.15 + 10;
+const MaxTemperature = 273.15 + 30;
 
 void Main()
 {
@@ -6,8 +7,9 @@ void Main()
     {
         yield;
         
-        Base.Mode = Base.PressureInput > 150 
-                  && Base.PressureOutput < 9000 
-                  && Base.TemperatureInput <= DesiredTemperature;
+        Base.Mode = Base.PressureOutput < 9000 
+                  & Base.PressureInput > 55 
+                  & Base.TemperatureInput <= MaxTemperature
+                  & Base.TemperatureInput >= MinTemperature;
     }
 }

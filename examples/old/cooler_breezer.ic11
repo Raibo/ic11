@@ -1,0 +1,46 @@
+pin Sensor d0;
+pin Valve d1;
+pin Vent d2;
+
+const TargetTemp = 273.15 + 25;
+const Delta = 0.5;
+const TargetPressure = 90;
+
+void Main()
+{
+    var needsBreezing = false;
+    var needsCooling = false;
+
+    while(true)
+    {
+        yield;
+
+        if (Sensor.Temperature > TargetTemp + Delta)
+        {
+            needsBreezing = true;
+        }
+
+        if (Sensor.Temperature > TargetTemp + Delta * 3)
+        {
+            needsCooling = true;
+        }
+
+        if (Sensor.Temperature < TargetTemp - Delta)
+        {
+            needsCooling = false;
+            needsBreezing = false;
+        }
+
+        if (Sensor.Pressure > TargetPressure)
+        {
+            needsBreezing = false;
+        }
+
+        Valve.On = needsCooling;
+        Valve.Setting = 100;
+
+        Vent.On = needsBreezing;
+        Vent.PressureInternal = TargetPressure;
+
+    }
+}
