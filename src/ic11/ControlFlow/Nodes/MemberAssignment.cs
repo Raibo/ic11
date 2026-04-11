@@ -4,17 +4,17 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Nodes;
 public class MemberAssignment : Node, IStatement, IExpressionContainer
 {
-    public string Name;
-    public string? MemberName;
-    public DeviceTarget Target;
-    public IExpression? TargetIndexExpr;
-    public IExpression ValueExpression;
+    public readonly DeviceAddress Device;
+    public readonly string? MemberName;
+    public readonly DeviceTarget Target;
+    public readonly IExpression? TargetIndexExpr;
+    public readonly IExpression ValueExpression;
 
     public override int IndexSize => 2;
 
-    public MemberAssignment(string name, string memberName, IExpression valueExpression)
+    public MemberAssignment(DeviceAddress device, string memberName, IExpression valueExpression)
     {
-        Name = name;
+        Device = device;
         MemberName = memberName;
         ValueExpression = valueExpression;
         ((Node)valueExpression).Parent = this;
@@ -22,9 +22,9 @@ public class MemberAssignment : Node, IStatement, IExpressionContainer
         Validate();
     }
 
-    public MemberAssignment(string name, DeviceTarget target, string? memberName, IExpression targetIndexExpr, IExpression valueExpression)
+    public MemberAssignment(DeviceAddress device, DeviceTarget target, string? memberName, IExpression targetIndexExpr, IExpression valueExpression)
     {
-        Name = name;
+        Device = device;
         MemberName = memberName;
         TargetIndexExpr = targetIndexExpr;
         ValueExpression = valueExpression;
@@ -39,7 +39,8 @@ public class MemberAssignment : Node, IStatement, IExpressionContainer
         get
         {
             yield return ValueExpression;
-
+            if (Device.Expression is not null)
+                yield return Device.Expression;
             if (TargetIndexExpr is not null)
                 yield return TargetIndexExpr;
         }
@@ -47,6 +48,8 @@ public class MemberAssignment : Node, IStatement, IExpressionContainer
 
     private void Validate()
     {
+        Device.Validate();
+
         if (Target != DeviceTarget.Stack && string.IsNullOrWhiteSpace(MemberName))
             throw new Exception($"Expected member name for device interaction");
 

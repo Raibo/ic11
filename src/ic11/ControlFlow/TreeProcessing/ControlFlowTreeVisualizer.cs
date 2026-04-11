@@ -1,4 +1,5 @@
-﻿using ic11.ControlFlow.NodeInterfaces;
+﻿using ic11.ControlFlow.DataHolders;
+using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.Nodes;
 using System.Text;
 
@@ -176,10 +177,14 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private object? Visit(MemberAssignment node)
     {
-        WriteLine($"Device assignment {node.Name}.{node.MemberName} = ?{Tags(node)}");
-        _depth++;
+        WriteLine($"Member assignment member {node.MemberName} = ? ({GetDeviceTypeDescription(node.Device)}){Tags(node)}");
         Visit((Node)node.ValueExpression);
-        _depth--;
+        if (node.Device.Expression is not null)
+        {
+            _depth++;
+            Visit((Node)node.Device.Expression);
+            _depth--;            
+        }
         return null;
     }
 
@@ -219,9 +224,26 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         return null;
     }
 
+    private static string GetDeviceTypeDescription(DeviceAddress device)
+    {
+        if (device.Name is not null)
+            return $"named ({device.Name})";
+        if (device.DeviceId is not null)
+            return "via id";
+        if (device.PinsIndex is not null)
+            return "via pin index";
+        return "INVALID";
+    }
+
     private object? Visit(MemberAccess node)
     {
-        WriteLine($"Member access {node.Name}.{node.MemberName}{Tags(node)}");
+        WriteLine($"Member access ({GetDeviceTypeDescription(node.Device)}, member {node.MemberName}){Tags(node)}");
+        if (node.Device.Expression is not null)
+        {
+            _depth++;
+            Visit((Node)node.Device.Expression);
+            _depth--;            
+        }
         return null;
     }
 
@@ -260,15 +282,6 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     private object? Visit(Break node)
     {
         WriteLine($"Break{Tags(node)}");
-        return null;
-    }
-
-    private object? Visit(DeviceWithIndexAccess node)
-    {
-        WriteLine($"Device with index access (member {node.MemberName}){Tags(node)}");
-        _depth++;
-        Visit((Node)node.DeviceIndexExpr);
-        _depth--;
         return null;
     }
 

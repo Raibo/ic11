@@ -4,13 +4,13 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Instructions;
 public class MemberAssignment : Instruction
 {
-    public string Device;
-    public DeviceTarget Target;
-    public string? MemberName;
-    public IExpression? TargetIndexExpr;
-    public IExpression ValueExpr;
+    public readonly DeviceAddress Device;
+    public readonly DeviceTarget Target;
+    public readonly string? MemberName;
+    public readonly IExpression? TargetIndexExpr;
+    public readonly IExpression ValueExpr;
 
-    public MemberAssignment(string device, string memberName, IExpression valueExpr)
+    public MemberAssignment(DeviceAddress device, string memberName, IExpression valueExpr)
     {
         Device = device;
         Target = DeviceTarget.Device;
@@ -18,7 +18,7 @@ public class MemberAssignment : Instruction
         ValueExpr = valueExpr;
     }
 
-    public MemberAssignment(string device, DeviceTarget target, string? memberName, IExpression slotIndexExpr, IExpression valueExpr)
+    public MemberAssignment(DeviceAddress device, DeviceTarget target, string? memberName, IExpression slotIndexExpr, IExpression valueExpr)
     {
         Device = device;
         Target = target;
@@ -31,9 +31,9 @@ public class MemberAssignment : Instruction
     {
         return Target switch
         {
-            DeviceTarget.Device => $"s {Device} {MemberName} {ValueExpr.Render()}",
-            DeviceTarget.Slots => $"ss {Device} {TargetIndexExpr!.Render()} {MemberName} {ValueExpr.Render()}",
-            DeviceTarget.Stack => $"put {Device} {TargetIndexExpr!.Render()} {ValueExpr.Render()}",
+            DeviceTarget.Device => $"s {Device.Render()} {MemberName} {ValueExpr.Render()}",
+            DeviceTarget.Slots => $"ss {Device.Render()} {TargetIndexExpr!.Render()} {MemberName} {ValueExpr.Render()}",
+            DeviceTarget.Stack => $"put {Device.Render()} {TargetIndexExpr!.Render()} {ValueExpr.Render()}",
             _ => throw new Exception($"Unexpected device target"),
         };
     }

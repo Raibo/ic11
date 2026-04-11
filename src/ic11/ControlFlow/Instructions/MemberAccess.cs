@@ -5,13 +5,13 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Instructions;
 public class MemberAccess : Instruction
 {
-    public Variable Destination;
-    public string Device;
-    public IExpression? TargetIndexExpr;
-    public DeviceTarget Target;
-    public string? MemberName;
+    public readonly Variable Destination;
+    public readonly DeviceAddress Device;
+    public readonly IExpression? TargetIndexExpr;
+    public readonly DeviceTarget Target;
+    public readonly string? MemberName;
 
-    public MemberAccess(Variable destination, string device, string member)
+    public MemberAccess(Variable destination, DeviceAddress device, string member)
     {
         Destination = destination;
         Device = device;
@@ -19,7 +19,7 @@ public class MemberAccess : Instruction
         MemberName = member;
     }
 
-    public MemberAccess(Variable destination, string device, IExpression slotIndexExpr, DeviceTarget target, string? memberName)
+    public MemberAccess(Variable destination, DeviceAddress device, IExpression slotIndexExpr, DeviceTarget target, string? memberName)
     {
         Destination = destination;
         Device = device;
@@ -43,14 +43,14 @@ public class MemberAccess : Instruction
     private string RenderDevice()
     {
         if (MemberName == Consts.PinSetProperty)
-            return $"sdse {Destination.Register} {Device}";
+            return $"sdse {Destination.Register} {Device.Render()}";
 
-        return $"l {Destination.Register} {Device} {MemberName}";
+        return $"l {Destination.Register} {Device.Render()} {MemberName}";
     }
 
     private string RenderSlot()
     {
-        return $"ls {Destination.Register} {Device} {TargetIndexExpr!.Render()} {MemberName}";
+        return $"ls {Destination.Register} {Device.Render()} {TargetIndexExpr!.Render()} {MemberName}";
     }
 
     private string RenderReagent()
@@ -58,11 +58,11 @@ public class MemberAccess : Instruction
         if (MemberName == Consts.RmapProperty)
             return $"rmap {Destination.Register} {Device} {TargetIndexExpr!.Render()}";
 
-        return $"lr {Destination.Register} {Device} {MemberName} {TargetIndexExpr!.Render()}";
+        return $"lr {Destination.Register} {Device.Render()} {MemberName} {TargetIndexExpr!.Render()}";
     }
 
     private string RenderStack()
     {
-        return $"get {Destination.Register} {Device} {TargetIndexExpr!.Render()}";
+        return $"get {Destination.Register} {Device.Render()} {TargetIndexExpr!.Render()}";
     }
 }

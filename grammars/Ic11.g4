@@ -19,14 +19,9 @@ delimetedStatmentWithDelimiter: delimitedStatement ';';
 
 delimitedStatement: (
     deviceStackClear
-    | deviceWithIdStackClear
-    | deviceWithIdExtendedAssignment
-    | deviceWithIdAssignment
+    | deviceExtendedAssignment
+    | deviceAssignment
     | batchAssignment
-    | deviceWithIndexExtendedAssignment
-    | deviceWithIndexAssignment
-    | memberExtendedAssignment
-    | memberAssignment
     | assignment
     | yieldStatement
     | hcfStatement
@@ -58,22 +53,17 @@ forStatement: FOR '(' statement1=delimitedStatement? ';' expression? ';' stateme
 
 ifStatement: IF '(' expression ')' (block | statement) ( ELSE (block | statement))?;
 
-deviceWithIdAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER '=' valueExpr=expression;
-deviceWithIdExtendedAssignment: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
-
 batchAssignment: DEVICES_OF_TYPE '(' deviceTypeHashExpr=expression ')'
     ('.' WITH_NAME '(' deviceNameHashExpr=expression ')')?
     ('.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']')?
     '.' member=IDENTIFIER '=' valueExpr=expression;
 
-memberExtendedAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
-memberAssignment: identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER '=' valueExpr=expression;
+deviceAssignment: device '.' member=IDENTIFIER '=' valueExpr=expression;
+deviceExtendedAssignment: device '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
 
-deviceWithIndexExtendedAssignment: PINS '[' deviceIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? '=' valueExpr=expression;
-deviceWithIndexAssignment: PINS '[' deviceIdxExpr=expression ']' '.' member=IDENTIFIER '=' valueExpr=expression;
+deviceStackClear: device '.' STACK '.' CLEAR '(' ')';
 
-deviceStackClear: identifier=(BASE_DEVICE | IDENTIFIER) '.' STACK '.' CLEAR '(' ')';
-deviceWithIdStackClear: DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' STACK '.' CLEAR '(' ')';
+device: ( BASE_DEVICE | identifier=IDENTIFIER | DEVICE_WITH_ID '(' deviceIdExpr=expression ')' | PINS '[' pinIdxExpr=expression ']' );
 
 assignment: IDENTIFIER '=' expression;
 
@@ -104,12 +94,8 @@ expression:
     | type=(INTEGER | INTEGER_HEX | INTEGER_BINARY | BOOLEAN | REAL | STRING_LITERAL | HASH_LITERAL) # Literal
     | IDENTIFIER '(' (expression (',' expression)*)? ')' # FunctionCall
     | IDENTIFIER # Identifier
-    | identifier=(BASE_DEVICE | IDENTIFIER) '.' member=IDENTIFIER # MemberAccess
-    | identifier=(BASE_DEVICE | IDENTIFIER) '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedMemberAccess
-    | PINS '[' deviceIdxExpr=expression ']' '.' member=IDENTIFIER # DeviceIndexAccess
-    | PINS '[' deviceIdxExpr=expression ']' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIndexAccess
-    | DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' member=IDENTIFIER # DeviceIdAccess
-    | DEVICE_WITH_ID '(' deviceIdxExpr=expression ')' '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceIdAccess
+    | device '.' member=IDENTIFIER # DeviceAccess
+    | device '.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']' ('.' member=IDENTIFIER)? # ExtendedDeviceAccess
     | DEVICES_OF_TYPE '(' deviceTypeHashExpr=expression ')' ('.' WITH_NAME '(' deviceNameHashExpr=expression ')')? ('.' prop=(SLOTS | REAGENTS | STACK) '[' targetIdxExpr=expression ']')? '.' member=IDENTIFIER '.' batchMode=IDENTIFIER # BatchAccess
     | IDENTIFIER '[' indexExpr=expression ']' # ArrayElementAccess
     ;

@@ -5,25 +5,25 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Nodes;
 public class MemberAccess : Node, IExpression, IExpressionContainer
 {
-    public string Name;
-    public string? MemberName;
-    public DeviceTarget Target;
-    public IExpression? TargetIndexExpr;
+    public readonly DeviceAddress Device;
+    public readonly string? MemberName;
+    public readonly DeviceTarget Target;
+    public readonly IExpression? TargetIndexExpr;
 
     public Variable? Variable { get; set; }
     public decimal? CtKnownValue => null;
 
-    public MemberAccess(string name, string memberName)
+    public MemberAccess(DeviceAddress device, string memberName)
     {
-        Name = name;
+        Device = device;
         MemberName = memberName;
         Target = DeviceTarget.Device;
         Validate();
     }
 
-    public MemberAccess(string name, DeviceTarget target, IExpression targetIndexExpr, string? memberName)
+    public MemberAccess(DeviceAddress device, DeviceTarget target, IExpression targetIndexExpr, string? memberName)
     {
-        Name = name;
+        Device = device;
         TargetIndexExpr = targetIndexExpr;
         MemberName = memberName;
         Target = target;
@@ -35,6 +35,8 @@ public class MemberAccess : Node, IExpression, IExpressionContainer
     {
         get
         {
+            if (Device.Expression is not null)
+                yield return Device.Expression;
             if (TargetIndexExpr is not null)
                 yield return TargetIndexExpr;
         }
@@ -42,6 +44,8 @@ public class MemberAccess : Node, IExpression, IExpressionContainer
 
     private void Validate()
     {
+        Device.Validate();
+
         if (Target != DeviceTarget.Stack && string.IsNullOrWhiteSpace(MemberName))
             throw new Exception($"Expected member name for device interaction");
 
