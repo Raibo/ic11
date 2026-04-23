@@ -246,7 +246,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
         WriteLine($"Return value{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression!);
+        Visit((Node)node.Expression);
         _depth--;
         return null;
     }
