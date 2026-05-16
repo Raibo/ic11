@@ -3,10 +3,10 @@ using ic11.ControlFlow.NodeInterfaces;
 using ic11.ControlFlow.TreeProcessing;
 
 namespace ic11.ControlFlow.Nodes;
-public class BinaryOperation : Node, IExpression, IExpressionContainer
+public class BinaryOperation : Node, INodeExpression, IExpressionContainer
 {
-    public IExpression Left;
-    public IExpression Right;
+    public INodeExpression Left;
+    public INodeExpression Right;
     public string Operation;
     public Variable? Variable { get; set; }
 
@@ -21,16 +21,16 @@ public class BinaryOperation : Node, IExpression, IExpressionContainer
         }
     }
 
-    public BinaryOperation(IExpression left, IExpression right, string operation)
+    public BinaryOperation(INodeExpression left, INodeExpression right, string operation)
     {
         Left = left;
         Right = right;
         Operation = GetOperation(operation ?? throw new ArgumentNullException(nameof(operation)));
-        ((Node)left).Parent = this;
-        ((Node)right).Parent = this;
+        left.Parent = this;
+        right.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

@@ -43,7 +43,7 @@ public class MethodsVisitor : ControlFlowTreeVisitorBase<bool>
     {
         bool foundReturnStatement = false;
 
-        foreach (Node statement in statements)
+        foreach (INode statement in statements)
         {
             if (foundReturnStatement)
             {

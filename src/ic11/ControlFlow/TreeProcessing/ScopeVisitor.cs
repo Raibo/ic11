@@ -54,7 +54,7 @@ public class ScopeVisitor
             foreach (var item in ec.Expressions)
                 VisitExpression(item);
 
-        var node = (Node)statement;
+        var node = statement;
         node.Scope = _currentScope;
         node.SetIndex(ref _currentScope.CurrentNodeOrder);
 
@@ -159,7 +159,7 @@ public class ScopeVisitor
         return null;
     }
 
-    private void VisitExpression(IExpression expression)
+    private void VisitExpression(INodeExpression expression)
     {
         if (expression is IExpressionContainer innerContainer)
         {
@@ -167,7 +167,7 @@ public class ScopeVisitor
                 VisitExpression(item);
         }
 
-        var node = (Node)expression;
+        var node = expression;
         node.Scope = _currentScope;
         node.SetIndex(ref _currentScope.CurrentNodeOrder);
     }

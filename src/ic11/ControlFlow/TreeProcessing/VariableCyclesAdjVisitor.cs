@@ -14,7 +14,7 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
     public void VisitRoot(Root root)
     {
         foreach (var item in root.Statements)
-            Visit((Node)item);
+            Visit(item);
     }
 
     protected override object? Visit(While node)
@@ -30,7 +30,7 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
         foreach (var variable in relevantVariables)
             variable.LastReferencedIndex = Math.Max(cycleFinishIndex + 1, variable.LastReferencedIndex);
 
-        foreach (Node item in node.Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return null;
@@ -39,7 +39,7 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
     protected override object? Visit(For node)
     {
         var cycleStartIndex = node.HasStatement1
-            ? ((Node)node.Statements.First()).IndexInScope
+            ? node.Statements.First().IndexInScope
             : node.Expression.FirstIndexInTree;
 
         var cycleFinishIndex = LastStatementIndex(node);
@@ -55,7 +55,7 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
         foreach (var variable in relevantVariables)
             variable.LastReferencedIndex = Math.Max(cycleFinishIndex + 1, variable.LastReferencedIndex);
 
-        foreach (Node item in node.Statements)
+        foreach (INode item in node.Statements)
             Visit(item);
 
         return null;
@@ -75,7 +75,7 @@ public class VariableCyclesAdjVisitor : ControlFlowTreeVisitorBase<object?>
             }
 
             if (statement is not IStatementsContainer sc || !sc.Statements.Any())
-                return ((Node)statement).IndexInScope;
+                return statement.IndexInScope;
 
             return sc.Statements.Max(GetLastIndex);
         }

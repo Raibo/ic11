@@ -5,25 +5,25 @@ namespace ic11.ControlFlow.Nodes;
 public class ArrayAssignment : Node, IStatement, IExpressionContainer
 {
     public string Name;
-    public IExpression IndexExpression;
-    public IExpression ValueExpression;
+    public INodeExpression IndexExpression;
+    public INodeExpression ValueExpression;
     public Variable? Variable;
     public UserDefinedVariable? ArrayAddressVariable;
 
     public override int IndexSize => 2;
 
-    public ArrayAssignment(string name, IExpression indexExpression, IExpression valueExpression)
+    public ArrayAssignment(string name, INodeExpression indexExpression, INodeExpression valueExpression)
     {
         Name = name;
 
         IndexExpression = indexExpression;
         ValueExpression = valueExpression;
 
-        ((Node)indexExpression).Parent = this;
-        ((Node)valueExpression).Parent = this;
+        indexExpression.Parent = this;
+        valueExpression.Parent = this;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

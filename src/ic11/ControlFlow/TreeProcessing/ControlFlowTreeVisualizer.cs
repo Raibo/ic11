@@ -29,7 +29,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
     private void WriteLine(string s) => _sb.AppendLine($"{Indent()}{s}");
 
-    private string Tags(Node node)
+    private string Tags(INode node)
     {
         var tagSb = new StringBuilder();
 
@@ -38,7 +38,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
         tagSb.Append($" [ord {node.IndexInScope}]");
 
-        if (node is IExpression ex && ex.Variable is not null)
+        if (node is INodeExpression ex && ex.Variable is not null)
             tagSb.Append($" [var{ex.Variable.Id}/{ex.Variable.Register}:d{ex.Variable.DeclareIndex}:a{ex.Variable.LastReassignedIndex}:r{ex.Variable.LastReferencedIndex}]");
 
         if (node is VariableDeclaration d && d.Variable is not null)
@@ -80,7 +80,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"While-expr{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         _depth--;
 
         WriteLine($"While{Tags(node)}");
@@ -92,7 +92,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"If-expr{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         _depth--;
 
         WriteLine($"If{Tags(node)}");
@@ -114,7 +114,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         _depth++;
 
         foreach (var item in statements)
-            Visit((Node)item);
+            Visit(item);
 
         _depth--;
         return null;
@@ -130,7 +130,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"{node.Operation}{Tags(node)}");
         _depth++;
-        Visit((Node)node.Parameter);
+        Visit(node.Parameter);
         _depth--;
         return null;
     }
@@ -139,7 +139,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Var declaration {node.Name} = ?{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         _depth--;
         return null;
     }
@@ -148,7 +148,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Const declaration {node.Name} = {node.Expression.CtKnownValue}{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         _depth--;
         return null;
     }
@@ -163,7 +163,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Var assignment {node.Name} = ?{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression);
+        Visit(node.Expression);
         _depth--;
         return null;
     }
@@ -178,7 +178,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Device assignment {node.Name}.{node.MemberName} = ?{Tags(node)}");
         _depth++;
-        Visit((Node)node.ValueExpression);
+        Visit(node.ValueExpression);
         _depth--;
         return null;
     }
@@ -193,7 +193,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Unary operation {node.Operation}{Tags(node)}");
         _depth++;
-        Visit((Node)node.Operand);
+        Visit(node.Operand);
         _depth--;
         return null;
     }
@@ -202,8 +202,8 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Binary operation {node.Operation}{Tags(node)}");
         _depth++;
-        Visit((Node)node.Left);
-        Visit((Node)node.Right);
+        Visit(node.Left);
+        Visit(node.Right);
         _depth--;
         return null;
     }
@@ -212,9 +212,9 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Binary operation {node.Operation}{Tags(node)}");
         _depth++;
-        Visit((Node)node.OperandA);
-        Visit((Node)node.OperandB);
-        Visit((Node)node.OperandC);
+        Visit(node.OperandA);
+        Visit(node.OperandB);
+        Visit(node.OperandC);
         _depth--;
         return null;
     }
@@ -231,7 +231,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
         _depth++;
         foreach (var item in node.ArgumentExpressions)
-            Visit((Node)item);
+            Visit(item);
         _depth--;
         return null;
     }
@@ -246,7 +246,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
 
         WriteLine($"Return value{Tags(node)}");
         _depth++;
-        Visit((Node)node.Expression!);
+        Visit(node.Expression!);
         _depth--;
         return null;
     }
@@ -267,7 +267,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
     {
         WriteLine($"Device with index access (member {node.MemberName}){Tags(node)}");
         _depth++;
-        Visit((Node)node.DeviceIndexExpr);
+        Visit(node.DeviceIndexExpr);
         _depth--;
         return null;
     }
@@ -277,7 +277,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         WriteLine($"Array decl{Tags(node)}");
         _depth++;
 
-        foreach (Node item in node.Expressions)
+        foreach (INodeExpression item in node.Expressions)
             Visit(item);
 
         _depth--;
@@ -289,7 +289,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         WriteLine($"Array assignment{Tags(node)}");
         _depth++;
 
-        foreach (Node item in node.Expressions)
+        foreach (INodeExpression item in node.Expressions)
             Visit(item);
 
         _depth--;
@@ -301,7 +301,7 @@ public class ControlFlowTreeVisualizer : ControlFlowTreeVisitorBase<object?>
         WriteLine($"Array access{Tags(node)}");
         _depth++;
 
-        foreach (Node item in node.Expressions)
+        foreach (INodeExpression item in node.Expressions)
             Visit(item);
 
         _depth--;

@@ -1,16 +1,17 @@
 ﻿using ic11.ControlFlow.Context;
+using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public abstract class Node
+public abstract class Node : INode
 {
-    public Node? Parent;
-    public readonly int Id;
-    public Scope? Scope;
-    public int IndexInScope;
+    public INode? Parent { get; set; }
+    public int Id { get; }
+    public Scope? Scope { get; set; }
+    public int IndexInScope { get; set; }
 
     public virtual int IndexSize => 1;
 
-    public bool IsUnreachableCode = false;
+    public bool IsUnreachableCode { get; set; } = false;
 
     private static int NextNodeId;
 
@@ -28,7 +29,7 @@ public abstract class Node
     public override bool Equals(object? obj) =>
         obj is Node other && other.Id == Id;
 
-    public bool Equals(Node? other) =>
+    public bool Equals(INode? other) =>
         other is not null && other.Id == Id;
 
     public override int GetHashCode() => Id;

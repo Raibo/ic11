@@ -34,11 +34,11 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
     {
         _root = node;
 
-        foreach (Node statement in node.Statements)
+        foreach (INode statement in node.Statements)
             VisitNode(statement);
     }
 
-    private Variable? VisitNode(Node node)
+    private Variable? VisitNode(INode node)
     {
         if (_preciselyTreatedNodes.Contains(node.GetType()))
             return Visit(node);
@@ -50,7 +50,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             // If node needs to hold multiple results at once, it has increased index size
             var addedIndex = node.IndexSize <= 1 ? 0 : 1;
 
-            foreach (Node item in ec.Expressions)
+            foreach (INodeExpression item in ec.Expressions)
             {
                 var innerVariable = VisitNode(item);
 
@@ -59,7 +59,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
             }
         }
 
-        if (node is IExpression ex)
+        if (node is INodeExpression ex)
         {
             if (ex.CtKnownValue is null)
                 ex.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
@@ -72,13 +72,13 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         if (node is IStatementsContainer sc)
         {
-            foreach (Node item in sc.Statements)
+            foreach (INode item in sc.Statements)
                 VisitNode(item);
         }
 
         return variable;
 
-        bool IsVoidCallAsExpression(Node node)
+        bool IsVoidCallAsExpression(INode node)
         {
             if (node is not MethodCall mc)
                 return false;
@@ -92,7 +92,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
     protected Variable? Visit(VariableDeclaration node)
     {
-        var exprVar = VisitNode((Node)node.Expression);
+        var exprVar = VisitNode(node.Expression);
 
         if (exprVar is not null)
             exprVar.LastReferencedIndex = node.IndexInScope;
@@ -170,7 +170,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         node.Variable = targetVariable.Variable;
 
-        var expressionVariable = VisitNode((Node)node.Expression);
+        var expressionVariable = VisitNode(node.Expression);
 
         if (expressionVariable is not null)
             expressionVariable.LastReferencedIndex = node.IndexInScope;
@@ -218,7 +218,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
     private Variable? Visit(MethodDeclaration node)
     {
-        foreach (Node item in node.Statements)
+        foreach (INode item in node.Statements)
             VisitNode(item);
 
         return null;
@@ -226,7 +226,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
     private Variable? Visit(If node)
     {
-        foreach (Node item in node.Expressions)
+        foreach (INodeExpression item in node.Expressions)
         {
             var innerVariable = VisitNode(item);
 
@@ -236,12 +236,12 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.If;
 
-        foreach (Node item in node.Statements)
+        foreach (INode item in node.Statements)
             VisitNode(item);
 
         node.CurrentStatementsContainer = DataHolders.IfStatementsContainer.Else;
 
-        foreach (Node item in node.Statements)
+        foreach (INode item in node.Statements)
             VisitNode(item);
 
         return null;
@@ -253,16 +253,16 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         if (node.HasStatement1)
         {
-            VisitNode((Node)node.Statements.First());
+            VisitNode(node.Statements.First());
             innerStatements = innerStatements.Skip(1);
         }
 
-        var innerVariable = VisitNode((Node)node.Expression);
+        var innerVariable = VisitNode(node.Expression);
 
         if (innerVariable is not null)
             innerVariable.LastReferencedIndex = Math.Max(node.IndexInScope, innerVariable.DeclareIndex);
 
-        foreach (Node item in innerStatements)
+        foreach (INode item in innerStatements)
             VisitNode(item);
 
         return null;
@@ -278,7 +278,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         if (node.DeclarationType == DataHolders.ArrayDeclarationType.Size)
         {
-            var sizeVariable = VisitNode((Node)node.SizeExpression);
+            var sizeVariable = VisitNode(node.SizeExpression);
 
             if (sizeVariable is not null)
                 sizeVariable.LastReferencedIndex = sizeVariable.DeclareIndex; // Gets used immediately after calculated
@@ -286,7 +286,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
 
         if (node.DeclarationType == DataHolders.ArrayDeclarationType.List)
         {
-            foreach (Node item in node.InitialElementExpressions!)
+            foreach (INodeExpression item in node.InitialElementExpressions!)
             {
                 var innerVariable = VisitNode(item);
 
@@ -310,12 +310,12 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         node.Variable = node.Scope!.ClaimNewVariable(node.IndexInScope);
         node.Variable.LastReferencedIndex = node.IndexInScope;
 
-        var valueExprVariable = VisitNode((Node)node.ValueExpression);
+        var valueExprVariable = VisitNode(node.ValueExpression);
 
         if (valueExprVariable is not null)
             valueExprVariable.LastReferencedIndex = node.IndexInScope + 1;
 
-        var indexExprVariable = VisitNode((Node)node.IndexExpression);
+        var indexExprVariable = VisitNode(node.IndexExpression);
 
         if (indexExprVariable is not null)
             indexExprVariable.LastReferencedIndex = node.IndexInScope + 1;
@@ -332,7 +332,7 @@ public class VariableVisitor : ControlFlowTreeVisitorBase<Variable?>
         addressVariable.LastReferencedIndex = node.IndexInScope;
         addressVariable.Variable.LastReferencedIndex = node.IndexInScope;
 
-        var indexVariable = VisitNode((Node)node.IndexExpression);
+        var indexVariable = VisitNode(node.IndexExpression);
 
         if (indexVariable is not null)
             indexVariable.LastReferencedIndex = node.IndexInScope;

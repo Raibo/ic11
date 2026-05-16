@@ -4,9 +4,9 @@ namespace ic11.ControlFlow.Nodes;
 public class StatementParam1 : Node, IStatement, IExpressionContainer
 {
     public string Operation;
-    public IExpression Parameter;
+    public INodeExpression Parameter;
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {
@@ -14,7 +14,7 @@ public class StatementParam1 : Node, IStatement, IExpressionContainer
         }
     }
 
-    public StatementParam1(string operation, IExpression parameter)
+    public StatementParam1(string operation, INodeExpression parameter)
     {
         Operation = operation;
         Parameter = parameter;

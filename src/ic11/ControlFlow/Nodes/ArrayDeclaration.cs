@@ -6,34 +6,34 @@ namespace ic11.ControlFlow.Nodes;
 public class ArrayDeclaration : Node, IStatement, IExpressionContainer
 {
     public string Name;
-    public IExpression SizeExpression;
+    public INodeExpression SizeExpression;
     public Variable? AddressVariable;
     public ArrayDeclarationType DeclarationType;
 
-    public List<IExpression>? InitialElementExpressions;
+    public List<INodeExpression>? InitialElementExpressions;
 
-    public ArrayDeclaration(string name, IExpression sizeExpression)
+    public ArrayDeclaration(string name, INodeExpression sizeExpression)
     {
         Name = name;
         SizeExpression = sizeExpression;
-        ((Node)sizeExpression).Parent = this;
+        sizeExpression.Parent = this;
 
         DeclarationType = ArrayDeclarationType.Size;
     }
 
-    public ArrayDeclaration(string name, List<IExpression> initialElementExpressions)
+    public ArrayDeclaration(string name, List<INodeExpression> initialElementExpressions)
     {
         Name = name;
         SizeExpression = new Literal(initialElementExpressions.Count);
         InitialElementExpressions = initialElementExpressions;
 
         foreach (var item in initialElementExpressions)
-            ((Node)item).Parent = this;
+            item.Parent = this;
 
         DeclarationType = ArrayDeclarationType.List;
     }
 
-    public IEnumerable<IExpression> Expressions => DeclarationType switch
+    public IEnumerable<INodeExpression> Expressions => DeclarationType switch
     {
         ArrayDeclarationType.Size => Enumerable.Repeat(SizeExpression, 1),
         ArrayDeclarationType.List => InitialElementExpressions!,

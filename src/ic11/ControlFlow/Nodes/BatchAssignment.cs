@@ -4,36 +4,36 @@ using ic11.ControlFlow.NodeInterfaces;
 namespace ic11.ControlFlow.Nodes;
 public class BatchAssignment : Node, IStatement, IExpressionContainer
 {
-    public IExpression DeviceTypeHashExpr;
-    public IExpression? NameHashExpr;
-    public IExpression? TargetIndexExpr;
-    public IExpression ValueExpr;
+    public INodeExpression DeviceTypeHashExpr;
+    public INodeExpression? NameHashExpr;
+    public INodeExpression? TargetIndexExpr;
+    public INodeExpression ValueExpr;
     public DeviceTarget Target;
     public string MemberName;
     public override int IndexSize => 2;
 
-    public BatchAssignment(IExpression deviceTypeHashExpr, IExpression? nameHashExpr, IExpression? targetIndexExpression,
-        IExpression valueExpr, string memberName, DeviceTarget target)
+    public BatchAssignment(INodeExpression deviceTypeHashExpr, INodeExpression? nameHashExpr, INodeExpression? targetIndexExpression,
+        INodeExpression valueExpr, string memberName, DeviceTarget target)
     {
         DeviceTypeHashExpr = deviceTypeHashExpr;
         NameHashExpr = nameHashExpr;
         ValueExpr = valueExpr;
         TargetIndexExpr = targetIndexExpression;
-        ((Node)deviceTypeHashExpr).Parent = this;
-        ((Node)valueExpr).Parent = this;
+        deviceTypeHashExpr.Parent = this;
+        valueExpr.Parent = this;
 
         if (nameHashExpr is not null)
-            ((Node)nameHashExpr).Parent = this;
+            nameHashExpr.Parent = this;
             
         if (targetIndexExpression is not null)
-            ((Node)targetIndexExpression).Parent = this;
+            targetIndexExpression.Parent = this;
 
         Target = target;
 
         MemberName = memberName;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

@@ -35,7 +35,7 @@ public class RegisterVisitor
         }
 
         foreach (var node in methodDeclaration.Statements)
-            VisitNode((Node)node);
+            VisitNode(node);
 
         methodDeclaration.UsedRegistersCount = _currentUsedRegisters.Count();
     }
@@ -49,7 +49,7 @@ public class RegisterVisitor
             _currentUsedRegisters.Add(register);
     }
 
-    private void VisitNode(Node node)
+    private void VisitNode(INode node)
     {
         // Arrays need their reference value be saved before elements or size, because later sp register may change
         if (node is ArrayDeclaration ad && ad.AddressVariable is not null && ad.AddressVariable.Register is null)
@@ -60,11 +60,11 @@ public class RegisterVisitor
 
         if (node is IExpressionContainer ec)
         {
-            foreach (Node item in ec.Expressions)
+            foreach (INodeExpression item in ec.Expressions)
                 VisitNode(item);
         }
 
-        if (node is IExpression ex && ex.Variable is not null && ex.Variable.Register is null)
+        if (node is INodeExpression ex && ex.Variable is not null && ex.Variable.Register is null)
         {
             var register = node.Scope!.GetAvailableRegister(ex.Variable.DeclareIndex, ex.Variable.LastReferencedIndex);
             AssignRegister(ex.Variable, register);
@@ -90,16 +90,16 @@ public class RegisterVisitor
 
         if (node is IStatementsContainer sc && node is not If)
         {
-            foreach (Node item in sc.Statements)
+            foreach (INode item in sc.Statements)
                 VisitNode(item);
         }
 
         if (node is If ifNode)
         {
-            foreach (Node item in ifNode.IfStatements)
+            foreach (INode item in ifNode.IfStatements)
                 VisitNode(item);
 
-            foreach (Node item in ifNode.ElseStatements)
+            foreach (INode item in ifNode.ElseStatements)
                 VisitNode(item);
         }
     }

@@ -3,11 +3,11 @@ using ic11.ControlFlow.DataHolders;
 using ic11.ControlFlow.NodeInterfaces;
 
 namespace ic11.ControlFlow.Nodes;
-public class BatchAccess : Node, IExpression, IExpressionContainer
+public class BatchAccess : Node, INodeExpression, IExpressionContainer
 {
-    public IExpression DeviceTypeHashExpr;
-    public IExpression? NameHashExpr;
-    public IExpression? TargetIndexExpr;
+    public INodeExpression DeviceTypeHashExpr;
+    public INodeExpression? NameHashExpr;
+    public INodeExpression? TargetIndexExpr;
     public DeviceTarget Target;
     public string MemberName;
     public string BatchMode;
@@ -16,27 +16,27 @@ public class BatchAccess : Node, IExpression, IExpressionContainer
     public decimal? CtKnownValue => null;
     public override int IndexSize => 2;
 
-    public BatchAccess(IExpression deviceTypeHashExpr, IExpression? nameHashExpr, IExpression? targetIndexExpr,
+    public BatchAccess(INodeExpression deviceTypeHashExpr, INodeExpression? nameHashExpr, INodeExpression? targetIndexExpr,
         DeviceTarget target, string memberName, string batchMode)
     {
         DeviceTypeHashExpr = deviceTypeHashExpr;
         NameHashExpr = nameHashExpr;
         TargetIndexExpr = targetIndexExpr;
         
-        ((Node)deviceTypeHashExpr).Parent = this;
+        deviceTypeHashExpr.Parent = this;
 
         if (nameHashExpr is not null)
-            ((Node)nameHashExpr).Parent = this;
+            nameHashExpr.Parent = this;
 
         if (targetIndexExpr is not null)
-            ((Node)targetIndexExpr).Parent = this;
+            targetIndexExpr.Parent = this;
 
         Target = target;
         MemberName = memberName;
         BatchMode = batchMode;
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

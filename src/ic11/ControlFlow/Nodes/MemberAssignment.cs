@@ -7,34 +7,34 @@ public class MemberAssignment : Node, IStatement, IExpressionContainer
     public string Name;
     public string? MemberName;
     public DeviceTarget Target;
-    public IExpression? TargetIndexExpr;
-    public IExpression ValueExpression;
+    public INodeExpression? TargetIndexExpr;
+    public INodeExpression ValueExpression;
 
     public override int IndexSize => 2;
 
-    public MemberAssignment(string name, string memberName, IExpression valueExpression)
+    public MemberAssignment(string name, string memberName, INodeExpression valueExpression)
     {
         Name = name;
         MemberName = memberName;
         ValueExpression = valueExpression;
-        ((Node)valueExpression).Parent = this;
+        valueExpression.Parent = this;
         Target = DeviceTarget.Device;
         Validate();
     }
 
-    public MemberAssignment(string name, DeviceTarget target, string? memberName, IExpression targetIndexExpr, IExpression valueExpression)
+    public MemberAssignment(string name, DeviceTarget target, string? memberName, INodeExpression targetIndexExpr, INodeExpression valueExpression)
     {
         Name = name;
         MemberName = memberName;
         TargetIndexExpr = targetIndexExpr;
         ValueExpression = valueExpression;
-        ((Node)targetIndexExpr).Parent = this;
-        ((Node)valueExpression).Parent = this;
+        targetIndexExpr.Parent = this;
+        valueExpression.Parent = this;
         Target = target;
         Validate();
     }
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {

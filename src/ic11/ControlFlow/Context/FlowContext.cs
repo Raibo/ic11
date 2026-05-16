@@ -5,7 +5,7 @@ namespace ic11.ControlFlow.Context;
 public class FlowContext
 {
     public readonly Node Root;
-    public Node CurrentNode;
+    public INode CurrentNode;
     public Dictionary<string, MethodDeclaration> DeclaredMethods = new();
     public List<IStatement>? CurrentStatementList;
     public List<UserDefinedVariable> AllUserDefinedVariables = new();

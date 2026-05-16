@@ -6,7 +6,7 @@ public class For : Node, IStatement, IStatementsContainer, IExpressionContainer
 #pragma warning disable CS8618
     /// <remarks> Promise to fill in <see cref="nameof(ControlFlowBuilderVisitor)"/>. </remarks>
 
-    public IExpression Expression;
+    public INodeExpression Expression;
 
 #pragma warning restore CS8618
 
@@ -15,7 +15,7 @@ public class For : Node, IStatement, IStatementsContainer, IExpressionContainer
     public bool HasStatement1;
     public bool HasStatement2;
 
-    public IEnumerable<IExpression> Expressions
+    public IEnumerable<INodeExpression> Expressions
     {
         get
         {
