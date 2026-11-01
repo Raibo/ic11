@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using ic11.Emulator.Operations;
 
 namespace ic11.Emulator;
@@ -8,8 +8,10 @@ public sealed class Emulator
     private readonly int _cyclesPerTick = 128;
 
     public List<Device?> Devices = null!;
-    public Dictionary<int, Device> BatchDevices = null!; // devices that are used in batch operations
+    // Registered network devices, keyed by ReferenceId; PrefabHash and NameHash are device properties.
+    public Dictionary<int, Device> BatchDevices = null!;
     public Dictionary<string, Device> DeviceAliases = null!;
+    public Dictionary<string, string> DeviceAliasAddresses = null!;
     public Dictionary<string, int> RegisterAliases = null!;
     private List<Operation> _program = null!;
     public double[] Registers = null!; // registers (r0 - r15)
@@ -20,6 +22,12 @@ public sealed class Emulator
     public bool Yielding;
     public long Clock;
     public bool Stopped;
+    public long Tick { get; private set; }
+    public double TickSeconds { get; init; } = 0.5;
+    public double TimeSeconds => Math.Max(0, Tick - 1) * TickSeconds;
+    public double SleepingUntil { get; set; }
+    public bool RecordDeviceAccess { get; set; }
+    public List<DeviceAccess> DeviceAccesses { get; } = [];
 
 
     public Emulator()
@@ -36,6 +44,7 @@ public sealed class Emulator
         BatchDevices = new();
         Devices = [];
         DeviceAliases = new();
+        DeviceAliasAddresses = new();
 
         for (int i = 0; i < 6; i++)
         {
@@ -67,6 +76,9 @@ public sealed class Emulator
         Clock = 0;
         Stopped = false;
         Yielding = false;
+        Tick = 0;
+        SleepingUntil = 0;
+        DeviceAccesses.Clear();
     }
 
 
@@ -103,6 +115,12 @@ public sealed class Emulator
 
         while (ticks > 0)
         {
+            Tick++;
+            if (TimeSeconds < SleepingUntil)
+            {
+                ticks--;
+                continue;
+            }
             for (int i = 0; i < _cyclesPerTick; i++)
             {
                 Clock++;
@@ -117,6 +135,9 @@ public sealed class Emulator
                 var operation = _program[ProgramCounter];
 
                 operation.Execute(this);
+
+                if (Stopped)
+                    return;
 
                 if (Yielding)
                 {
@@ -240,7 +261,7 @@ public sealed class Emulator
             $"Unexpected operation type: {unexpectedOperationType}, program counter: {ProgramCounter}");
     }
 
-    public Device GetOrCreateDeviceById(string device)
+    public Device GetDeviceById(string device)
     {
         var id = (int)InferValue(device);
         if (BatchDevices.TryGetValue(id, out var byId))
@@ -248,27 +269,78 @@ public sealed class Emulator
             return byId;
         }
 
-        var newDevice = new Device();
-        BatchDevices[id] = newDevice;
-        return newDevice;
+        throw GenerateEmulatorException($"Device ReferenceId is not registered: {id}");
     }
 
     public Device? InferDevice(string device)
     {
+        if (DeviceAliasAddresses.TryGetValue(device, out var target))
+            return InferDevice(target);
+        if (device.StartsWith('d') && device != "db")
+        {
+            var indexText = device[1..];
+            if (int.TryParse(indexText, out var pin) || RegisterAliases.ContainsKey(indexText))
+            {
+                if (!int.TryParse(indexText, out pin))
+                    pin = (int)InferValue(indexText);
+                if (pin < 0 || pin >= 6)
+                    throw GenerateEmulatorException($"Device pin out of range: {pin}");
+                return Devices[pin];
+            }
+        }
         if (DeviceAliases.TryGetValue(device, out var d))
             return d;
 
-        var register = device[1..];
-        if (RegisterAliases.TryGetValue(register, out var index))
-        {
-            var deviceIndex = (int)Registers[index];
+        return GetDeviceById(device);
+    }
 
-            if (deviceIndex < 0 || deviceIndex >= Devices.Count)
-                throw GenerateEmulatorException($"Device index out of range: {deviceIndex}");
+    public Device RequireDevice(string address) => InferDevice(address)
+        ?? throw GenerateEmulatorException($"Device pin is not connected: {address}");
 
-            return Devices[deviceIndex];
-        }
+    public Device RegisterDevice(int referenceId, int prefabHash, int nameHash = 0, Device? device = null)
+    {
+        device ??= new Device();
+        device.SetProperty("ReferenceId", referenceId);
+        device.SetProperty("PrefabHash", prefabHash);
+        device.SetProperty("NameHash", nameHash);
+        BatchDevices.Add(referenceId, device);
+        return device;
+    }
 
-        throw GenerateEmulatorException($"Unknown device: {device}");
+    public IEnumerable<Device> SelectDevices(int prefabHash, int? nameHash = null) =>
+        Devices.OfType<Device>().Concat(BatchDevices.Values).Distinct()
+            .Where(device => device.GeneralProperties.TryGetValue("PrefabHash", out var hash) && hash == prefabHash)
+            .Where(device => nameHash is null || device.GetProperty("NameHash") == nameHash);
+
+    public void RecordAccess(Device device, DeviceAccessKind kind, double value = 0, string? property = null, int? index = null)
+    {
+        if (RecordDeviceAccess)
+            DeviceAccesses.Add(new DeviceAccess(Tick, ProgramCounter, device, kind, property, index, value));
+    }
+
+    public double ReadProperty(Device device, string property)
+    {
+        var value = device.GetProperty(property);
+        RecordAccess(device, DeviceAccessKind.ReadProperty, value, property);
+        return value;
+    }
+
+    public void WriteProperty(Device device, string property, double value)
+    {
+        device.SetProperty(property, value);
+        RecordAccess(device, DeviceAccessKind.WriteProperty, value, property);
+    }
+
+    public double ReadSlot(Device device, int slot, string property)
+    {
+        var value = device.GetSlotProperty(slot, property);
+        RecordAccess(device, DeviceAccessKind.ReadSlot, value, property, slot);
+        return value;
+    }
+
+    public void WriteSlot(Device device, int slot, string property, double value)
+    {
+        device.SetSlotProperty(slot, property, value);
+        RecordAccess(device, DeviceAccessKind.WriteSlot, value, property, slot);
     }
 }

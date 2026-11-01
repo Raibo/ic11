@@ -11,7 +11,8 @@ public class Alias : Operation
         var aliasName = Args[0];
         var device = Args[1];
         
-        emulator.DeviceAliases[aliasName] = emulator.DeviceAliases[device];
+        // Aliases name pins/addresses, not the device that happened to be attached at declaration time.
+        emulator.DeviceAliasAddresses[aliasName] = device;
         emulator.ProgramCounter++;
     }
 }

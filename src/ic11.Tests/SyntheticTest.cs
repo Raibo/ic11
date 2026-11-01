@@ -1,4 +1,4 @@
-﻿namespace ic11.Tests;
+namespace ic11.Tests;
 
 using ic11.Tests.Utils;
 
@@ -38,7 +38,6 @@ public sealed class SyntheticTest
 
         var src = emulator.Devices[0];
         var dst = emulator.Devices[1];
-        emulator.Devices[1] = null;
         emulator.Devices[4] = null;
         emulator.Devices[2] = null;
         emulator.Devices[5] = null;
@@ -94,7 +93,6 @@ public sealed class SyntheticTest
 
         var src = emulator.Devices[0];
         var dst = emulator.Devices[1];
-        emulator.Devices[1] = null;
         emulator.Devices[4] = null;
         emulator.Devices[2] = null;
         emulator.Devices[5] = null;
@@ -175,7 +173,6 @@ public sealed class SyntheticTest
         var emulator = EmulatorHelper.Create(code);
 
         var dst = emulator.Devices[1];
-        emulator.Devices[1] = null;
         emulator.Devices[4] = null;
         emulator.Devices[2] = null;
         emulator.Devices[5] = null;
@@ -270,7 +267,6 @@ public sealed class SyntheticTest
 
         var src = _emulator.Devices[0];
         var dst = _emulator.Devices[1];
-        _emulator.Devices[1] = null;
         _emulator.Devices[4] = null;
         _emulator.Devices[2] = null;
         _emulator.Devices[5] = null;

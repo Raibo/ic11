@@ -1,4 +1,4 @@
-﻿namespace ic11.Emulator.Operations;
+namespace ic11.Emulator.Operations;
 
 public class Math3 : Operation
 {
@@ -60,17 +60,17 @@ public class Math3 : Operation
             "sge" => left >= right ? 1 : 0,
             "seq" => left == right ? 1 : 0,
             "sne" => left != right ? 1 : 0,
-            "and" => (long)double.Floor(left) & (long)double.Floor(right),
-            "xor" => (long)double.Floor(left) ^ (long)double.Floor(right),
-            "or" => (long)double.Floor(left) | (long)double.Floor(right),
-            "nor" => ~((long)double.Floor(left) | (long)double.Floor(right)),
+            "and" => (long)Math.Truncate(left) & (long)Math.Truncate(right),
+            "xor" => (long)Math.Truncate(left) ^ (long)Math.Truncate(right),
+            "or" => (long)Math.Truncate(left) | (long)Math.Truncate(right),
+            "nor" => ~((long)Math.Truncate(left) | (long)Math.Truncate(right)),
             "max" => Math.Max(left, right),
             "min" => Math.Min(left, right),
-            "sll" => (ulong)double.Floor(left) <<
-                     (int)double.Floor(right), // C# makes logic on unsigned and arithmetic on signed
-            "srl" => (ulong)double.Floor(left) >> (int)double.Floor(right),
-            "sla" => (long)double.Floor(left) << (int)double.Floor(right),
-            "sra" => (long)double.Floor(left) >> (int)double.Floor(right),
+            "sll" => (ulong)Math.Truncate(left) <<
+                     (int)Math.Truncate(right), // C# makes logic on unsigned and arithmetic on signed
+            "srl" => (ulong)Math.Truncate(left) >> (int)Math.Truncate(right),
+            "sla" => (long)Math.Truncate(left) << (int)Math.Truncate(right),
+            "sra" => (long)Math.Truncate(left) >> (int)Math.Truncate(right),
             "atan2" => Math.Atan2(left, right),
             "sapz" => Math.Abs(left) <= Math.Max(right * Math.Abs(left), float.Epsilon * 8d) ? 1 : 0,
             "snaz" => Math.Abs(left) > Math.Max(right * Math.Abs(left), float.Epsilon * 8d) ? 1 : 0,
