@@ -1,4 +1,4 @@
-﻿namespace ic11.Emulator.Operations;
+namespace ic11.Emulator.Operations;
 
 public class Load : Operation
 {
@@ -18,12 +18,12 @@ public class Load : Operation
         switch (Opcode)
         {
             case "l":
-                value = emulator.InferDevice(device).GetProperty(propertyName);
+                value = emulator.ReadProperty(emulator.RequireDevice(device), propertyName);
                 break;
             
             case "ld":
-                var d = emulator.GetOrCreateDeviceById(device);
-                value = d.GetProperty(propertyName);
+                var d = emulator.GetDeviceById(device);
+                value = emulator.ReadProperty(d, propertyName);
                 break;
             
             default:

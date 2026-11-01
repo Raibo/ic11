@@ -2,7 +2,7 @@
 
 public class Set : Operation
 {
-    public static string[] Opcodes = ["s"];
+    public static string[] Opcodes = ["s", "sd"];
     public static int ArgumentCount = 3;
 
     // s BypassDoor Lock 1
@@ -13,8 +13,8 @@ public class Set : Operation
         var value = Args[2];
         
         // var d = emulator.DeviceAliases[device];
-        var d = emulator.InferDevice(device);
-        d.SetProperty(propertyName, emulator.InferValue(value));
+        var d = emulator.RequireDevice(device);
+        emulator.WriteProperty(d, propertyName, emulator.InferValue(value));
         
         emulator.ProgramCounter++;
     }

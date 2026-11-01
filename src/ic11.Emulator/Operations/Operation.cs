@@ -32,7 +32,8 @@ public abstract class Operation
 
     public static Operation BuildOperation(string opcode, string[] args)
     {
-        var type = Operations[opcode];
+        if (!Operations.TryGetValue(opcode, out var type))
+            throw new NotSupportedException($"Instruction '{opcode}' is not implemented by the test emulator.");
         var argumentCount = ArgumentCounts[opcode];
 
         if (args.Length != argumentCount)

@@ -15,12 +15,10 @@ public class SetBatchNamed : Operation
 
 
         var key = (int)emulator.InferValue(deviceTypeHash);
-        if (!emulator.BatchDevices.ContainsKey(key))
-        {
-            emulator.BatchDevices[key] = new Device();
-        }
-        
-        emulator.BatchDevices[key].SetProperty(propertyName, emulator.InferValue(value));
+        var name = (int)emulator.InferValue(nameHash);
+        var writeValue = emulator.InferValue(value);
+        foreach (var device in emulator.SelectDevices(key, name))
+            emulator.WriteProperty(device, propertyName, writeValue);
 
         emulator.ProgramCounter++;
     }

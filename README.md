@@ -30,6 +30,10 @@ The compiled code is provided in the Stdout.
 
 # Building
 
+Run the compiler and interpreter tests with `dotnet test ic11.sln -c Release`.
+See [compiler validation](docs/compiler-validation.md) for the coverage,
+controlled device fixtures, and interpreter limitations.
+
 Download/update dependencies:
 ```bash
 dotnet restore

@@ -13,8 +13,8 @@ public class LoadSlot : Operation
         var slot = Args[2];
         var propertyName = Args[3];
         
-        var d = emulator.InferDevice(device);
-        var value = d.GetSlotProperty((int)emulator.InferValue(slot), propertyName);
+        var d = emulator.RequireDevice(device);
+        var value = emulator.ReadSlot(d, (int)emulator.InferValue(slot), propertyName);
         
         emulator.SetRegister(register, value);
         

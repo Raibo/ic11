@@ -13,12 +13,9 @@ public class SetBatch : Operation
         var value = Args[2];
         
         var key = (int)emulator.InferValue(deviceTypeHash);
-        if (!emulator.BatchDevices.ContainsKey(key))
-        {
-            emulator.BatchDevices[key] = new Device();
-        }
-        
-        emulator.BatchDevices[key].SetProperty(propertyName, emulator.InferValue(value));
+        var writeValue = emulator.InferValue(value);
+        foreach (var device in emulator.SelectDevices(key))
+            emulator.WriteProperty(device, propertyName, writeValue);
 
         emulator.ProgramCounter++;
     }

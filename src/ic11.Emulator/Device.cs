@@ -4,7 +4,9 @@ public class Device
 {
     public readonly Dictionary<string, double> GeneralProperties = new();
     public readonly Dictionary<int, Dictionary<string, double>> SlotProperties = new();
-    public double[] Stack = null!;
+    public double[] Stack = new double[512];
+    public readonly Dictionary<(string Mode, int Reagent), double> Reagents = new();
+    public readonly Dictionary<int, double> ReagentSources = new();
     
     public void SetProperty(string propertyName, double value)
     {
